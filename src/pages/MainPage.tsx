@@ -1,6 +1,6 @@
+import { observer } from "mobx-react-lite";
 
-
-const MainPage = () => {
+const MainPage = observer(() => {
     return (
         <div>
             {/* <img src="https://i.pinimg.com/1200x/e1/83/74/e183745e034cffdb4d5b0d78df4e748c.jpg" alt="Logo" className="h-full w-full" /> */}
@@ -15,6 +15,6 @@ const MainPage = () => {
             
         </div>
     );
-};
+});
 
 export default MainPage;

@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { observer } from "mobx-react-lite";
 import {
   Navbar,
   NavbarBrand,
@@ -9,7 +11,14 @@ import {
   NavbarMenuItem,
   Link,
   Button,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Avatar,
 } from "@heroui/react";
+import { Context, type IStoreContext } from "@/store/StoreProvider";
+import { LOGIN_ROUTE, REGISTRATION_ROUTE, MAIN_ROUTE } from "@/utils/consts";
 
 export const AcmeLogo = () => {
   return (
@@ -24,21 +33,32 @@ export const AcmeLogo = () => {
   );
 };
 
-export default function Navigation() {
+const Navigation = observer(() => {
+  const { user } = useContext(Context) as IStoreContext;
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
-  const menuItems = [
-    "Profile",
-    "Dashboard",
-    "Activity",
-    "Analytics",
-    "System",
-    "Deployments",
-    "My Settings",
-    "Team Settings",
-    "Help & Feedback",
-    "Log Out",
+  const handleLogout = async () => {
+    await user.logout();
+    navigate(MAIN_ROUTE);
+  };
+
+  const publicMenuItems = [
+    { name: "Коллекции", href: "#" },
+    { name: "Магазин", href: "#" },
+    { name: "О нас", href: "#" },
   ];
+
+  const authMenuItems = user.isAuth 
+    ? [
+        { name: "Профиль", href: "#", action: () => {} },
+        { name: "Мои заказы", href: "#", action: () => {} },
+        { name: "Выйти", href: "#", action: handleLogout, color: "danger" },
+      ]
+    : [
+        { name: "Войти", href: LOGIN_ROUTE, action: () => navigate(LOGIN_ROUTE) },
+        { name: "Регистрация", href: REGISTRATION_ROUTE, action: () => navigate(REGISTRATION_ROUTE) },
+      ];
 
   return (
     <Navbar onMenuOpenChange={setIsMenuOpen} maxWidth="full" isBordered>
@@ -47,55 +67,117 @@ export default function Navigation() {
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           className="sm:hidden"
         />
-        <NavbarBrand>
-            <img src="/LOGO.svg" alt="Logo" className="h-[40px]" />
+        <NavbarBrand className="cursor-pointer" onClick={() => navigate(MAIN_ROUTE)}>
+          <img src="/LOGO.svg" alt="Logo" className="h-[40px]" />
         </NavbarBrand>
       </NavbarContent>
 
       <NavbarContent className="hidden sm:flex gap-10" justify="center">
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            Collections
-          </Link>
-        </NavbarItem>
-        <NavbarItem isActive>
-          <Link aria-current="page" href="#">
-            Shop
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            About
-          </Link>
-        </NavbarItem>
+        {publicMenuItems.map((item) => (
+          <NavbarItem key={item.name}>
+            <Link 
+              color="foreground" 
+              href={item.href}
+              className="hover:text-primary transition-colors"
+            >
+              {item.name}
+            </Link>
+          </NavbarItem>
+        ))}
       </NavbarContent>
+
       <NavbarContent justify="end">
-        <NavbarItem className="hidden lg:flex">
-          <Link href="#" className="text-default-600">Login</Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Button as={Link} color="default" href="#" variant="flat">
-            Sign Up
-          </Button>
-        </NavbarItem>
+        {user.isAuth ? (
+          <Dropdown placement="bottom-end">
+            <DropdownTrigger>
+              <div className="flex items-center gap-2 cursor-pointer">
+                <Avatar
+                  size="sm"
+                  name={user.user?.email?.charAt(0).toUpperCase() || "U"}
+                  className="bg-primary text-white"
+                />
+                <span className="hidden md:block text-sm font-medium">
+                  {user.user?.email}
+                </span>
+              </div>
+            </DropdownTrigger>
+            <DropdownMenu aria-label="User menu">
+              <DropdownItem key="profile" onClick={() => {}}>
+                Профиль
+              </DropdownItem>
+              <DropdownItem key="orders" onClick={() => {}}>
+                Мои заказы
+              </DropdownItem>
+              <DropdownItem 
+                key="logout" 
+                className="text-danger" 
+                color="danger"
+                onClick={handleLogout}
+              >
+                Выйти
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        ) : (
+          <>
+            <NavbarItem className="hidden lg:flex">
+              <Link 
+                className="text-default-600 hover:text-primary transition-colors cursor-pointer" 
+                onClick={() => navigate(LOGIN_ROUTE)}
+              >
+                Вход
+              </Link>
+            </NavbarItem>
+            <NavbarItem>
+              <Button 
+                color="primary" 
+                variant="flat"
+                onClick={() => navigate(REGISTRATION_ROUTE)}
+              >
+                Регистрация
+              </Button>
+            </NavbarItem>
+          </>
+        )}
       </NavbarContent>
+
       <NavbarMenu>
-        {menuItems.map((item, index) => (
-          <NavbarMenuItem key={`${item}-${index}`}>
+        {/* Публичные пункты меню */}
+        {publicMenuItems.map((item) => (
+          <NavbarMenuItem key={item.name}>
             <Link
               className="w-full"
-              color={
-                index === 2 ? "primary" : index === menuItems.length - 1 ? "danger" : "foreground"
-              }
-              href="#"
+              color="foreground"
+              href={item.href}
               size="lg"
             >
-              {item}
+              {item.name}
+            </Link>
+          </NavbarMenuItem>
+        ))}
+        
+        {/* Разделитель */}
+        <NavbarMenuItem>
+          <div className="w-full h-px bg-default-200 my-2" />
+        </NavbarMenuItem>
+
+        {/* Пункты авторизации */}
+        {authMenuItems.map((item) => (
+          <NavbarMenuItem key={item.name}>
+            <Link
+              className="w-full"
+              color={(item.color as "danger") || "foreground"}
+              onClick={item.action}
+              size="lg"
+            >
+              {item.name}
             </Link>
           </NavbarMenuItem>
         ))}
       </NavbarMenu>
     </Navbar>
   );
-}
+});
+
+export default Navigation;
 
