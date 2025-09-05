@@ -61,7 +61,7 @@ const Navigation = observer(() => {
       ];
 
   return (
-    <Navbar onMenuOpenChange={setIsMenuOpen} maxWidth="full" isBordered>
+    <Navbar onMenuOpenChange={setIsMenuOpen} maxWidth="full" isBordered position="sticky">
       <NavbarContent>
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}

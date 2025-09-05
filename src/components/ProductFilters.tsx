@@ -14,9 +14,13 @@ import {
 } from "@heroui/react";
 import { Context, type IStoreContext } from "@/store/StoreProvider";
 import type { ProductFilters } from "@/http/productAPI";
+import { ChevronDownIcon } from "@/components/ui/Icons";
 
-const ProductFilters = observer(() => {
+function ProductFilters() {
   const { product } = useContext(Context) as IStoreContext;
+  
+  // Состояние для сворачивания фильтров на мобильных
+  const [isExpanded, setIsExpanded] = useState(false);
   
   // Локальные состояния для фильтров
   const [localFilters, setLocalFilters] = useState({
@@ -65,6 +69,9 @@ const ProductFilters = observer(() => {
 
     product.setFilters(processedFilters as Partial<ProductFilters>);
     product.applyFilters();
+    
+    // Закрываем фильтры на мобильных после применения
+    setIsExpanded(false);
   };
 
   const clearFilters = () => {
@@ -92,27 +99,56 @@ const ProductFilters = observer(() => {
 
   return (
     <Card className="w-full">
-      <CardHeader>
+      <CardHeader className="">
         <div className="flex justify-between items-center w-full">
-          <h3 className="text-lg font-semibold">Фильтры</h3>
-          {product.isFilterApplied && (
-            <Chip color="primary" size="sm" variant="flat">
-              Применены
-            </Chip>
-          )}
+          <div className="flex items-center gap-3">
+            <h3 className="text-lg font-semibold">Фильтры</h3>
+            {product.isFilterApplied && (
+              <Chip color="primary" size="sm" variant="flat">
+                Применены
+              </Chip>
+            )}
+          </div>
+          
+          {/* Валюта и кнопка разворачивания на мобильных */}
+          <div className="flex items-center gap-2 lg:hidden">
+            <ButtonGroup size="sm">
+              {currencyOptions.map((option) => (
+                <Button
+                  key={option.value}
+                  variant={localFilters.currency === option.value ? "solid" : "bordered"}
+                  color="default"
+                  onClick={() => handleFilterChange('currency', option.value)}
+                  size="sm"
+                >
+                  {option.value}
+                </Button>
+              ))}
+            </ButtonGroup>
+            <Button
+              variant="light"
+              size="sm"
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="min-w-unit-8 w-8 h-8 p-0"
+            >
+              <ChevronDownIcon 
+                className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+              />
+            </Button>
+          </div>
         </div>
       </CardHeader>
       
-      <CardBody className="space-y-4">
-        {/* Валюта */}
-        <div>
+      <CardBody className={`space-y-4 ${isExpanded ? 'block' : 'hidden'} lg:block`}>
+        {/* Валюта на широких экранах */}
+        <div className="hidden lg:block">
           <label className="text-sm font-medium mb-2 block">Валюта</label>
           <ButtonGroup className="w-full">
             {currencyOptions.map((option) => (
               <Button
                 key={option.value}
                 variant={localFilters.currency === option.value ? "solid" : "bordered"}
-                color={localFilters.currency === option.value ? "default" : "default"}
+                color="default"
                 onClick={() => handleFilterChange('currency', option.value)}
                 className="flex-1"
               >
@@ -122,18 +158,20 @@ const ProductFilters = observer(() => {
           </ButtonGroup>
         </div>
 
-        <Divider />
+        <Divider className="hidden lg:block" />
 
         {/* Пол */}
         <Select
           label="Пол"
           placeholder="Выберите пол"
-          value={localFilters.gender}
-          onChange={(e) => handleFilterChange('gender', e.target.value)}
-          isClearable
+          selectedKeys={localFilters.gender ? [localFilters.gender] : []}
+          onSelectionChange={(keys) => {
+            const value = Array.from(keys)[0] as string;
+            handleFilterChange('gender', value || '');
+          }}
         >
           {genderOptions.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
+            <SelectItem key={option.value}>
               {option.label}
             </SelectItem>
           ))}
@@ -143,13 +181,15 @@ const ProductFilters = observer(() => {
         <Select
           label="Размер"
           placeholder="Выберите размер"
-          value={localFilters.size}
-          onChange={(e) => handleFilterChange('size', e.target.value)}
+          selectedKeys={localFilters.size ? [localFilters.size] : []}
+          onSelectionChange={(keys) => {
+            const value = Array.from(keys)[0] as string;
+            handleFilterChange('size', value || '');
+          }}
           isLoading={product.filtersLoading}
-          isClearable
         >
           {product.sizes.map((size) => (
-            <SelectItem key={size.name} value={size.name}>
+            <SelectItem key={size.name}>
               {size.name}
             </SelectItem>
           ))}
@@ -159,13 +199,15 @@ const ProductFilters = observer(() => {
         <Select
           label="Цвет"
           placeholder="Выберите цвет"
-          value={localFilters.color}
-          onChange={(e) => handleFilterChange('color', e.target.value)}
+          selectedKeys={localFilters.color ? [localFilters.color] : []}
+          onSelectionChange={(keys) => {
+            const value = Array.from(keys)[0] as string;
+            handleFilterChange('color', value || '');
+          }}
           isLoading={product.filtersLoading}
-          isClearable
         >
           {product.colors.map((color) => (
-            <SelectItem key={color.name} value={color.name}>
+            <SelectItem key={color.name}>
               <div className="flex items-center gap-2">
                 {color.hexCode && (
                   <div 
@@ -183,13 +225,15 @@ const ProductFilters = observer(() => {
         <Select
           label="Тип одежды"
           placeholder="Выберите тип"
-          value={localFilters.clothingTypeId}
-          onChange={(e) => handleFilterChange('clothingTypeId', e.target.value)}
+          selectedKeys={localFilters.clothingTypeId ? [localFilters.clothingTypeId] : []}
+          onSelectionChange={(keys) => {
+            const value = Array.from(keys)[0] as string;
+            handleFilterChange('clothingTypeId', value || '');
+          }}
           isLoading={product.filtersLoading}
-          isClearable
         >
           {product.clothingTypes.map((type) => (
-            <SelectItem key={type.id} value={type.id.toString()}>
+            <SelectItem key={type.id.toString()}>
               {type.name}
             </SelectItem>
           ))}
@@ -206,14 +250,14 @@ const ProductFilters = observer(() => {
             <Input
               placeholder="От"
               type="number"
-              value={localFilters.minPrice.toString()}
+              value={localFilters.minPrice ? localFilters.minPrice.toString() : ''}
               onChange={(e) => handleFilterChange('minPrice', e.target.value)}
               min="0"
             />
             <Input
               placeholder="До"
               type="number"
-              value={localFilters.maxPrice.toString()}
+              value={localFilters.maxPrice ? localFilters.maxPrice.toString() : ''}
               onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
               min="0"
             />
@@ -225,15 +269,15 @@ const ProductFilters = observer(() => {
         {/* Кнопки действий */}
         <div className="flex gap-2">
           <Button
-            // onClick={applyFilters}
+            onClick={applyFilters}
             isLoading={product.loading}
-            className="flex-1 bg-white text-black"
+            className="flex-1 bg-white text-black font-bold"
           >
             Применить
           </Button>
           <Button
             variant="bordered"
-            // onClick={clearFilters}
+            onClick={clearFilters}
             disabled={product.loading}
           >
             Очистить
@@ -242,6 +286,9 @@ const ProductFilters = observer(() => {
       </CardBody>
     </Card>
   );
-});
+}
 
-export default ProductFilters;
+const ProductFiltersComponent = observer(ProductFilters);
+ProductFiltersComponent.displayName = 'ProductFilters';
+
+export default ProductFiltersComponent;

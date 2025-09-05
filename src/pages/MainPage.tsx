@@ -3,18 +3,20 @@ import ProductList from "@/components/ProductList";
 
 const MainPage = () => {
     return (
-        <div className="container mx-auto px-4 py-6">
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                {/* Боковая панель с фильтрами */}
-                <div className="lg:col-span-1">
-                    <div className="sticky top-6">
-                        <ProductFilters />
+        <div className="min-h-screen">
+            <div className="container mx-auto p-4">
+                <div className="flex flex-col lg:grid lg:grid-cols-4 gap-4">
+                    {/* Фильтры - на мобильных сверху, на десктопе сбоку */}
+                    <div className="lg:col-span-1 order-first">
+                        <div className="lg:sticky lg:top-6">
+                            <ProductFilters />
+                        </div>
                     </div>
-                </div>
-                
-                {/* Основной контент со списком товаров */}
-                <div className="lg:col-span-3">
-                    <ProductList />
+                    
+                    {/* Основной контент со списком товаров */}
+                    <div className="lg:col-span-3 order-last lg:order-none">
+                        <ProductList />
+                    </div>
                 </div>
             </div>
         </div>
