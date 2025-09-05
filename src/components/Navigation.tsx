@@ -94,7 +94,7 @@ const Navigation = observer(() => {
                 <Avatar
                   size="sm"
                   name={user.user?.email?.charAt(0).toUpperCase() || "U"}
-                  className="bg-primary text-white"
+                  className="bg-white text-black"
                 />
                 <span className="hidden md:block text-sm font-medium">
                   {user.user?.email}

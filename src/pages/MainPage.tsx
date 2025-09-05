@@ -1,20 +1,24 @@
-import { observer } from "mobx-react-lite";
+import ProductFilters from "@/components/ProductFilters";
+import ProductList from "@/components/ProductList";
 
-const MainPage = observer(() => {
+const MainPage = () => {
     return (
-        <div>
-            {/* <img src="https://i.pinimg.com/1200x/e1/83/74/e183745e034cffdb4d5b0d78df4e748c.jpg" alt="Logo" className="h-full w-full" /> */}
-            <div className="grid grid-cols-12">
-                <div className="col-span-12">
-                    <img src="https://i.pinimg.com/1200x/e1/83/74/e183745e034cffdb4d5b0d78df4e748c.jpg" alt="Logo" className="h-full w-full" />
+        <div className="container mx-auto px-4 py-6">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                {/* Боковая панель с фильтрами */}
+                <div className="lg:col-span-1">
+                    <div className="sticky top-6">
+                        <ProductFilters />
+                    </div>
                 </div>
-                <div className="col-span-12">
-                    <h1>GHETTO&CO</h1>
+                
+                {/* Основной контент со списком товаров */}
+                <div className="lg:col-span-3">
+                    <ProductList />
                 </div>
             </div>
-            
         </div>
     );
-});
+};
 
 export default MainPage;

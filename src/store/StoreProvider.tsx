@@ -1,9 +1,11 @@
 import { createContext, useState, useEffect, type ReactNode } from "react";
 import LoadingIndicator from "@/components/ui/LoadingIndicator";
 import UserStore from "@/store/UserStore";
+import ProductStore from "@/store/ProductStore";
 // Определяем интерфейс для нашего контекста
 export interface IStoreContext {
   user: UserStore;
+  product: ProductStore;
 }
 
 let storeInstance: IStoreContext | null = null;
@@ -27,18 +29,22 @@ interface StoreProviderProps {
 const StoreProvider = ({ children }: StoreProviderProps) => {
   const [stores, setStores] = useState<{
     user: UserStore;
+    product: ProductStore;
   } | null>(null);
 
   useEffect(() => {
     const loadStores = async () => {
       const [
         { default: UserStore },
+        { default: ProductStore },
       ] = await Promise.all([
         import("@/store/UserStore"),
+        import("@/store/ProductStore"),
       ]);
 
       setStores({
         user: new UserStore(),
+        product: new ProductStore(),
       });
     };
 
@@ -56,3 +62,4 @@ const StoreProvider = ({ children }: StoreProviderProps) => {
 };
 
 export default StoreProvider;
+
