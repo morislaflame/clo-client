@@ -12,21 +12,18 @@ import {
 import { Context, type IStoreContext } from "@/store/StoreProvider";
 import type { Product } from "@/types/types";
 
-const ProductCard = observer(({ product }: { product: Product }) => {
-  const { product: productStore } = useContext(Context) as IStoreContext;
+const ProductCard = observer(({ item }: { item: Product }) => {
+  const { product} = useContext(Context) as IStoreContext;
   
-  const currency = productStore.filters.currency || 'KZT';
-  const price = currency === 'KZT' ? product.priceKZT : product.priceUSD;
-  const currencySymbol = currency === 'KZT' ? '₸' : '$';
   
   // Получаем первое изображение
-  const mainImage = product.mediaFiles?.find(file => file.mimeType.includes('image'));
+  const mainImage = item.mediaFiles?.find(file => file.mimeType.includes('image'));
   
   // Получаем доступные размеры
-  const availableSizes = product.sizes?.map(size => size.name).join(', ') || '';
+  const availableSizes = item.sizes?.map(size => size.name).join(', ') || '';
   
   // Получаем доступные цвета
-  const availableColors = product.colors?.map(color => color.name).join(', ') || '';
+  const availableColors = item.colors?.map(color => color.name).join(', ') || '';
 
   return (
     <Card className="w-full h-full">
@@ -53,7 +50,7 @@ const ProductCard = observer(({ product }: { product: Product }) => {
         {mainImage ? (
           <Image
             src={mainImage.url}
-            alt={product.name}
+            alt={item.name}
             className="object-cover w-full h-full"
             classNames={{
               wrapper: "w-full h-full",
@@ -69,7 +66,7 @@ const ProductCard = observer(({ product }: { product: Product }) => {
       <CardBody className="px-3 py-3">
         <div className="space-y-2">
           <h4 className="font-bold text-large line-clamp-2">
-            {product.name}
+            {item.name}
           </h4>
           
           
@@ -94,14 +91,20 @@ const ProductCard = observer(({ product }: { product: Product }) => {
         <div className="flex justify-between items-center w-full">
           <div className="flex gap-2 items-center">
             <span className="text-base font-bold">
-              {price.toLocaleString()} {currencySymbol}
+                {product.currency === 'KZT' 
+                    ? `${item.priceKZT.toLocaleString()} ₸` 
+                    : `${item.priceUSD.toLocaleString()} $`
+                  }
             </span>
-            <span className="text-small text-default-400 flex items-center justify-center h-full font-bold"> | </span>
-            {currency === 'KZT' && product.priceUSD > 0 && (
-              <span className="text-small text-default-400">
-                ${product.priceUSD}
-              </span>
-            )}
+            <span className="text-small text-default-400 font-bold"> | </span>
+                <span className="text-small text-default-400">
+                  {product.currency === 'KZT' 
+                    ? `$${item.priceUSD}` 
+                    : `${item.priceKZT.toLocaleString()} ₸`
+                  }
+                  </span>
+                
+                
           </div>
         </div>
       </CardFooter>
@@ -172,7 +175,7 @@ const ProductList = observer(() => {
       {/* Сетка товаров */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {product.products.map((productItem) => (
-          <ProductCard key={productItem.id} product={productItem} />
+          <ProductCard key={productItem.id} item={productItem} />
         ))}
       </div>
 

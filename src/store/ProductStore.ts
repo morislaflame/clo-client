@@ -27,14 +27,13 @@ export default class ProductStore {
   limit = 20;
   
   // Фильтры
-  filters: ProductFilters = {
-    currency: 'KZT'
-  };
+  filters: ProductFilters = {};
   
   // Справочники
   sizes: Size[] = [];
   colors: Color[] = [];
   clothingTypes: ClothingType[] = [];
+  currency: 'KZT' | 'USD' = 'KZT';
   
   // Состояние загрузки
   loading = false;
@@ -76,6 +75,10 @@ export default class ProductStore {
     this.clothingTypes = clothingTypes;
   }
 
+  setCurrency(currency: 'KZT' | 'USD') {
+    this.currency = currency;
+  }
+
   setLoading(loading: boolean) {
     this.loading = loading;
   }
@@ -100,7 +103,6 @@ export default class ProductStore {
         page: filters?.page || this.currentPage,
         limit: this.limit
       };
-
       const response: ProductResponse = await fetchProducts(searchFilters);
       
       runInAction(() => {
@@ -182,13 +184,18 @@ export default class ProductStore {
   }
 
   // Фильтрация
-  updateFilter(key: keyof ProductFilters, value: any) {
+  updateFilter(key: keyof ProductFilters, value: string | number | boolean | undefined) {
     this.setFilters({ [key]: value });
   }
 
   clearFilters() {
     this.setFilters({
-      currency: 'KZT',
+      gender: undefined,
+      size: undefined,
+      color: undefined,
+      clothingTypeId: undefined,
+      minPrice: undefined,
+      maxPrice: undefined,
       page: 1
     });
   }
@@ -223,7 +230,7 @@ export default class ProductStore {
   }
 
   get isFilterApplied() {
-    const { currency, page, limit, ...activeFilters } = this.filters;
+    const { ...activeFilters } = this.filters;
     return Object.values(activeFilters).some(value => 
       value !== undefined && value !== null && value !== ''
     );

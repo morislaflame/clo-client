@@ -9,7 +9,6 @@ export interface ProductFilters {
   collectionId?: number;
   minPrice?: number;
   maxPrice?: number;
-  currency?: 'KZT' | 'USD';
   page?: number;
   limit?: number;
 }

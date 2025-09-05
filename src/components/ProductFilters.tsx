@@ -8,7 +8,6 @@ import {
   SelectItem,
   Input,
   Button,
-  Chip,
   Divider,
   ButtonGroup,
 } from "@heroui/react";
@@ -30,8 +29,12 @@ function ProductFilters() {
     clothingTypeId: product.filters.clothingTypeId || '',
     minPrice: product.filters.minPrice || '',
     maxPrice: product.filters.maxPrice || '',
-    currency: product.filters.currency || 'KZT',
   });
+
+  // Отдельное состояние для валюты (только для отображения)
+  const [selectedCurrency, setSelectedCurrency] = useState<'KZT' | 'USD'>(
+    product.currency || 'KZT'
+  );
 
   // Загружаем справочники при монтировании
   useEffect(() => {
@@ -47,44 +50,48 @@ function ProductFilters() {
       clothingTypeId: product.filters.clothingTypeId || '',
       minPrice: product.filters.minPrice || '',
       maxPrice: product.filters.maxPrice || '',
-      currency: product.filters.currency || 'KZT',
     });
   }, [product.filters]);
 
-  const handleFilterChange = (key: string, value: string) => {
-    setLocalFilters(prev => ({
-      ...prev,
-      [key]: value === '' ? undefined : value
-    }));
-  };
+  // Обновляем состояние валюты при изменении в сторе
+  useEffect(() => {
+    setSelectedCurrency(product.currency);
+  }, [product.currency]);
 
-  const applyFilters = () => {
-    // Конвертируем строки в числа для числовых полей
-    const processedFilters = {
-      ...localFilters,
-      clothingTypeId: localFilters.clothingTypeId ? Number(localFilters.clothingTypeId) : undefined,
-      minPrice: localFilters.minPrice ? Number(localFilters.minPrice) : undefined,
-      maxPrice: localFilters.maxPrice ? Number(localFilters.maxPrice) : undefined,
-    };
-
-    product.setFilters(processedFilters as Partial<ProductFilters>);
-    product.applyFilters();
+  // Функция для обработки изменений фильтров
+  const handleFilterChange = (key: keyof ProductFilters, value: string | number) => {
+    // Преобразуем строковые значения в числа для цены и clothingTypeId
+    let processedValue: string | number = value;
+    if ((key === 'minPrice' || key === 'maxPrice') && value !== '') {
+      processedValue = Number(value);
+    } else if (key === 'clothingTypeId' && value !== '') {
+      processedValue = Number(value);
+    }
     
-    // Закрываем фильтры на мобильных после применения
-    setIsExpanded(false);
+    const newFilters = { ...localFilters, [key]: processedValue };
+    setLocalFilters(newFilters);
+    
+    // Обновляем фильтры в сторе и применяем их
+    product.updateFilter(key, processedValue);
+    product.applyFilters();
   };
+
 
   const clearFilters = () => {
-    product.clearFilters();
-    setLocalFilters({
+    const clearedFilters = {
       gender: '',
       size: '',
       color: '',
       clothingTypeId: '',
       minPrice: '',
       maxPrice: '',
-      currency: 'KZT',
-    });
+    };
+    
+    setLocalFilters(clearedFilters);
+    
+    // Очищаем фильтры в сторе и применяем их
+    product.clearFilters();
+    product.applyFilters();
   };
 
   const currencyOptions = [
@@ -103,11 +110,6 @@ function ProductFilters() {
         <div className="flex justify-between items-center w-full">
           <div className="flex items-center gap-3">
             <h3 className="text-lg font-semibold">Фильтры</h3>
-            {product.isFilterApplied && (
-              <Chip color="primary" size="sm" variant="flat">
-                Применены
-              </Chip>
-            )}
           </div>
           
           {/* Валюта и кнопка разворачивания на мобильных */}
@@ -116,9 +118,9 @@ function ProductFilters() {
               {currencyOptions.map((option) => (
                 <Button
                   key={option.value}
-                  variant={localFilters.currency === option.value ? "solid" : "bordered"}
+                  variant={selectedCurrency === option.value ? "solid" : "bordered"}
                   color="default"
-                  onClick={() => handleFilterChange('currency', option.value)}
+                  onClick={() => product.setCurrency(option.value as 'KZT' | 'USD')}
                   size="sm"
                 >
                   {option.value}
@@ -147,9 +149,9 @@ function ProductFilters() {
             {currencyOptions.map((option) => (
               <Button
                 key={option.value}
-                variant={localFilters.currency === option.value ? "solid" : "bordered"}
+                variant={selectedCurrency === option.value ? "solid" : "bordered"}
                 color="default"
-                onClick={() => handleFilterChange('currency', option.value)}
+                onClick={() => product.setCurrency(option.value as 'KZT' | 'USD')}
                 className="flex-1"
               >
                 {option.label}
@@ -244,7 +246,7 @@ function ProductFilters() {
         {/* Цена */}
         <div className="space-y-2">
           <label className="text-sm font-medium mb-2 block">
-            Цена ({localFilters.currency === 'KZT' ? '₸' : '$'})
+            Цена ({selectedCurrency === 'KZT' ? '₸' : '$'})
           </label>
           <div className="flex gap-2">
             <Input
@@ -266,21 +268,15 @@ function ProductFilters() {
 
         <Divider />
 
-        {/* Кнопки действий */}
-        <div className="flex gap-2">
-          <Button
-            onClick={applyFilters}
-            isLoading={product.loading}
-            className="flex-1 bg-white text-black font-bold"
-          >
-            Применить
-          </Button>
+        {/* Кнопка сброса */}
+        <div className="flex justify-center">
           <Button
             variant="bordered"
             onClick={clearFilters}
-            disabled={product.loading}
+            disabled={product.loading || !product.isFilterApplied}
+            style={{ backgroundColor: 'white', color: 'black', width: '100%' }}
           >
-            Очистить
+            Сбросить фильтры
           </Button>
         </div>
       </CardBody>
