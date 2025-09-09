@@ -57,3 +57,47 @@ export const ChevronDownIcon = ({ className }: { className?: string }) => (
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
   </svg>
 );
+
+export const ShoppingCartIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    aria-hidden="true"
+    fill="none"
+    focusable="false"
+    height="1em"
+    role="presentation"
+    viewBox="0 0 24 24"
+    width="1em"
+    {...props}
+  >
+    <path
+      d="M7.4 2.8c.2-.4.6-.6 1-.6h7.2c.4 0 .8.2 1 .6l1.2 2.4c.1.2.2.4.2.6v11.2c0 1.2-1 2.2-2.2 2.2H8.2c-1.2 0-2.2-1-2.2-2.2V5.8c0-.2.1-.4.2-.6L7.4 2.8z"
+      fill="currentColor"
+    />
+    <path
+      d="M9 8.5c0-.3.2-.5.5-.5s.5.2.5.5v4c0 .3-.2.5-.5.5s-.5-.2-.5-.5v-4zM14 8.5c0-.3.2-.5.5-.5s.5.2.5.5v4c0 .3-.2.5-.5.5s-.5-.2-.5-.5v-4z"
+      fill="currentColor"
+    />
+  </svg>
+);
+
+export const TrashIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    aria-hidden="true"
+    fill="none"
+    focusable="false"
+    height="1em"
+    role="presentation"
+    viewBox="0 0 24 24"
+    width="1em"
+    {...props}
+  >
+    <path
+      d="M21 6.5h-4V5.5c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v1H3c-.6 0-1 .4-1 1s.4 1 1 1h1v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-10h1c.6 0 1-.4 1-1s-.4-1-1-1zM9 5.5h6v1H9v-1zm8 13H7v-10h10v10z"
+      fill="currentColor"
+    />
+    <path
+      d="M9 9.5h2v6H9v-6zm4 0h2v6h-2v-6z"
+      fill="currentColor"
+    />
+  </svg>
+);

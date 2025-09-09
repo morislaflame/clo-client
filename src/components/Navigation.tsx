@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import {
@@ -16,9 +16,11 @@ import {
   DropdownMenu,
   DropdownItem,
   Avatar,
+  Badge,
 } from "@heroui/react";
 import { Context, type IStoreContext } from "@/store/StoreProvider";
-import { LOGIN_ROUTE, REGISTRATION_ROUTE, MAIN_ROUTE } from "@/utils/consts";
+import { LOGIN_ROUTE, REGISTRATION_ROUTE, MAIN_ROUTE, BASKET_ROUTE } from "@/utils/consts";
+import { ShoppingCartIcon } from "@/components/ui/Icons";
 
 export const AcmeLogo = () => {
   return (
@@ -34,13 +36,31 @@ export const AcmeLogo = () => {
 };
 
 const Navigation = observer(() => {
-  const { user } = useContext(Context) as IStoreContext;
+  const { user, basket } = useContext(Context) as IStoreContext;
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+
+  // Загружаем количество товаров в корзине при авторизации
+  useEffect(() => {
+    if (user.isAuth) {
+      basket.loadBasketCount().catch(console.error);
+    } else {
+      // Сбрасываем счетчик при выходе
+      basket.setSummary(0, 0, 0);
+    }
+  }, [user.isAuth, basket]);
 
   const handleLogout = async () => {
     await user.logout();
     navigate(MAIN_ROUTE);
+  };
+
+  const handleBasketClick = () => {
+    if (user.isAuth) {
+      navigate(BASKET_ROUTE);
+    } else {
+      navigate(LOGIN_ROUTE);
+    }
   };
 
   const publicMenuItems = [
@@ -87,6 +107,26 @@ const Navigation = observer(() => {
       </NavbarContent>
 
       <NavbarContent justify="end">
+        {/* Кнопка корзины */}
+        <NavbarItem>
+          <Button
+            isIconOnly
+            variant="light"
+            className="relative"
+            onClick={handleBasketClick}
+            aria-label="Корзина"
+          >
+            <Badge 
+              content={basket.totalCount} 
+              color="danger" 
+              size="sm"
+              isInvisible={basket.totalCount === 0}
+            >
+              <ShoppingCartIcon className="w-6 h-6" />
+            </Badge>
+          </Button>
+        </NavbarItem>
+
         {user.isAuth ? (
           <Dropdown placement="bottom-end">
             <DropdownTrigger>

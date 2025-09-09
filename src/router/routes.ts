@@ -3,7 +3,8 @@ import type { ComponentType } from 'react';
 import MainPage from '@/pages/MainPage';
 import AuthPage from '@/pages/AuthPage';
 import ProductPage from '@/pages/ProductPage';
-import { MAIN_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE } from '@/utils/consts';
+import BasketPage from '@/pages/BasketPage';
+import { MAIN_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, BASKET_ROUTE } from '@/utils/consts';
 
 interface Route {
   path: string;
@@ -18,5 +19,5 @@ export const publicRoutes: Route[] = [
 ];
 
 export const privateRoutes: Route[] = [
-  // Для авторизованных пользователей - позже добавим личный кабинет и т.д.
+  { path: BASKET_ROUTE, Component: BasketPage },
 ];

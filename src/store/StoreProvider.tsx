@@ -2,10 +2,12 @@ import { createContext, useState, useEffect, type ReactNode } from "react";
 import LoadingIndicator from "@/components/ui/LoadingIndicator";
 import UserStore from "@/store/UserStore";
 import ProductStore from "@/store/ProductStore";
+import BasketStore from "@/store/BasketStore";
 // Определяем интерфейс для нашего контекста
 export interface IStoreContext {
   user: UserStore;
   product: ProductStore;
+  basket: BasketStore;
 }
 
 let storeInstance: IStoreContext | null = null;
@@ -30,6 +32,7 @@ const StoreProvider = ({ children }: StoreProviderProps) => {
   const [stores, setStores] = useState<{
     user: UserStore;
     product: ProductStore;
+    basket: BasketStore;
   } | null>(null);
 
   useEffect(() => {
@@ -37,14 +40,17 @@ const StoreProvider = ({ children }: StoreProviderProps) => {
       const [
         { default: UserStore },
         { default: ProductStore },
+        { default: BasketStore },
       ] = await Promise.all([
         import("@/store/UserStore"),
         import("@/store/ProductStore"),
+        import("@/store/BasketStore"),
       ]);
 
       setStores({
         user: new UserStore(),
         product: new ProductStore(),
+        basket: new BasketStore(),
       });
     };
 
