@@ -1,4 +1,5 @@
 import { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import {
   Card,
@@ -14,7 +15,7 @@ import type { Product } from "@/types/types";
 
 const ProductCard = observer(({ item }: { item: Product }) => {
   const { product} = useContext(Context) as IStoreContext;
-  
+  const navigate = useNavigate();
   
   // Получаем первое изображение
   const mainImage = item.mediaFiles?.find(file => file.mimeType.includes('image'));
@@ -25,8 +26,16 @@ const ProductCard = observer(({ item }: { item: Product }) => {
   // Получаем доступные цвета
   const availableColors = item.colors?.map(color => color.name).join(', ') || '';
 
+  const handleCardClick = () => {
+    navigate(`/product/${item.id}`);
+  };
+
   return (
-    <Card className="w-full h-full">
+    <Card 
+      className="w-full h-full cursor-pointer hover:shadow-lg transition-shadow"
+      isPressable
+      onPress={handleCardClick}
+    >
       {/* <CardHeader className="p-3">
         <div className="flex justify-between items-start w-full">
           <Chip 
