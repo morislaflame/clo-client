@@ -11,6 +11,7 @@ import {
   checkProductInBasket, 
   addToBasket, 
   removeFromBasket, 
+  updateBasketItemQuantity,
   clearBasket 
 } from "../http/basketAPI";
 
@@ -35,6 +36,7 @@ export default class BasketStore {
   loading = false;
   adding = false;
   removing = false;
+  updating = false;
   error: string | null = null;
   
   // Кэш проверок товаров в корзине
@@ -65,6 +67,10 @@ export default class BasketStore {
 
   setRemoving(removing: boolean) {
     this.removing = removing;
+  }
+
+  setUpdating(updating: boolean) {
+    this.updating = updating;
   }
 
   setError(error: string | null) {
@@ -167,11 +173,30 @@ export default class BasketStore {
       const response = await addToBasket(productId, selectedColorId, selectedSizeId);
       
       runInAction(() => {
-        // Добавляем товар в корзину
-        this.items.push(response.item);
-        this.totalCount++;
-        this.totalKZT += response.item.product.priceKZT;
-        this.totalUSD += response.item.product.priceUSD;
+        // Проверяем, есть ли уже такой товар в корзине
+        const existingItemIndex = this.items.findIndex(item => 
+          item.productId === productId &&
+          item.selectedColorId === selectedColorId &&
+          item.selectedSizeId === selectedSizeId
+        );
+
+        if (existingItemIndex !== -1) {
+          // Если товар уже есть, обновляем его количество
+          const existingItem = this.items[existingItemIndex];
+          const oldQuantity = existingItem.quantity;
+          const newQuantity = response.item.quantity;
+          
+          this.items[existingItemIndex] = response.item;
+          this.totalCount += (newQuantity - oldQuantity);
+          this.totalKZT += response.item.product.priceKZT * (newQuantity - oldQuantity);
+          this.totalUSD += response.item.product.priceUSD * (newQuantity - oldQuantity);
+        } else {
+          // Если товара нет, добавляем новый
+          this.items.push(response.item);
+          this.totalCount += response.item.quantity;
+          this.totalKZT += response.item.product.priceKZT * response.item.quantity;
+          this.totalUSD += response.item.product.priceUSD * response.item.quantity;
+        }
         
         // Обновляем кэш с учетом характеристик
         const cacheKey = `${productId}-${selectedColorId || 'no-color'}-${selectedSizeId || 'no-size'}`;
@@ -224,9 +249,9 @@ export default class BasketStore {
         if (itemIndex !== -1) {
           const item = this.items[itemIndex];
           this.items.splice(itemIndex, 1);
-          this.totalCount--;
-          this.totalKZT -= item.product.priceKZT;
-          this.totalUSD -= item.product.priceUSD;
+          this.totalCount -= item.quantity;
+          this.totalKZT -= item.product.priceKZT * item.quantity;
+          this.totalUSD -= item.product.priceUSD * item.quantity;
           
           // Обновляем кэш с учетом характеристик
           const cacheKey = `${productId}-${selectedColorId || 'no-color'}-${selectedSizeId || 'no-size'}`;
@@ -246,6 +271,51 @@ export default class BasketStore {
       runInAction(() => {
         this.setError(errorMessage);
         this.setRemoving(false);
+      });
+      
+      return { 
+        success: false, 
+        error: errorMessage 
+      };
+    }
+  }
+
+  async updateItemQuantity(basketItemId: number, quantity: number) {
+    try {
+      this.setUpdating(true);
+      this.setError(null);
+      
+      const response = await updateBasketItemQuantity(basketItemId, quantity);
+      
+      runInAction(() => {
+        // Находим и обновляем элемент корзины
+        const itemIndex = this.items.findIndex(item => item.id === basketItemId);
+        if (itemIndex !== -1) {
+          const oldItem = this.items[itemIndex];
+          const newItem = response.item;
+          
+          // Обновляем элемент
+          this.items[itemIndex] = newItem;
+          
+          // Пересчитываем общие суммы
+          this.totalCount += (newItem.quantity - oldItem.quantity);
+          this.totalKZT += newItem.product.priceKZT * (newItem.quantity - oldItem.quantity);
+          this.totalUSD += newItem.product.priceUSD * (newItem.quantity - oldItem.quantity);
+        }
+        
+        this.setUpdating(false);
+      });
+
+      return { success: true, message: response.message, item: response.item };
+    } catch (error: unknown) {
+      console.error("Error updating item quantity:", error);
+      
+      const err = error as ApiError;
+      const errorMessage = err.response?.data?.message || 'Ошибка обновления количества';
+      
+      runInAction(() => {
+        this.setError(errorMessage);
+        this.setUpdating(false);
       });
       
       return { 
@@ -312,6 +382,6 @@ export default class BasketStore {
   }
 
   get isLoading() {
-    return this.loading || this.adding || this.removing;
+    return this.loading || this.adding || this.removing || this.updating;
   }
 }

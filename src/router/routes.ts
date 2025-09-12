@@ -4,7 +4,8 @@ import MainPage from '@/pages/MainPage';
 import AuthPage from '@/pages/AuthPage';
 import ProductPage from '@/pages/ProductPage';
 import BasketPage from '@/pages/BasketPage';
-import { MAIN_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, BASKET_ROUTE } from '@/utils/consts';
+import CheckoutPage from '@/pages/CheckoutPage';
+import { MAIN_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, BASKET_ROUTE, CHECKOUT_ROUTE } from '@/utils/consts';
 
 interface Route {
   path: string;
@@ -20,4 +21,5 @@ export const publicRoutes: Route[] = [
 
 export const privateRoutes: Route[] = [
   { path: BASKET_ROUTE, Component: BasketPage },
+  { path: CHECKOUT_ROUTE, Component: CheckoutPage },
 ];

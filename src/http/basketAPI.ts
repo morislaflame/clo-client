@@ -7,6 +7,7 @@ export interface BasketItem {
   productId: number;
   selectedColorId?: number;
   selectedSizeId?: number;
+  quantity: number;
   createdAt: string;
   updatedAt: string;
   product: Product;
@@ -74,6 +75,15 @@ export const addToBasket = async (
 // Удаление товара из корзины
 export const removeFromBasket = async (basketItemId: number): Promise<{ message: string }> => {
   const { data } = await $authHost.delete(`api/basket/remove/${basketItemId}`);
+  return data;
+};
+
+// Обновление количества товара в корзине
+export const updateBasketItemQuantity = async (
+  basketItemId: number, 
+  quantity: number
+): Promise<{ message: string; item: BasketItem }> => {
+  const { data } = await $authHost.patch(`api/basket/update-quantity/${basketItemId}`, { quantity });
   return data;
 };
 

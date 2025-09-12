@@ -18,7 +18,7 @@ import {
 } from "@heroui/react";
 import { Context, type IStoreContext } from "@/store/StoreProvider";
 import { TrashIcon } from "@/components/ui/Icons";
-import { MAIN_ROUTE } from "@/utils/consts";
+import { MAIN_ROUTE, CHECKOUT_ROUTE } from "@/utils/consts";
 
 const BasketPage = observer(() => {
   const { basket, user, product } = useContext(Context) as IStoreContext;
@@ -60,8 +60,7 @@ const BasketPage = observer(() => {
   };
 
   const handleCheckout = () => {
-    // TODO: Реализовать оформление заказа
-    console.log("Переход к оформлению заказа");
+    navigate(CHECKOUT_ROUTE);
   };
 
   const getStatusColor = (status: string) => {
