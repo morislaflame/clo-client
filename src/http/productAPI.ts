@@ -36,8 +36,8 @@ export interface Product {
   clothingType?: ClothingType;
   collection?: Collection;
   mediaFiles?: MediaFile[];
-  sizes?: Size[];
-  colors?: Color[];
+  sizes: Size[];
+  colors: Color[];
 }
 
 export interface ClothingType {

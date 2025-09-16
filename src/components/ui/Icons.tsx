@@ -1,103 +1,21 @@
+import { Eye, EyeOff, ChevronDown, ShoppingCart, Trash2 } from 'lucide-react';
+
 export const EyeFilledIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    aria-hidden="true"
-    fill="none"
-    focusable="false"
-    height="1em"
-    role="presentation"
-    viewBox="0 0 24 24"
-    width="1em"
-    {...props}
-  >
-    <path
-      d="M21.25 9.14969C18.94 5.51969 15.56 3.42969 12 3.42969C8.44 3.42969 5.06 5.51969 2.75 9.14969C1.75 10.7197 1.75 13.2697 2.75 14.8397C5.06 18.4797 8.44 20.5597 12 20.5597C15.56 20.5597 18.94 18.4797 21.25 14.8397C22.25 13.2797 22.25 10.7197 21.25 9.14969ZM12 16.0397C9.76 16.0397 7.96 14.2297 7.96 11.9997C7.96 9.76969 9.76 7.95969 12 7.95969C14.24 7.95969 16.04 9.76969 16.04 11.9997C16.04 14.2297 14.24 16.0397 12 16.0397Z"
-      fill="currentColor"
-    />
-    <path
-      d="M11.9984 9.14062C10.4284 9.14062 9.14844 10.4206 9.14844 12.0006C9.14844 13.5706 10.4284 14.8506 11.9984 14.8506C13.5684 14.8506 14.8584 13.5706 14.8584 12.0006C14.8584 10.4306 13.5684 9.14062 11.9984 9.14062Z"
-      fill="currentColor"
-    />
-  </svg>
+  <Eye {...props} />
 );
 
 export const EyeSlashFilledIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    aria-hidden="true"
-    fill="none"
-    focusable="false"
-    height="1em"
-    role="presentation"
-    viewBox="0 0 24 24"
-    width="1em"
-    {...props}
-  >
-    <path
-      d="m19.25 9.14969c-1.83-2.75969-4.25-4.42969-7.25-4.42969s-5.42 1.67-7.25 4.42969c-.77 1.18-.77 2.85 0 4.04 1.83 2.73 4.25 4.41 7.25 4.41s5.42-1.68 7.25-4.41c.77-1.19.77-2.86 0-4.04z"
-      fill="currentColor"
-    />
-    <path
-      d="m12 7.95969c-.39 0-.78.06-1.16.16l1.58 1.58c1.04.16 1.87.99 2.03 2.03l1.58 1.58c.1-.38.16-.77.16-1.16 0-2.24-1.8-4.04-4.04-4.04z"
-      fill="currentColor"
-    />
-    <path
-      d="m5.47 2.53c-.3-.3-.77-.3-1.06 0s-.3.77 0 1.06l1.59 1.59c-1.36 1.23-2.49 2.83-3.25 4.68-.77 1.18-.77 2.85 0 4.04 1.83 2.73 4.25 4.41 7.25 4.41 1.67 0 3.25-.47 4.66-1.28l1.59 1.59c.15.15.35.22.53.22s.38-.07.53-.22c.3-.3.3-.77 0-1.06zm-1.47 9.63969c-.77-1.18-.77-2.85 0-4.04.73-1.77 1.83-3.33 3.15-4.55l1.46 1.46c-.95.81-1.56 2-1.56 3.33 0 .39.06.78.16 1.16l1.58 1.58c-1.04-.16-1.87-.99-2.03-2.03l-1.58-1.58c-.1.38-.16.77-.16 1.16 0 2.24 1.8 4.04 4.04 4.04.39 0 .78-.06 1.16-.16l1.69 1.69c-1.32.61-2.77.94-4.28.94-3 0-5.42-1.68-7.25-4.41z"
-      fill="currentColor"
-    />
-  </svg>
+  <EyeOff {...props} />
 );
 
 export const ChevronDownIcon = ({ className }: { className?: string }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-  </svg>
+  <ChevronDown className={className} />
 );
 
 export const ShoppingCartIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    aria-hidden="true"
-    fill="none"
-    focusable="false"
-    height="1em"
-    role="presentation"
-    viewBox="0 0 24 24"
-    width="1em"
-    {...props}
-  >
-    <path
-      d="M7.4 2.8c.2-.4.6-.6 1-.6h7.2c.4 0 .8.2 1 .6l1.2 2.4c.1.2.2.4.2.6v11.2c0 1.2-1 2.2-2.2 2.2H8.2c-1.2 0-2.2-1-2.2-2.2V5.8c0-.2.1-.4.2-.6L7.4 2.8z"
-      fill="currentColor"
-    />
-    <path
-      d="M9 8.5c0-.3.2-.5.5-.5s.5.2.5.5v4c0 .3-.2.5-.5.5s-.5-.2-.5-.5v-4zM14 8.5c0-.3.2-.5.5-.5s.5.2.5.5v4c0 .3-.2.5-.5.5s-.5-.2-.5-.5v-4z"
-      fill="currentColor"
-    />
-  </svg>
+  <ShoppingCart {...props} />
 );
 
 export const TrashIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    aria-hidden="true"
-    fill="none"
-    focusable="false"
-    height="1em"
-    role="presentation"
-    viewBox="0 0 24 24"
-    width="1em"
-    {...props}
-  >
-    <path
-      d="M21 6.5h-4V5.5c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v1H3c-.6 0-1 .4-1 1s.4 1 1 1h1v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-10h1c.6 0 1-.4 1-1s-.4-1-1-1zM9 5.5h6v1H9v-1zm8 13H7v-10h10v10z"
-      fill="currentColor"
-    />
-    <path
-      d="M9 9.5h2v6H9v-6zm4 0h2v6h-2v-6z"
-      fill="currentColor"
-    />
-  </svg>
+  <Trash2 {...props} />
 );
