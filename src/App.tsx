@@ -5,6 +5,7 @@ import { Context, type IStoreContext } from "./store/StoreProvider";
 import LoadingIndicator from "./components/ui/LoadingIndicator";
 import ErrorPage from "@/pages/ErrorPage";
 import Navigation from "./components/Navigation";
+import Footer from "./components/Footer";
 
 const AppRouter = lazy(() => import("@/router/AppRouter"));
 
@@ -52,15 +53,19 @@ const App = observer(() => {
 
   return (
       <BrowserRouter>
-      <Suspense
-        fallback={
-          <LoadingIndicator />
-        }
-      >
+      <div className="min-h-screen flex flex-col">
         <Navigation />
-        <AppRouter />
-      </Suspense>
-
+        <main className="flex-grow">
+          <Suspense
+            fallback={
+              <LoadingIndicator />
+            }
+          >
+            <AppRouter />
+          </Suspense>
+        </main>
+        <Footer />
+      </div>
     </BrowserRouter>
   );
 });

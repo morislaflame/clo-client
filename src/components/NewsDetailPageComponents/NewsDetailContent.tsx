@@ -11,16 +11,14 @@ const NewsDetailContent: React.FC<NewsDetailContentProps> = ({ news }) => {
       {/* Описание */}
       {news.description && (
         <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-3">Описание</h2>
-          <p className="text-default-600 leading-relaxed">
+          <h2 className="text-xl font-semibold mb-3">
             {news.description}
-          </p>
+          </h2>
         </div>
       )}
 
       {/* Основной контент */}
       <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-3">Содержание</h2>
         <div className="prose max-w-none">
           <div 
             className="text-default-600 leading-relaxed"

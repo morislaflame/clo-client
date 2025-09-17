@@ -7,7 +7,7 @@ interface NewsHeaderProps {
 
 const NewsHeader: React.FC<NewsHeaderProps> = ({ onBackClick }) => {
   return (
-    <div className="mb-6 flex items-center justify-between">
+    <div className="mb-6 flex items-center justify-between ">
       <Button
         variant="light"
         onClick={onBackClick}

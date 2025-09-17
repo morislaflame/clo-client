@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { Spinner } from "@heroui/react";
@@ -6,7 +6,6 @@ import { Context } from "@/store/StoreProvider";
 import type { IStoreContext } from "@/store/StoreProvider";
 import {
   NewsHeader,
-  NewsFilters,
   NewsList,
   NewsPagination,
   NewsEmpty
@@ -16,15 +15,12 @@ const NewsPage = observer(() => {
   const { news, newsType } = useContext(Context) as IStoreContext;
   const navigate = useNavigate();
   
-  // Состояния для фильтрации
-  const [selectedNewsType, setSelectedNewsType] = useState<string>("");
-  const [selectedStatus, setSelectedStatus] = useState<string>("PUBLISHED");
 
   useEffect(() => {
     // Загружаем новости и типы новостей при открытии страницы
-    news.fetchNews({ status: selectedStatus, newsTypeId: selectedNewsType ? Number(selectedNewsType) : undefined });
+    news.fetchNews({ status: 'PUBLISHED', newsTypeId: undefined });
     newsType.fetchNewsTypesWithCounts();
-  }, [news, newsType, selectedStatus, selectedNewsType]);
+  }, [news, newsType]);
 
   const handleNewsClick = (newsId: number) => {
     navigate(`/news/${newsId}`);
@@ -47,7 +43,7 @@ const NewsPage = observer(() => {
 
   return (
     <div className="min-h-screen">
-      <div className="container mx-auto p-4">
+      <div className="container mx-auto p-4 relative">
         <NewsHeader onBackClick={handleBackClick} />
 {/* 
         <NewsFilters
@@ -71,8 +67,8 @@ const NewsPage = observer(() => {
           currentPage={news.currentPage}
           onPageChange={(page) => {
             news.fetchNews({ 
-              status: selectedStatus, 
-              newsTypeId: selectedNewsType ? Number(selectedNewsType) : undefined,
+              status: 'PUBLISHED', 
+              newsTypeId: undefined,
               page 
             });
           }}
