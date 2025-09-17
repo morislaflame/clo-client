@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import {
   Navbar,
@@ -19,7 +19,7 @@ import {
   Badge,
 } from "@heroui/react";
 import { Context, type IStoreContext } from "@/store/StoreProvider";
-import { LOGIN_ROUTE, REGISTRATION_ROUTE, MAIN_ROUTE, BASKET_ROUTE } from "@/utils/consts";
+import { LOGIN_ROUTE, REGISTRATION_ROUTE, MAIN_ROUTE, BASKET_ROUTE, NEWS_ROUTE } from "@/utils/consts";
 import { ShoppingCartIcon } from "@/components/ui/Icons";
 
 export const AcmeLogo = () => {
@@ -64,8 +64,8 @@ const Navigation = observer(() => {
   };
 
   const publicMenuItems = [
-    { name: "Коллекции", href: "#" },
-    { name: "Магазин", href: "#" },
+    { name: "Коллекции", href: NEWS_ROUTE },
+    { name: "Магазин", href: MAIN_ROUTE },
     { name: "О нас", href: "#" },
   ];
 
@@ -96,8 +96,9 @@ const Navigation = observer(() => {
         {publicMenuItems.map((item) => (
           <NavbarItem key={item.name}>
             <Link 
+              as={RouterLink}
               color="foreground" 
-              href={item.href}
+              to={item.href}
               className="hover:text-primary transition-colors"
             >
               {item.name}
@@ -162,8 +163,9 @@ const Navigation = observer(() => {
           <>
             <NavbarItem className="hidden lg:flex">
               <Link 
+                as={RouterLink}
                 className="text-default-600 hover:text-primary transition-colors cursor-pointer" 
-                onClick={() => navigate(LOGIN_ROUTE)}
+                to={LOGIN_ROUTE}
               >
                 Вход
               </Link>
@@ -186,9 +188,10 @@ const Navigation = observer(() => {
         {publicMenuItems.map((item) => (
           <NavbarMenuItem key={item.name}>
             <Link
+              as={RouterLink}
               className="w-full"
               color="foreground"
-              href={item.href}
+              to={item.href}
               size="lg"
             >
               {item.name}

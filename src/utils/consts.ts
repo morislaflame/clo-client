@@ -4,3 +4,6 @@ export const REGISTRATION_ROUTE = '/registration';
 export const USER_ACCOUNT_ROUTE = '/user-account';
 export const BASKET_ROUTE = '/basket';
 export const CHECKOUT_ROUTE = '/checkout';
+export const COLLECTIONS_ROUTE = '/collections';
+export const NEWS_ROUTE = '/news';
+export const NEWS_DETAIL_ROUTE = '/news/:id';
