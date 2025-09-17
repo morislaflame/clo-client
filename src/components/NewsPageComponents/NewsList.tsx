@@ -46,7 +46,6 @@ const NewsList: React.FC<NewsListProps> = ({ news, onNewsClick }) => {
           onPress={() => onNewsClick(newsItem.id)}
         >
           <CardBody className="p-0">
-            {/* Изображение новости */}
             {newsItem.mediaFiles && newsItem.mediaFiles.length > 0 ? (
               <Image
                 src={newsItem.mediaFiles[0].url}

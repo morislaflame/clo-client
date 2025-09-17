@@ -55,7 +55,7 @@ const ProductCard = observer(({ item }: { item: Product }) => {
         </div>
       </CardHeader> */}
 
-      <div className="relative w-full h-48 overflow-hidden flex items-center justify-center bg-white">
+      <div className="relative w-full h-78 overflow-hidden flex items-center justify-center bg-white">
         {mainImage ? (
           <Image
             src={mainImage.url}
@@ -182,7 +182,7 @@ const ProductList = observer(() => {
       </div>
 
       {/* Сетка товаров */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
         {product.products.map((productItem) => (
           <ProductCard key={productItem.id} item={productItem} />
         ))}

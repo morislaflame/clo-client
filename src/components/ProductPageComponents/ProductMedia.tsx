@@ -27,7 +27,7 @@ const ProductMedia: React.FC<ProductMediaProps> = ({
   if (mediaItems.length === 0) {
     return (
       <div className="order-1 lg:order-1">
-        <Card className="w-full h-96">
+        <Card className="w-full h-[70vh]">
           <CardBody className="flex items-center justify-center">
             <div className="text-center text-gray-400">
               <p>Нет изображений</p>
@@ -45,7 +45,7 @@ const ProductMedia: React.FC<ProductMediaProps> = ({
           <CarouselContent>
             {mediaItems.map((media, mediaIndex) => (
               <CarouselItem key={media.id}>
-                <Card className="w-full h-96">
+                <Card className="w-full h-[70vh]">
                   <CardBody className="p-0 relative overflow-hidden flex items-center justify-center bg-white">
                     {media.mimeType.includes('video') ? (
                       <video
@@ -87,27 +87,29 @@ const ProductMedia: React.FC<ProductMediaProps> = ({
                 type="button"
                 aria-label={`Перейти к слайду ${mediaIndex + 1}`}
                 onClick={() => setIndex(mediaIndex)}
-                className={`h-16 w-16 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
+                className={`h-16 w-fit rounded-large overflow-hidden border-2 transition-all duration-200 justify-center items-center flex ${
                   index === mediaIndex 
-                    ? 'border-gray-200 hover:border-gray-300' 
+                    ? 'border-gray-200 hover:border-cyan-200' 
                     : ' border-default ring-2 ring-default/20'
                 }`}
               >
                 {media.mimeType.includes('video') ? (
-                  <div className="w-full h-full bg-gray-100 flex items-center justify-center relative">
+                  <div className="w-full h-full flex items-center justify-center relative">
                     <Image
                       src={media.url}
                       alt={`${productName} - миниатюра ${mediaIndex + 1}`}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full"
                       classNames={{
                         wrapper: "w-full h-full",
                       }}
+                      radius='full'
+
                     />
-                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                    {/* <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
                       <div className="w-6 h-6 bg-white/80 rounded-full flex items-center justify-center">
                         <div className="w-0 h-0 border-l-[6px] border-l-black border-y-[4px] border-y-transparent ml-1"></div>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 ) : (
                   <Image
@@ -117,6 +119,7 @@ const ProductMedia: React.FC<ProductMediaProps> = ({
                     classNames={{
                       wrapper: "w-full h-full",
                     }}
+                    radius='md'
                   />
                 )}
               </button>
