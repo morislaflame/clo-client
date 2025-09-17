@@ -15,7 +15,6 @@ const NewsHeader: React.FC<NewsHeaderProps> = ({ onBackClick }) => {
       >
         ← Назад
       </Button>
-      <h1 className="text-2xl font-bold">Новости</h1>
       <div className="w-20" /> {/* Для выравнивания */}
     </div>
   );

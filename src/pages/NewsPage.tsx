@@ -49,13 +49,13 @@ const NewsPage = observer(() => {
     <div className="min-h-screen">
       <div className="container mx-auto p-4">
         <NewsHeader onBackClick={handleBackClick} />
-
+{/* 
         <NewsFilters
           selectedNewsType={selectedNewsType}
           selectedStatus={selectedStatus}
           onNewsTypeChange={setSelectedNewsType}
           onStatusChange={setSelectedStatus}
-        />
+        /> */}
 
         {news.news.length === 0 ? (
           <NewsEmpty />

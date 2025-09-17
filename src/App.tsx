@@ -60,6 +60,7 @@ const App = observer(() => {
         <Navigation />
         <AppRouter />
       </Suspense>
+
     </BrowserRouter>
   );
 });

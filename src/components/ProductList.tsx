@@ -20,11 +20,6 @@ const ProductCard = observer(({ item }: { item: Product }) => {
   // Получаем первое изображение
   const mainImage = item.mediaFiles?.find(file => file.mimeType.includes('image'));
   
-  // Получаем доступные размеры
-  const availableSizes = item.sizes?.map(size => size.name).join(', ') || '';
-  
-  // Получаем доступные цвета
-  const availableColors = item.colors?.map(color => color.name).join(', ') || '';
 
   const handleCardClick = () => {
     navigate(`/product/${item.id}`);
@@ -72,31 +67,13 @@ const ProductCard = observer(({ item }: { item: Product }) => {
         )}
       </div>
 
-      <CardBody className="px-3 py-3">
-        <div className="space-y-2">
+      <CardBody className="pb-2 ">
           <h4 className="font-bold text-large line-clamp-2">
             {item.name}
           </h4>
-          
-          
-          <div className="flex flex-col gap-1">
-            
-            {availableSizes && (
-              <div className="text-tiny text-default-400">
-                <span className="font-medium font-bold text-default-500">Размеры:</span> {availableSizes}
-              </div>
-            )}
-            
-            {availableColors && (
-              <div className="text-tiny text-default-400">
-                <span className="font-medium font-bold text-default-500">Цвета:</span> {availableColors}
-              </div>
-            )}
-          </div>
-        </div>
       </CardBody>
 
-      <CardFooter className="pt-0 px-3 pb-3">
+      <CardFooter className="pt-0 pb-3">
         <div className="flex justify-between items-center w-full">
           <div className="flex gap-2 items-center">
             <span className="text-base font-bold">

@@ -1,6 +1,6 @@
 import React from 'react';
-import { Card, CardBody, Chip, Image } from '@heroui/react';
-import type { News, Tag } from '@/types/types';
+import { Card, CardHeader, Chip, Image } from '@heroui/react';
+import type { MediaFile, News, Tag } from '@/types/types';
 
 interface NewsListProps {
   news: News[];
@@ -8,93 +8,74 @@ interface NewsListProps {
 }
 
 const NewsList: React.FC<NewsListProps> = ({ news, onNewsClick }) => {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'PUBLISHED': return 'success';
-      case 'DRAFT': return 'warning';
-      case 'ARCHIVED': return 'default';
-      default: return 'default';
-    }
+  // Функция для получения первого видео из медиафайлов
+  const getFirstVideo = (mediaFiles: MediaFile[]) => {
+    return mediaFiles.find(file => file.mimeType.includes('video'));
   };
 
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'PUBLISHED': return 'Опубликовано';
-      case 'DRAFT': return 'Черновик';
-      case 'ARCHIVED': return 'Архив';
-      default: return status;
-    }
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('ru-RU', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  // Функция для получения первого изображения из медиафайлов
+  const getFirstImage = (mediaFiles: MediaFile[]) => {
+    return mediaFiles.find(file => file.mimeType.includes('image'));
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {news.map((newsItem) => (
-        <Card 
-          key={newsItem.id} 
-          className="cursor-pointer hover:shadow-lg transition-shadow"
-          isPressable
-          onPress={() => onNewsClick(newsItem.id)}
-        >
-          <CardBody className="p-0">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+      {news.map((newsItem) => {
+        const firstVideo = newsItem.mediaFiles ? getFirstVideo(newsItem.mediaFiles) : null;
+        const firstImage = newsItem.mediaFiles ? getFirstImage(newsItem.mediaFiles) : null;
+
+        return (
+          <Card 
+            key={newsItem.id} 
+            className="cursor-pointer hover:shadow-lg transition-shadow col-span-12 sm:col-span-4 h-[60vh]"
+            isPressable
+            onPress={() => onNewsClick(newsItem.id)}
+          >
             {newsItem.mediaFiles && newsItem.mediaFiles.length > 0 ? (
-              <Image
-                src={newsItem.mediaFiles[0].url}
-                alt={newsItem.title}
-                className="w-full h-48 object-cover"
-              />
+              <div className="relative w-full h-full">
+                {firstVideo ? (
+                  <video
+                    src={firstVideo.url}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      // Если видео не загрузилось, показываем изображение
+                      const target = e.target as HTMLVideoElement;
+                      target.style.display = 'none';
+                      const fallbackImage = target.nextElementSibling as HTMLImageElement;
+                      if (fallbackImage) {
+                        fallbackImage.style.display = 'block';
+                      }
+                    }}
+                  />
+                ) : null}
+                
+                {/* Fallback изображение */}
+                <Image
+                  src={firstImage?.url || newsItem.mediaFiles[0]?.url}
+                  alt={newsItem.title}
+                  className={`z-0 h-full w-full object-cover ${firstVideo ? 'hidden' : 'block'}`}
+                />
+              </div>
             ) : (
               <div className="w-full h-48 bg-gray-100 flex items-center justify-center">
-                <span className="text-gray-400">Нет изображения</span>
+                <span className="text-gray-400">Нет медиафайлов</span>
               </div>
             )}
 
-            <div className="p-4">
               {/* Заголовок и статус */}
-              <div className="flex items-start justify-between gap-2 mb-2">
-                <h3 className="text-lg font-semibold line-clamp-2 flex-1">
-                  {newsItem.title}
-                </h3>
-                <Chip 
-                  color={getStatusColor(newsItem.status)}
-                  size="sm"
-                  variant="flat"
-                >
-                  {getStatusLabel(newsItem.status)}
-                </Chip>
+              <div className="flex items-start justify-between gap-2 mb-2 p-4">
               </div>
-
-              {/* Описание */}
-              {newsItem.description && (
-                <p className="text-default-600 text-sm mb-3 line-clamp-3">
-                  {newsItem.description}
-                </p>
-              )}
+              <CardHeader className="absolute z-10 bottom-1 flex-col items-start! p-4 text-left">
+                <p className="text-tiny text-white/60 uppercase font-bold text-[16px]">{newsItem.title}</p>
+                <h4 className="text-white font-bold text-[36px] ">{newsItem.description}</h4>
+              </CardHeader>
 
               {/* Метаинформация */}
-              <div className="space-y-2 text-xs text-default-500">
-                {newsItem.newsType && (
-                  <div className="flex items-center gap-1">
-                    <span>Тип:</span>
-                    <Chip size="sm" variant="bordered">
-                      {newsItem.newsType.name}
-                    </Chip>
-                  </div>
-                )}
-
-                <div>
-                  <span>Дата:</span> {formatDate(newsItem.createdAt)}
-                </div>
-
+              <div className="space-y-2 text-xs text-default-500 absolute bottom-2 -right-2">
                 {/* Теги */}
                 {newsItem.tags && newsItem.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1">
@@ -110,10 +91,9 @@ const NewsList: React.FC<NewsListProps> = ({ news, onNewsClick }) => {
                   </div>
                 )}
               </div>
-            </div>
-          </CardBody>
-        </Card>
-      ))}
+          </Card>
+        );
+      })}
     </div>
   );
 };
