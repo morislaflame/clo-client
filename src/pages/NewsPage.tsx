@@ -43,7 +43,7 @@ const NewsPage = observer(() => {
 
   return (
     <div className="min-h-screen">
-      <div className="container mx-auto p-4 relative">
+      <div className="w-full p-4 relative">
         <NewsHeader onBackClick={handleBackClick} />
 {/* 
         <NewsFilters

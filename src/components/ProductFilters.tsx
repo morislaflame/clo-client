@@ -105,7 +105,7 @@ function ProductFilters() {
   ];
 
   return (
-    <Card className="w-full">
+    <Card className="w-full bg-transparent border-zinc-800 border-small ">
       <CardHeader className="">
         <div className="flex justify-between items-center w-full">
           <div className="flex items-center gap-3">

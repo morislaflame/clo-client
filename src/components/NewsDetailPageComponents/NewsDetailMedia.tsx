@@ -116,7 +116,7 @@ const NewsDetailMedia: React.FC<NewsDetailMediaProps> = ({
           <CarouselContent>
             {mediaFiles.map((media, mediaIndex) => (
               <CarouselItem key={media.id}>
-                <Card className="w-full h-96">
+                <Card className="w-full h-[65vh]">
                   <CardBody className="p-0 relative overflow-hidden flex items-center justify-center">
                     {media.mimeType.includes('video') ? (
                       <video
@@ -147,19 +147,19 @@ const NewsDetailMedia: React.FC<NewsDetailMediaProps> = ({
               </CarouselItem>
             ))}
           </CarouselContent>
-          {mediaFiles.length > 1 && (
+          {/* {mediaFiles.length > 1 && (
             <>
               <CarouselNavigation
-                className='absolute -bottom-20 left-auto top-auto w-full justify-end gap-2 sm:hidden'
+                className='absolute -bottom-20 left-auto top-auto w-full justify-end gap-2'
                 classNameButton='bg-zinc-800 *:stroke-zinc-50 dark:bg-zinc-200 dark:*:stroke-zinc-800'
                 alwaysShow
               />
               <CarouselIndicator
-                className='absolute -bottom-12 left-0 right-0 sm:hidden'
+                className='absolute -bottom-12 left-0 right-0'
                 classNameButton='bg-zinc-800 dark:bg-zinc-200'
               />
             </>
-          )}
+          )} */}
         </Carousel>
         
         {/* Кастомные индикаторы в виде мини-фоток */}

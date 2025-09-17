@@ -4,7 +4,6 @@ import {
   Carousel, 
   CarouselContent, 
   CarouselItem, 
-  CarouselNavigation
 } from '@/components/ui/carousel';
 import type { MediaFile } from '@/types/types';
 
@@ -69,13 +68,13 @@ const ProductMedia: React.FC<ProductMediaProps> = ({
               </CarouselItem>
             ))}
           </CarouselContent>
-          {mediaItems.length > 1 && (
+          {/* {mediaItems.length > 1 && (
             <CarouselNavigation
             className='absolute -bottom-20 left-auto top-auto w-full justify-end gap-2'
             classNameButton='bg-zinc-800 *:stroke-zinc-50 dark:bg-zinc-200 dark:*:stroke-zinc-800'
             alwaysShow
           />
-          )}
+          )} */}
         </Carousel>
         
         {/* Кастомные индикаторы в виде мини-фоток */}

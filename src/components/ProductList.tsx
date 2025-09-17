@@ -1,21 +1,22 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import {
   Card,
   CardBody,
-  CardFooter,
-  Image,
   Button,
   Pagination,
   Spinner,
 } from "@heroui/react";
 import { Context, type IStoreContext } from "@/store/StoreProvider";
 import type { Product } from "@/types/types";
+import { ProgressiveBlur } from "./ui/progressive-blur";
+import { motion } from "motion/react";
 
 const ProductCard = observer(({ item }: { item: Product }) => {
   const { product} = useContext(Context) as IStoreContext;
   const navigate = useNavigate();
+  const [isHover, setIsHover] = useState(false);
   
   // Получаем первое изображение
   const mainImage = item.mediaFiles?.find(file => file.mimeType.includes('image'));
@@ -27,7 +28,7 @@ const ProductCard = observer(({ item }: { item: Product }) => {
 
   return (
     <Card 
-      className="w-full h-full cursor-pointer hover:shadow-lg transition-shadow"
+      className="w-full h-full cursor-pointer hover:shadow-lg transition-shadow bg-transparent"
       isPressable
       onPress={handleCardClick}
     >
@@ -50,16 +51,41 @@ const ProductCard = observer(({ item }: { item: Product }) => {
         </div>
       </CardHeader> */}
 
-      <div className="relative w-full h-78 overflow-hidden flex items-center justify-center bg-white">
+      <div className="relative w-full h-78 overflow-hidden flex items-center justify-center bg-white rounded-lg"
+      onMouseEnter={() => setIsHover(true)}
+      onMouseLeave={() => setIsHover(false)}>
         {mainImage ? (
-          <Image
+          <>
+            <img
             src={mainImage.url}
             alt={item.name}
-            className="object-cover w-full h-full"
-            classNames={{
-              wrapper: "w-full h-full",
-            }}
+            className="w-full h-full object-cover rounded-lg"
           />
+          <ProgressiveBlur
+        className='pointer-events-none absolute bottom-0 left-0 h-[75%] w-full '
+        blurIntensity={0.5}
+        animate={isHover ? 'visible' : 'hidden'}
+        variants={{
+          hidden: { opacity: 0 },
+          visible: { opacity: 1 },
+        }}
+        transition={{ duration: 0.2, ease: 'easeOut' }}
+      />
+      <motion.div
+        className='absolute bottom-0 left-0'
+        animate={isHover ? 'visible' : 'hidden'}
+        variants={{
+          hidden: { opacity: 0 },
+          visible: { opacity: 1 },
+        }}
+        transition={{ duration: 0.2, ease: 'easeOut' }}
+      >
+        <div className='flex flex-col items-start gap-0 px-5 py-4'>
+          <p className='text-base font-medium text-black'>{item.sizes.map(size => size.name).join(', ')}</p>
+          <span className='text-base text-black'>{item.description}</span>
+        </div>
+      </motion.div>
+      </>
         ) : (
           <div className="flex items-center justify-center w-full h-full bg-gray-100">
             <span className="text-gray-400">Нет изображения</span>
@@ -71,10 +97,7 @@ const ProductCard = observer(({ item }: { item: Product }) => {
           <h4 className="font-bold text-large line-clamp-2">
             {item.name}
           </h4>
-      </CardBody>
-
-      <CardFooter className="pt-0 pb-3">
-        <div className="flex justify-between items-center w-full">
+          <div className="flex justify-between items-center w-full">
           <div className="flex gap-2 items-center">
             <span className="text-base font-bold">
                 {product.currency === 'KZT' 
@@ -89,11 +112,10 @@ const ProductCard = observer(({ item }: { item: Product }) => {
                     : `${item.priceKZT.toLocaleString()} ₸`
                   }
                   </span>
-                
-                
           </div>
         </div>
-      </CardFooter>
+      </CardBody>
+
     </Card>
   );
 });

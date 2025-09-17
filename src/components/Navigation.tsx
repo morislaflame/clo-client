@@ -64,7 +64,7 @@ const Navigation = observer(() => {
   };
 
   const publicMenuItems = [
-    { name: "Коллекции", href: NEWS_ROUTE },
+    { name: "Новости", href: NEWS_ROUTE },
     { name: "Магазин", href: MAIN_ROUTE },
     { name: "О нас", href: "#" },
   ];

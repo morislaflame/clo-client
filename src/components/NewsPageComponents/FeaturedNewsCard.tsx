@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardHeader, Image } from '@heroui/react';
+import { Card, CardHeader } from '@heroui/react';
 import type { MediaFile, News } from '@/types/types';
 
 interface FeaturedNewsCardProps {
@@ -23,7 +23,7 @@ const FeaturedNewsCard: React.FC<FeaturedNewsCardProps> = ({ news, onNewsClick }
 
   return (
     <Card 
-      className="cursor-pointer hover:shadow-lg transition-shadow w-full h-[60vh] mb-6"
+      className="cursor-pointer hover:shadow-lg transition-shadow w-full h-[70vh] mb-6"
       isPressable
       onPress={() => onNewsClick(news.id)}
     >
@@ -50,10 +50,10 @@ const FeaturedNewsCard: React.FC<FeaturedNewsCardProps> = ({ news, onNewsClick }
           ) : null}
           
           {/* Fallback изображение */}
-          <Image
+          <img
             src={firstImage?.url || news.mediaFiles[0]?.url}
             alt={news.title}
-            className={`z-0 h-full w-full object-cover ${firstVideo ? 'hidden' : 'block'}`}
+            className="w-full h-full object-cover rounded-lg"
           />
         </div>
       ) : (
@@ -65,7 +65,7 @@ const FeaturedNewsCard: React.FC<FeaturedNewsCardProps> = ({ news, onNewsClick }
         {/* Заголовок и статус */}
               <CardHeader className="absolute z-10 bottom-0 flex-col p-4 text-left h-full justify-end items-start h-full"
               style={{
-                background: 'linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1))',
+                background: 'linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.8))',
               }}
               >
                 <p className="text-tiny text-white/60 uppercase font-bold text-[16px]">{news.title}</p>

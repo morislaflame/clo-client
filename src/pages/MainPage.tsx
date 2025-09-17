@@ -4,8 +4,8 @@ import ProductList from "@/components/ProductList";
 const MainPage = () => {
     return (
         <div className="min-h-screen">
-            <div className="container mx-auto p-4">
-                <div className="flex flex-col lg:grid lg:grid-cols-4 gap-4">
+            <div className="w-full p-4">
+                <div className="flex flex-col lg:grid lg:grid-cols-4 gap-4 w-full">
                     {/* Фильтры - на мобильных сверху, на десктопе сбоку */}
                     <div className="lg:col-span-1 order-first">
                         <div className="lg:sticky lg:top-6">
