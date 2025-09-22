@@ -43,7 +43,7 @@ const BasketItem: React.FC<BasketItemProps> = ({
   };
 
   return (
-    <Card className="w-full">
+    <Card className="w-full bg-transparent border-small border-default-200 shadow-none">
       <CardBody className="p-4">
         <div className="flex gap-4">
           {/* Изображение товара */}

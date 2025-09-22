@@ -191,6 +191,19 @@ const ProductPage = observer(() => {
   return (
     <div className="min-h-screen">
       <div className="container mx-auto p-4">
+      {/* <div className="w-full h-full absolute top-0 left-0">
+  <DotGrid
+    dotSize={1}
+    gap={15}
+    baseColor="rgb(123, 123, 123)"
+    activeColor="#5227FF"
+    proximity={120}
+    shockRadius={20}
+    shockStrength={5}
+    resistance={500}
+    returnDuration={1.5}
+  />
+</div> */}
         <ProductHeader onBackClick={handleBackClick} />
 
         {/* Основной контент */}
@@ -202,8 +215,8 @@ const ProductPage = observer(() => {
 
           {/* Правая часть - информация о товаре */}
           <div className="order-2 lg:order-2">
-            <Card className="w-full h-fit">
-              <CardBody className="p-4 space-y-4">
+            <Card className="w-full h-fit bg-transparent border-none shadow-none">
+              <CardBody className="p-0 space-y-4">
                 <ProductInfo 
                   product={currentProduct}
                   currency={product.currency}

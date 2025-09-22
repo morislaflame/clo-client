@@ -4,8 +4,6 @@ import {
   Carousel, 
   CarouselContent, 
   CarouselItem, 
-  CarouselNavigation,
-  CarouselIndicator
 } from '@/components/ui/carousel';
 import type { MediaFile } from '@/types/types';
 

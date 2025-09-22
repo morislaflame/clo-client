@@ -20,7 +20,7 @@ const BasketSummary: React.FC<BasketSummaryProps> = ({
 }) => {
   return (
     <div className="lg:col-span-1">
-      <Card className="sticky top-4">
+      <Card className="sticky top-4 bg-transparent border-none shadow-none">
         <CardBody className="p-6 space-y-4">
           <h3 className="text-lg font-semibold">Итого</h3>
           

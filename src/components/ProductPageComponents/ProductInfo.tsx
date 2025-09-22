@@ -13,21 +13,12 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, currency }) => {
   const availableColors = product.colors?.map(color => color.name).join(', ') || '';
 
 
-
-  const getGenderLabel = (gender: string) => {
-    switch (gender) {
-      case 'MAN': return 'Мужское';
-      case 'WOMAN': return 'Женское';
-      default: return gender;
-    }
-  };
-
   return (
     <div className="space-y-4">
       {/* Заголовок и статус */}
-      <div className="space-y-3">
-        <div className="flex items-start justify-between gap-4">
-          <h1 className="text-2xl font-bold text-foreground">
+      <div className="space-y-2">
+        <div className="flex items-center justify-between gap-4">
+          <h1 className="text-3xl font-bold text-foreground">
             {product.name}
           </h1>
           <Chip 
@@ -35,41 +26,39 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, currency }) => {
           size="sm" 
           variant="bordered"
         >
-          {getGenderLabel(product.gender)}
+          NEW
         </Chip>
         </div>
-        
-       
-      </div>
-
-      <Divider />
-
-      {/* Цена */}
-      <div className="space-y-2">
         <div className="flex items-center gap-2">
-          <div className="text-xl font-bold">
+          <div className="text-xl font-medium">
             {currency === 'KZT' 
-              ? `${product.priceKZT.toLocaleString()} ₸` 
-              : `$${product.priceUSD.toLocaleString()}`
+              ? `₸ ${product.priceKZT.toLocaleString()}` 
+              : `$ ${product.priceUSD.toLocaleString()}`
             }
           </div>
           <span className="text-small text-default-400 font-bold"> | </span>
           <div className="text-lg text-default-400">
             {currency === 'KZT' 
-              ? `$${product.priceUSD}` 
-              : `${product.priceKZT.toLocaleString()} ₸`
+              ? `$ ${product.priceUSD}` 
+              : `₸ ${product.priceKZT.toLocaleString()}`
             }
           </div>
         </div>
       </div>
 
-      <Divider />
+      {/* Описание */}
+      {product.description && (
+        <>
+          <div className="space-y-2">
+            <p className="text-default-600 leading-relaxed text-sm">
+              {product.description}
+            </p>
+          </div>
+        </>
+      )}
 
-      {/* Характеристики */}
       <div className="space-y-2">
-        <h3 className="text-lg font-semibold">Характеристики</h3>
-        
-        
+      <Divider />
         {product.collection && (
           <div className="flex justify-between">
             <span className="text-default-500 text-sm">Коллекция:</span>
@@ -92,30 +81,17 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, currency }) => {
         )}
       </div>
 
-      {/* Описание */}
-      {product.description && (
-        <>
-          <Divider />
-          <div className="space-y-2">
-            <h3 className="text-lg font-semibold">Описание</h3>
-            <p className="text-default-600 leading-relaxed text-sm">
-              {product.description}
-            </p>
-          </div>
-        </>
-      )}
-
       {/* Состав */}
       {product.ingredients && (
         <>
-          <Divider />
+          
           <div className="space-y-2">
-            <h3 className="text-lg font-semibold">Состав</h3>
+            <h3 className="text-md font-medium">Состав</h3>
             <p className="text-default-600 leading-relaxed text-sm">
               {product.ingredients}
             </p>
           </div>
-          <Divider />
+          
         </>
       )}
     </div>
