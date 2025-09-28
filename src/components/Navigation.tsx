@@ -19,7 +19,7 @@ import {
   Badge,
 } from "@heroui/react";
 import { Context, type IStoreContext } from "@/store/StoreProvider";
-import { LOGIN_ROUTE, REGISTRATION_ROUTE, MAIN_ROUTE, BASKET_ROUTE, NEWS_ROUTE, ORDERS_ROUTE } from "@/utils/consts";
+import { LOGIN_ROUTE, REGISTRATION_ROUTE, MAIN_ROUTE, BASKET_ROUTE, NEWS_ROUTE, ORDERS_ROUTE, COLLECTIONS_ROUTE } from "@/utils/consts";
 import { ShoppingCartIcon } from "@/components/ui/Icons";
 
 export const AcmeLogo = () => {
@@ -66,6 +66,7 @@ const Navigation = observer(() => {
   const publicMenuItems = [
     { name: "Новости", href: NEWS_ROUTE },
     { name: "Магазин", href: MAIN_ROUTE },
+    { name: "Дропы", href: COLLECTIONS_ROUTE },
     { name: "О нас", href: "#" },
   ];
 

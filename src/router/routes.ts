@@ -8,7 +8,9 @@ import CheckoutPage from '@/pages/CheckoutPage';
 import OrdersPage from '@/pages/OrdersPage';
 import NewsPage from '@/pages/NewsPage';
 import NewsDetailPage from '@/pages/NewsDetailPage';
-import { MAIN_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, BASKET_ROUTE, CHECKOUT_ROUTE, ORDERS_ROUTE, NEWS_ROUTE, NEWS_DETAIL_ROUTE } from '@/utils/consts';
+import CollectionsPage from '@/pages/CollectionsPage';
+import CollectionPage from '@/pages/CollectionPage';
+import { MAIN_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, BASKET_ROUTE, CHECKOUT_ROUTE, ORDERS_ROUTE, NEWS_ROUTE, NEWS_DETAIL_ROUTE, COLLECTIONS_ROUTE } from '@/utils/consts';
 
 interface Route {
   path: string;
@@ -22,6 +24,8 @@ export const publicRoutes: Route[] = [
   { path: '/product/:id', Component: ProductPage },
   { path: NEWS_ROUTE, Component: NewsPage },
   { path: NEWS_DETAIL_ROUTE, Component: NewsDetailPage },
+  { path: COLLECTIONS_ROUTE, Component: CollectionsPage },
+  { path: '/collection/:id', Component: CollectionPage },
 ];
 
 export const privateRoutes: Route[] = [
