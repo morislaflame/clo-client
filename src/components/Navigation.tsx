@@ -19,7 +19,7 @@ import {
   Badge,
 } from "@heroui/react";
 import { Context, type IStoreContext } from "@/store/StoreProvider";
-import { LOGIN_ROUTE, REGISTRATION_ROUTE, MAIN_ROUTE, BASKET_ROUTE, NEWS_ROUTE } from "@/utils/consts";
+import { LOGIN_ROUTE, REGISTRATION_ROUTE, MAIN_ROUTE, BASKET_ROUTE, NEWS_ROUTE, ORDERS_ROUTE } from "@/utils/consts";
 import { ShoppingCartIcon } from "@/components/ui/Icons";
 
 export const AcmeLogo = () => {
@@ -72,7 +72,7 @@ const Navigation = observer(() => {
   const authMenuItems = user.isAuth 
     ? [
         { name: "Профиль", href: "#", action: () => {} },
-        { name: "Мои заказы", href: "#", action: () => {} },
+        { name: "Мои заказы", href: ORDERS_ROUTE, action: () => navigate(ORDERS_ROUTE) },
         { name: "Выйти", href: "#", action: handleLogout, color: "danger" },
       ]
     : [
@@ -146,7 +146,7 @@ const Navigation = observer(() => {
               <DropdownItem key="profile" onClick={() => {}}>
                 Профиль
               </DropdownItem>
-              <DropdownItem key="orders" onClick={() => {}}>
+              <DropdownItem key="orders" onClick={() => navigate(ORDERS_ROUTE)}>
                 Мои заказы
               </DropdownItem>
               <DropdownItem 

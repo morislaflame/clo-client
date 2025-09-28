@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardBody, Input, Textarea, Select, SelectItem } from '@heroui/react';
+import AddressAutocomplete from '@/components/ui/AddressAutocomplete';
 
 interface CheckoutFormProps {
   formData: {
@@ -10,13 +11,29 @@ interface CheckoutFormProps {
   };
   errors: Record<string, string>;
   onInputChange: (field: string, value: string) => void;
+  onAddressValidationChange?: (isValid: boolean, errorMessage?: string) => void;
 }
 
 const CheckoutForm: React.FC<CheckoutFormProps> = ({
   formData,
   errors,
-  onInputChange
+  onInputChange,
+  onAddressValidationChange
 }) => {
+  const [addressValidation, setAddressValidation] = useState<{
+    isValid: boolean;
+    errorMessage?: string;
+  }>({ isValid: false });
+
+  const handleAddressValidationChange = (isValid: boolean, errorMessage?: string) => {
+    setAddressValidation({ isValid, errorMessage });
+    onAddressValidationChange?.(isValid, errorMessage);
+  };
+
+  const handlePlaceSelect = (place: google.maps.places.PlaceResult) => {
+    // Дополнительная обработка выбранного места при необходимости
+    console.log('Selected place:', place);
+  };
   return (
     <div className="lg:col-span-2 space-y-6">
       {/* Информация о получателе */}
@@ -36,16 +53,16 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
               isRequired
             />
             
-            <Textarea
+            <AddressAutocomplete
               label="Адрес доставки"
-              labelPlacement="outside"
-              placeholder="Введите полный адрес доставки"
+              placeholder="Начните вводить адрес для автодополнения"
               value={formData.recipientAddress}
-              onValueChange={(value) => onInputChange('recipientAddress', value)}
-              isInvalid={!!errors.recipientAddress}
-              errorMessage={errors.recipientAddress}
+              onChange={(value) => onInputChange('recipientAddress', value)}
+              onPlaceSelect={handlePlaceSelect}
+              onValidationChange={handleAddressValidationChange}
+              isInvalid={!!errors.recipientAddress || (!addressValidation.isValid && formData.recipientAddress.length > 0)}
+              errorMessage={errors.recipientAddress || addressValidation.errorMessage}
               isRequired
-              minRows={3}
             />
           </div>
         </CardBody>

@@ -5,9 +5,10 @@ import AuthPage from '@/pages/AuthPage';
 import ProductPage from '@/pages/ProductPage';
 import BasketPage from '@/pages/BasketPage';
 import CheckoutPage from '@/pages/CheckoutPage';
+import OrdersPage from '@/pages/OrdersPage';
 import NewsPage from '@/pages/NewsPage';
 import NewsDetailPage from '@/pages/NewsDetailPage';
-import { MAIN_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, BASKET_ROUTE, CHECKOUT_ROUTE, NEWS_ROUTE, NEWS_DETAIL_ROUTE } from '@/utils/consts';
+import { MAIN_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, BASKET_ROUTE, CHECKOUT_ROUTE, ORDERS_ROUTE, NEWS_ROUTE, NEWS_DETAIL_ROUTE } from '@/utils/consts';
 
 interface Route {
   path: string;
@@ -26,4 +27,5 @@ export const publicRoutes: Route[] = [
 export const privateRoutes: Route[] = [
   { path: BASKET_ROUTE, Component: BasketPage },
   { path: CHECKOUT_ROUTE, Component: CheckoutPage },
+  { path: ORDERS_ROUTE, Component: OrdersPage },
 ];

@@ -26,6 +26,10 @@ const CheckoutPage = observer(() => {
 
   // Валидация
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [addressValidation, setAddressValidation] = useState<{
+    isValid: boolean;
+    errorMessage?: string;
+  }>({ isValid: false });
 
   useEffect(() => {
     if (!user.isAuth) {
@@ -51,6 +55,15 @@ const CheckoutPage = observer(() => {
     }
   };
 
+  const handleAddressValidationChange = (isValid: boolean, errorMessage?: string) => {
+    setAddressValidation({ isValid, errorMessage });
+    
+    // Очищаем ошибку адреса при успешной валидации
+    if (isValid && errors.recipientAddress) {
+      setErrors(prev => ({ ...prev, recipientAddress: '' }));
+    }
+  };
+
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
@@ -60,6 +73,8 @@ const CheckoutPage = observer(() => {
 
     if (!formData.recipientAddress.trim()) {
       newErrors.recipientAddress = 'Адрес доставки обязателен';
+    } else if (!addressValidation.isValid) {
+      newErrors.recipientAddress = addressValidation.errorMessage || 'Пожалуйста, выберите адрес из предложенных вариантов';
     }
 
     if (!formData.paymentMethod) {
@@ -118,6 +133,7 @@ const CheckoutPage = observer(() => {
             formData={formData}
             errors={errors}
             onInputChange={handleInputChange}
+            onAddressValidationChange={handleAddressValidationChange}
           />
 
           <CheckoutOrderSummary
