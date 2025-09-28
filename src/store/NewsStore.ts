@@ -62,13 +62,12 @@ export default class NewsStore {
             runInAction(() => {
                 this.setNews(response.news);
                 this.setTotalCount(response.totalCount);
-                this.setCurrentPage(response.currentPage);
                 this.setTotalPages(response.totalPages);
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Error fetching news:", error);
             runInAction(() => {
-                this.setError(error.response?.data?.message || 'Failed to fetch news');
+                this.setError(error instanceof Error ? error.message : 'Failed to fetch news');
                 this.setServerError(true);
             });
         } finally {
@@ -89,10 +88,10 @@ export default class NewsStore {
             runInAction(() => {
                 this.setCurrentNews(news);
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Error fetching news by id:", error);
             runInAction(() => {
-                this.setError(error.response?.data?.message || 'Failed to fetch news');
+                this.setError(error instanceof Error ? error.message : 'Failed to fetch news');
                 this.setServerError(true);
             });
         } finally {
@@ -153,7 +152,7 @@ export default class NewsStore {
     }
 
     getNewsByType(newsTypeId: number): News[] {
-        return this._news.filter(news => news.newsTypeId === newsTypeId);
+        return this._news.filter(news => news.newsType?.id === newsTypeId);
     }
 
     getNewsByTag(tagId: number): News[] {

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { Spinner, useDisclosure, Pagination } from '@heroui/react';
@@ -34,6 +34,7 @@ const OrdersPage = observer(() => {
 
     // Загружаем заказы при открытии страницы
     loadOrders();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.isAuth, navigate, currentPage, statusFilter]);
 
   const loadOrders = async () => {

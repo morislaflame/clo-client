@@ -1,10 +1,9 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import {
   Card,
   CardBody,
-  Button,
   Spinner,
 } from "@heroui/react";
 import { Context, type IStoreContext } from "@/store/StoreProvider";
@@ -14,7 +13,6 @@ import { motion } from "motion/react";
 const ProductCard = observer(({ item }: { item: Product }) => {
   const { product } = useContext(Context) as IStoreContext;
   const navigate = useNavigate();
-  const [isHover, setIsHover] = useState(false);
   
   // Получаем первое изображение
   const mainImage = item.mediaFiles?.find(file => file.mimeType.includes('image'));
@@ -35,8 +33,7 @@ const ProductCard = observer(({ item }: { item: Product }) => {
         onPress={handleCardClick}
       >
         <div className="relative w-full h-78 overflow-hidden flex items-center justify-center bg-white rounded-lg"
-        onMouseEnter={() => setIsHover(true)}
-        onMouseLeave={() => setIsHover(false)}>
+        >
           {mainImage ? (
             <img
               src={mainImage.url}

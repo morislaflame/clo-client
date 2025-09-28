@@ -63,13 +63,12 @@ export default class NewsTypeStore {
             runInAction(() => {
                 this.setNewsTypes(response.newsTypes);
                 this.setTotalCount(response.totalCount);
-                this.setCurrentPage(response.currentPage);
                 this.setTotalPages(response.totalPages);
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Error fetching news types:", error);
             runInAction(() => {
-                this.setError(error.response?.data?.message || 'Failed to fetch news types');
+                this.setError(error instanceof Error ? error.message : 'Failed to fetch news types');
                 this.setServerError(true);
             });
         } finally {
@@ -90,10 +89,10 @@ export default class NewsTypeStore {
             runInAction(() => {
                 this.setNewsTypes(newsTypes);
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Error fetching news types with counts:", error);
             runInAction(() => {
-                this.setError(error.response?.data?.message || 'Failed to fetch news types');
+                this.setError(error instanceof Error ? error.message : 'Failed to fetch news types');
                 this.setServerError(true);
             });
         } finally {
@@ -114,10 +113,10 @@ export default class NewsTypeStore {
             runInAction(() => {
                 this.setCurrentNewsType(newsType);
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Error fetching news type by id:", error);
             runInAction(() => {
-                this.setError(error.response?.data?.message || 'Failed to fetch news type');
+                this.setError(error instanceof Error ? error.message : 'Failed to fetch news type');
                 this.setServerError(true);
             });
         } finally {
