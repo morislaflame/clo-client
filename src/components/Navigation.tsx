@@ -37,22 +37,8 @@ const Navigation = observer(() => {
     }
   }, [user.isAuth, basket]);
 
-  // Закрытие меню при клике вне его и нажатии Escape
+  // Закрытие меню при нажатии Escape
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (isMenuOpen) {
-        const target = event.target as Element;
-        // Ищем навбар по классу или data-атрибуту
-        const navbar = document.querySelector('[data-menu-open="true"]') || 
-                      document.querySelector('.navbar') ||
-                      document.querySelector('[role="navigation"]');
-        
-        if (navbar && !navbar.contains(target)) {
-          setIsMenuOpen(false);
-        }
-      }
-    };
-
     const handleEscape = (event: KeyboardEvent) => {
       if (isMenuOpen && event.key === 'Escape') {
         setIsMenuOpen(false);
@@ -60,16 +46,8 @@ const Navigation = observer(() => {
     };
 
     if (isMenuOpen) {
-      // Небольшая задержка, чтобы не закрыть меню сразу после открытия
-      const timeoutId = setTimeout(() => {
-        document.addEventListener('mousedown', handleClickOutside);
-      }, 100);
-      
       document.addEventListener('keydown', handleEscape);
-
       return () => {
-        clearTimeout(timeoutId);
-        document.removeEventListener('mousedown', handleClickOutside);
         document.removeEventListener('keydown', handleEscape);
       };
     }
@@ -107,15 +85,24 @@ const Navigation = observer(() => {
       ];
 
   return (
-    <Navbar 
-      onMenuOpenChange={setIsMenuOpen} 
-      maxWidth="full" 
-      isBordered 
-      position="sticky"
-      isMenuOpen={isMenuOpen}
-      className="dark"
-    >
-      <NavbarContent>
+    <>
+      {/* Оверлей для закрытия меню при клике вне его */}
+      {isMenuOpen && (
+        <div 
+          className="fixed inset-0 z-40"
+          onClick={() => setIsMenuOpen(false)}
+        />
+      )}
+      
+      <Navbar 
+        onMenuOpenChange={setIsMenuOpen} 
+        maxWidth="full" 
+        isBordered 
+        position="sticky"
+        isMenuOpen={isMenuOpen}
+        className="dark relative z-50"
+      >
+      <NavbarContent className="z-50">
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           className="sm:hidden"
@@ -230,6 +217,7 @@ const Navigation = observer(() => {
         }}
         style={{
           width: "240px",
+          zIndex: 1000,
         }}
       >
         {/* Публичные пункты меню */}
@@ -274,6 +262,7 @@ const Navigation = observer(() => {
         ))}
       </NavbarMenu>
     </Navbar>
+    </>
   );
 });
 
