@@ -1,10 +1,15 @@
 import ProductFilters from "@/components/ProductFilters";
 import ProductList from "@/components/ProductList";
+import BannerCarousel from "@/components/BannerCarousel";
 
 const MainPage = () => {
     return (
         <div className="min-h-screen">
-            <div className="w-full p-4">
+            <BannerCarousel />
+            <div className="w-full px-4 pb-4">
+                {/* Баннер */}
+                
+                
                 <div className="flex flex-col lg:grid lg:grid-cols-4 gap-4 w-full">
                     {/* Фильтры - на мобильных сверху, на десктопе сбоку */}
                     <div className="lg:col-span-1 order-first">

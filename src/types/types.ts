@@ -76,5 +76,6 @@ export type {
   Collection,
   MediaFile,
   Size,
-  Color
+  Color,
+  MainBanner
 } from '../http/productAPI';

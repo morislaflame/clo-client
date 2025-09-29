@@ -75,6 +75,13 @@ export interface Color {
   hexCode?: string;
 }
 
+export interface MainBanner {
+  id: number;
+  title: string;
+  isActive: boolean;
+  mediaFiles: MediaFile[];
+}
+
 // Получение списка товаров с фильтрацией
 export const fetchProducts = async (filters: ProductFilters = {}): Promise<ProductResponse> => {
   const params = new URLSearchParams();
@@ -110,5 +117,11 @@ export const fetchColors = async (): Promise<Color[]> => {
 // Получение типов одежды
 export const fetchClothingTypes = async (): Promise<ClothingType[]> => {
   const { data } = await $host.get('api/clothing-type');
+  return data;
+};
+
+
+export const fetchMainBanner = async (): Promise<MainBanner> => {
+  const { data } = await $host.get('api/main-banner/active');
   return data;
 };

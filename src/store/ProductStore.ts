@@ -5,14 +5,16 @@ import type {
   ProductResponse,
   Size,
   Color,
-  ClothingType 
+  ClothingType,
+  MainBanner
 } from "../types/types";
 import { 
   fetchProducts, 
   fetchProduct, 
   fetchSizes, 
   fetchColors, 
-  fetchClothingTypes 
+  fetchClothingTypes,
+  fetchMainBanner
 } from "../http/productAPI";
 
 export default class ProductStore {
@@ -33,6 +35,7 @@ export default class ProductStore {
   sizes: Size[] = [];
   colors: Color[] = [];
   clothingTypes: ClothingType[] = [];
+  mainBanner: MainBanner | null = null;
   currency: 'KZT' | 'USD' = 'KZT';
   
   // Состояние загрузки
@@ -73,6 +76,10 @@ export default class ProductStore {
 
   setClothingTypes(clothingTypes: ClothingType[]) {
     this.clothingTypes = clothingTypes;
+  }
+
+  setMainBanner(mainBanner: MainBanner | null) {
+    this.mainBanner = mainBanner;
   }
 
   setCurrency(currency: 'KZT' | 'USD') {
@@ -177,6 +184,26 @@ export default class ProductStore {
       
       runInAction(() => {
         this.setFiltersLoading(false);
+      });
+      
+      throw error;
+    }
+  }
+
+  async loadMainBanner() {
+    try {
+      const mainBanner = await fetchMainBanner();
+      
+      runInAction(() => {
+        this.setMainBanner(mainBanner);
+      });
+
+      return mainBanner;
+    } catch (error: unknown) {
+      console.error("Error loading main banner:", error);
+      
+      runInAction(() => {
+        this.setMainBanner(null);
       });
       
       throw error;
