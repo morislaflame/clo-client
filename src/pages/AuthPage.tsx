@@ -90,10 +90,10 @@ const AuthPage = observer(() => {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md p-4">
         <CardHeader className="flex flex-col gap-3 pb-4">
           <div className="flex justify-center">
-            <img src="/LOGO.svg" alt="Logo" className="h-12" />
+            <img src="/lg.png" alt="Logo" className="h-8" />
           </div>
           <div className="text-center">
             <h1 className="text-2xl font-bold">
@@ -101,14 +101,14 @@ const AuthPage = observer(() => {
             </h1>
             <p className="text-default-500 text-sm mt-1">
               {isLogin 
-                ? "Добро пожаловать! Введите свои данные" 
+                ? "Введите свои данные" 
                 : "Создайте новый аккаунт для продолжения"
               }
             </p>
           </div>
         </CardHeader>
 
-        <CardBody className="gap-4">
+        <CardBody className="gap-3">
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <Input
               label="Email"
@@ -188,10 +188,9 @@ const AuthPage = observer(() => {
 
             <Button
               type="submit"
-              color="primary"
               size="lg"
               isLoading={isLoading}
-              className="w-full mt-2"
+              className="w-full mt-2 bg-white text-black"
             >
               {isLogin ? "Войти" : "Создать аккаунт"}
             </Button>
@@ -204,27 +203,14 @@ const AuthPage = observer(() => {
               {isLogin ? "Нет аккаунта?" : "Уже есть аккаунт?"}
               <Link
                 as="button"
-                className="ml-1 text-sm font-medium"
-                color="primary"
+                className="ml-1 text-sm font-medium rounded-lg p-1 active:border-none"
                 onClick={switchAuthMode}
+                color="foreground"
               >
                 {isLogin ? "Зарегистрироваться" : "Войти"}
               </Link>
             </p>
           </div>
-
-          {isLogin && (
-            <div className="text-center">
-              <Link
-                as="button"
-                className="text-sm"
-                color="foreground"
-                onClick={() => navigate(MAIN_ROUTE)}
-              >
-                Вернуться на главную
-              </Link>
-            </div>
-          )}
         </CardBody>
       </Card>
     </div>
