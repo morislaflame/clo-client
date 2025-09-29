@@ -140,7 +140,7 @@ const Navigation = observer(() => {
       {/* Бренд по центру */}
       <NavbarContent justify="center">
         <NavbarBrand className="cursor-pointer" onClick={() => navigate(MAIN_ROUTE)}>
-          <img src="/lg.png" alt="Logo" className="h-[35px]" />
+          <img src="/lg.png" alt="Logo" className="sm:h-[32px] h-[28px]" />
         </NavbarBrand>
       </NavbarContent>
 
@@ -220,8 +220,17 @@ const Navigation = observer(() => {
         )}
       </NavbarContent>
 
-      <NavbarMenu className="max-h-[60vh] overflow-y-auto dark"
-      style={{ backdropFilter: "blur(40px)" }}
+      <NavbarMenu 
+        className="overflow-y-auto dark p-6"
+        motionProps={{
+          initial: { x: "-100%", opacity: 0 },
+          animate: { x: 0, opacity: 1 },
+          exit: { x: "-100%", opacity: 0 },
+          transition: { type: "spring", stiffness: 300, damping: 30 }
+        }}
+        style={{
+          width: "240px",
+        }}
       >
         {/* Публичные пункты меню */}
         {publicMenuItems.map((item) => (
@@ -236,7 +245,6 @@ const Navigation = observer(() => {
                 setIsMenuOpen(false);
                 navigate(item.href);
               }}
-              // style={{ color: "white" }}
             >
               {item.name}
             </Link>
@@ -259,7 +267,6 @@ const Navigation = observer(() => {
                 setIsMenuOpen(false);
               }}
               size="lg"
-              // style={{ color: "white" }}
             >
               {item.name}
             </Link>
