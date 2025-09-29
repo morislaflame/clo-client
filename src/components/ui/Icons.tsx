@@ -1,4 +1,4 @@
-import { Eye, EyeOff, ChevronDown, ShoppingCart, Trash2 } from 'lucide-react';
+import { Eye, EyeOff, ChevronDown, ShoppingBag, Trash2 } from 'lucide-react';
 
 export const EyeFilledIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <Eye {...props} />
@@ -13,7 +13,7 @@ export const ChevronDownIcon = ({ className }: { className?: string }) => (
 );
 
 export const ShoppingCartIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <ShoppingCart {...props} />
+  <ShoppingBag {...props} />
 );
 
 export const TrashIcon = (props: React.SVGProps<SVGSVGElement>) => (

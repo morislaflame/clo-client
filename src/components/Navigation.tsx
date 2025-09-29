@@ -22,19 +22,6 @@ import { Context, type IStoreContext } from "@/store/StoreProvider";
 import { LOGIN_ROUTE, REGISTRATION_ROUTE, MAIN_ROUTE, BASKET_ROUTE, NEWS_ROUTE, ORDERS_ROUTE, COLLECTIONS_ROUTE } from "@/utils/consts";
 import { ShoppingCartIcon } from "@/components/ui/Icons";
 
-export const AcmeLogo = () => {
-  return (
-    <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
-      <path
-        clipRule="evenodd"
-        d="M17.6482 10.1305L15.8785 7.02583L7.02979 22.5499H10.5278L17.6482 10.1305ZM19.8798 14.0457L18.11 17.1983L19.394 19.4511H16.8453L15.1056 22.5499H24.7272L19.8798 14.0457Z"
-        fill="currentColor"
-        fillRule="evenodd"
-      />
-    </svg>
-  );
-};
-
 const Navigation = observer(() => {
   const { user, basket } = useContext(Context) as IStoreContext;
   const navigate = useNavigate();
@@ -49,6 +36,44 @@ const Navigation = observer(() => {
       basket.setSummary(0, 0, 0);
     }
   }, [user.isAuth, basket]);
+
+  // Закрытие меню при клике вне его и нажатии Escape
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isMenuOpen) {
+        const target = event.target as Element;
+        // Ищем навбар по классу или data-атрибуту
+        const navbar = document.querySelector('[data-menu-open="true"]') || 
+                      document.querySelector('.navbar') ||
+                      document.querySelector('[role="navigation"]');
+        
+        if (navbar && !navbar.contains(target)) {
+          setIsMenuOpen(false);
+        }
+      }
+    };
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (isMenuOpen && event.key === 'Escape') {
+        setIsMenuOpen(false);
+      }
+    };
+
+    if (isMenuOpen) {
+      // Небольшая задержка, чтобы не закрыть меню сразу после открытия
+      const timeoutId = setTimeout(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+      }, 100);
+      
+      document.addEventListener('keydown', handleEscape);
+
+      return () => {
+        clearTimeout(timeoutId);
+        document.removeEventListener('mousedown', handleClickOutside);
+        document.removeEventListener('keydown', handleEscape);
+      };
+    }
+  }, [isMenuOpen]);
 
   const handleLogout = async () => {
     await user.logout();
@@ -82,33 +107,44 @@ const Navigation = observer(() => {
       ];
 
   return (
-    <Navbar onMenuOpenChange={setIsMenuOpen} maxWidth="full" isBordered position="sticky">
+    <Navbar 
+      onMenuOpenChange={setIsMenuOpen} 
+      maxWidth="full" 
+      isBordered 
+      position="sticky"
+      isMenuOpen={isMenuOpen}
+      className="dark"
+    >
       <NavbarContent>
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           className="sm:hidden"
         />
+        {/* Ссылки слева */}
+        <NavbarContent className="hidden sm:flex gap-6" justify="start">
+          {publicMenuItems.map((item) => (
+            <NavbarItem key={item.name}>
+              <Link 
+                as={RouterLink}
+                color="foreground" 
+                to={item.href}
+                className="hover:text-default-500 transition-colors"
+              >
+                {item.name}
+              </Link>
+            </NavbarItem>
+          ))}
+        </NavbarContent>
+      </NavbarContent>
+
+      {/* Бренд по центру */}
+      <NavbarContent justify="center">
         <NavbarBrand className="cursor-pointer" onClick={() => navigate(MAIN_ROUTE)}>
-          <img src="/LOGO.svg" alt="Logo" className="h-[40px]" />
+          <img src="/lg.png" alt="Logo" className="h-[35px]" />
         </NavbarBrand>
       </NavbarContent>
 
-      <NavbarContent className="hidden sm:flex gap-10" justify="center">
-        {publicMenuItems.map((item) => (
-          <NavbarItem key={item.name}>
-            <Link 
-              as={RouterLink}
-              color="foreground" 
-              to={item.href}
-              className="hover:text-primary transition-colors"
-            >
-              {item.name}
-            </Link>
-          </NavbarItem>
-        ))}
-      </NavbarContent>
-
-      <NavbarContent justify="end">
+      <NavbarContent justify="end" className="gap-2">
         {/* Кнопка корзины */}
         <NavbarItem>
           <Button
@@ -165,7 +201,7 @@ const Navigation = observer(() => {
             <NavbarItem className="hidden lg:flex">
               <Link 
                 as={RouterLink}
-                className="text-default-600 hover:text-primary transition-colors cursor-pointer" 
+                className="text-default-600 hover:text-default-500 transition-colors cursor-pointer" 
                 to={LOGIN_ROUTE}
               >
                 Вход
@@ -173,7 +209,7 @@ const Navigation = observer(() => {
             </NavbarItem>
             <NavbarItem>
               <Button 
-                color="primary" 
+                color="default" 
                 variant="flat"
                 onClick={() => navigate(REGISTRATION_ROUTE)}
               >
@@ -184,16 +220,23 @@ const Navigation = observer(() => {
         )}
       </NavbarContent>
 
-      <NavbarMenu>
+      <NavbarMenu className="max-h-[60vh] overflow-y-auto dark"
+      style={{ backdropFilter: "blur(40px)" }}
+      >
         {/* Публичные пункты меню */}
         {publicMenuItems.map((item) => (
           <NavbarMenuItem key={item.name}>
             <Link
               as={RouterLink}
               className="w-full"
-              color="foreground"
               to={item.href}
               size="lg"
+              color="foreground"
+              onClick={() => {
+                setIsMenuOpen(false);
+                navigate(item.href);
+              }}
+              // style={{ color: "white" }}
             >
               {item.name}
             </Link>
@@ -202,7 +245,7 @@ const Navigation = observer(() => {
         
         {/* Разделитель */}
         <NavbarMenuItem>
-          <div className="w-full h-px bg-default-200 my-2" />
+          <div className="w-full h-px bg-default-500 my-2" />
         </NavbarMenuItem>
 
         {/* Пункты авторизации */}
@@ -211,8 +254,12 @@ const Navigation = observer(() => {
             <Link
               className="w-full"
               color={(item.color as "danger") || "foreground"}
-              onClick={item.action}
+              onClick={() => {
+                item.action();
+                setIsMenuOpen(false);
+              }}
               size="lg"
+              // style={{ color: "white" }}
             >
               {item.name}
             </Link>
