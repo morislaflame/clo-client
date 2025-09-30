@@ -20,8 +20,8 @@ const BasketSummary: React.FC<BasketSummaryProps> = ({
 }) => {
   return (
     <div className="lg:col-span-1">
-      <Card className="sticky top-4 bg-transparent border-none shadow-none">
-        <CardBody className="p-6 space-y-4">
+      <Card className="sticky top-4 bg-transparent border-none shadow-none ">
+        <CardBody className="p-4 space-y-4">
           <h3 className="text-lg font-semibold">Итого</h3>
           
           <Divider />
@@ -52,9 +52,8 @@ const BasketSummary: React.FC<BasketSummaryProps> = ({
 
           <div className="space-y-3">
             <Button
-              color="primary"
               size="lg"
-              className="w-full"
+              className="w-full bg-white text-black"
               onClick={onCheckout}
             >
               Оформить заказ
@@ -63,7 +62,7 @@ const BasketSummary: React.FC<BasketSummaryProps> = ({
             <Button
               color="danger"
               variant="bordered"
-              size="lg"
+              size="md"
               className="w-full"
               onClick={onClearBasket}
             >

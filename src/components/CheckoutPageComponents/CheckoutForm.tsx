@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardBody, Input, Textarea, Select, SelectItem } from '@heroui/react';
+import { Card, CardBody, Input, Textarea, Select, SelectItem, Divider } from '@heroui/react';
 import AddressAutocomplete from '@/components/ui/AddressAutocomplete';
 
 interface CheckoutFormProps {
@@ -37,8 +37,8 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
   return (
     <div className="lg:col-span-2 space-y-6">
       {/* Информация о получателе */}
-      <Card>
-        <CardBody className="p-6">
+      <Card className="h-auto shadow-none border-none bg-transparent">
+        <CardBody>
           <h2 className="text-xl font-semibold mb-4">Информация о получателе</h2>
           
           <div className="space-y-4">
@@ -64,14 +64,13 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
               errorMessage={errors.recipientAddress || addressValidation.errorMessage}
               isRequired
             />
+            
           </div>
-        </CardBody>
-      </Card>
 
-      {/* Способ оплаты */}
-      <Card>
-        <CardBody className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Способ оплаты</h2>
+          <Divider className="my-4" />
+
+          <div className="flex flex-col">
+            <h2 className="text-xl font-semibold mb-4">Способ оплаты</h2>
           
           <Select
             label="Выберите способ оплаты"
@@ -90,24 +89,23 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
             <SelectItem key="CARD">Карта</SelectItem>
             <SelectItem key="BANK_TRANSFER">Банковский перевод</SelectItem>
           </Select>
-        </CardBody>
-      </Card>
+          </div>
 
-      {/* Дополнительные заметки */}
-      <Card>
-        <CardBody className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Дополнительные заметки</h2>
+          <Divider className="my-4" />
+
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold mb-4">Дополнительные заметки</h2>
           
           <Textarea
-            label="Заметки к заказу (необязательно)"
-            labelPlacement="outside"
             placeholder="Любые дополнительные пожелания или комментарии"
             value={formData.notes}
             onValueChange={(value) => onInputChange('notes', value)}
             minRows={3}
-          />
+            />
+          </div>
         </CardBody>
       </Card>
+
     </div>
   );
 };

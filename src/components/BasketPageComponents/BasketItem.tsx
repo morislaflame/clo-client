@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardBody, Button, Spinner, Chip, Image } from '@heroui/react';
+import { Card, CardBody, Button, Spinner, Image } from '@heroui/react';
 import { TrashIcon } from '@/components/ui/Icons';
 import type { BasketItem as BasketItemType } from '@/http/basketAPI';
 
@@ -16,31 +16,7 @@ const BasketItem: React.FC<BasketItemProps> = ({
   onRemoveItem,
   isRemoving
 }) => {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'AVAILABLE': return 'success';
-      case 'SOLD': return 'danger';
-      case 'DELETED': return 'default';
-      default: return 'default';
-    }
-  };
-
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'AVAILABLE': return 'В наличии';
-      case 'SOLD': return 'Продано';
-      case 'DELETED': return 'Удалено';
-      default: return status;
-    }
-  };
-
-  const getGenderLabel = (gender: string) => {
-    switch (gender) {
-      case 'MAN': return 'Мужское';
-      case 'WOMAN': return 'Женское';
-      default: return gender;
-    }
-  };
+  
 
   return (
     <Card className="w-full bg-transparent border-small border-default-200 shadow-none">
@@ -52,7 +28,7 @@ const BasketItem: React.FC<BasketItemProps> = ({
               <Image
                 src={item.product.mediaFiles[0].url}
                 alt={item.product.name}
-                className="w-fit h-40 object-cover rounded-lg"
+                className="w-fit h-32 object-cover rounded-lg"
               />
             ) : (
               <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center">
@@ -62,28 +38,28 @@ const BasketItem: React.FC<BasketItemProps> = ({
           </div>
 
           {/* Информация о товаре */}
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 flex flex-col justify-between">
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 min-w-0">
-                <h3 className="text-lg font-semibold truncate">
+                <h3 className="text-xl font-semibold truncate">
                   {item.product.name}
                 </h3>
-                <div className="flex items-center gap-2 mt-1">
-                  <Chip 
-                    color={getStatusColor(item.product.status)}
-                    size="sm"
-                    variant="flat"
-                  >
-                    {getStatusLabel(item.product.status)}
-                  </Chip>
-                  <Chip 
-                    color="default" 
-                    size="sm" 
-                    variant="bordered"
-                  >
-                    {getGenderLabel(item.product.gender)}
-                  </Chip>
-                </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-lg font-bold">
+                  {currency === 'KZT' 
+                    ? `${item.product.priceKZT.toLocaleString()} ₸` 
+                    : `$${item.product.priceUSD.toLocaleString()}`
+                  }
+                </span>
+                <span className="text-small text-default-400"> | </span>
+                <span className="text-sm text-default-400">
+                  {currency === 'KZT' 
+                    ? `$${item.product.priceUSD}` 
+                    : `${item.product.priceKZT.toLocaleString()} ₸`
+                  }
+                </span>
+              </div>
               </div>
 
               {/* Кнопка удаления */}
@@ -104,35 +80,16 @@ const BasketItem: React.FC<BasketItemProps> = ({
               </Button>
             </div>
 
-            {/* Цена */}
-            <div className="mt-2">
-              <div className="flex items-center gap-2">
-                <span className="text-lg font-bold">
-                  {currency === 'KZT' 
-                    ? `${item.product.priceKZT.toLocaleString()} ₸` 
-                    : `$${item.product.priceUSD.toLocaleString()}`
-                  }
-                </span>
-                <span className="text-small text-default-400"> | </span>
-                <span className="text-sm text-default-400">
-                  {currency === 'KZT' 
-                    ? `$${item.product.priceUSD}` 
-                    : `${item.product.priceKZT.toLocaleString()} ₸`
-                  }
-                </span>
-              </div>
-            </div>
-
             {/* Характеристики */}
-            <div className="mt-2 text-sm text-default-500 flex flex-col gap-1">
+            <div className=" text-sm text-default-500 flex flex-col gap-1">
               {/* Выбранные характеристики */}
               {item.selectedSize && (
-                <span className="font-medium text-foreground">
+                <span className="font-medium">
                   Размер: {item.selectedSize.name}
                 </span>
               )}
               {item.selectedColor && (
-                <span className="font-medium text-foreground flex items-center gap-1">
+                <span className="font-medium flex items-center gap-1">
                   Цвет: 
                   {item.selectedColor.hexCode && (
                     <div 

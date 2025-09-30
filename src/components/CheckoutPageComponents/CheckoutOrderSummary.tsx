@@ -14,7 +14,6 @@ interface CheckoutOrderSummaryProps {
 
 const CheckoutOrderSummary: React.FC<CheckoutOrderSummaryProps> = ({
   items,
-  totalCount,
   totalKZT,
   totalUSD,
   currency,
@@ -23,8 +22,8 @@ const CheckoutOrderSummary: React.FC<CheckoutOrderSummaryProps> = ({
 }) => {
   return (
     <div className="lg:col-span-1">
-      <Card className="sticky top-4">
-        <CardBody className="p-6 space-y-4">
+      <Card className="sticky top-4 bg-transparent border-none shadow-none">
+        <CardBody className="p-4 space-y-4">
           <h3 className="text-lg font-semibold">Ваш заказ</h3>
           
           <Divider />
@@ -91,10 +90,6 @@ const CheckoutOrderSummary: React.FC<CheckoutOrderSummaryProps> = ({
           {/* Итого */}
           <div className="space-y-2">
             <div className="flex justify-between">
-              <span>Товаров:</span>
-              <span className="font-medium">{totalCount}</span>
-            </div>
-            <div className="flex justify-between">
               <span>Сумма:</span>
               <span className="font-bold text-lg">
                 {currency === 'KZT' 
@@ -115,9 +110,8 @@ const CheckoutOrderSummary: React.FC<CheckoutOrderSummaryProps> = ({
 
           {/* Кнопка оформления заказа */}
           <Button
-            color="primary"
             size="lg"
-            className="w-full"
+            className="w-full bg-white text-black"
             onClick={onSubmitOrder}
             disabled={isCreating}
           >

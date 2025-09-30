@@ -7,7 +7,7 @@ interface CheckoutHeaderProps {
 
 const CheckoutHeader: React.FC<CheckoutHeaderProps> = ({ onBackClick }) => {
   return (
-    <div className="mb-6 flex items-center justify-between">
+    <div className="mb-4 flex items-center justify-between">
       <Button
         variant="light"
         onClick={onBackClick}
@@ -15,7 +15,7 @@ const CheckoutHeader: React.FC<CheckoutHeaderProps> = ({ onBackClick }) => {
       >
         ← Назад
       </Button>
-      <h1 className="text-2xl font-bold">Оформление заказа</h1>
+      <h1 className="text-2xl font-bold text-center">Оформление заказа</h1>
       <div className="w-32" /> {/* Для выравнивания */}
     </div>
   );
