@@ -6,12 +6,12 @@ import {
   CardBody,
   Button,
   Pagination,
-  Spinner,
 } from "@heroui/react";
 import { Context, type IStoreContext } from "@/store/StoreProvider";
 import type { Product } from "@/types/types";
 import { ProgressiveBlur } from "./ui/progressive-blur";
 import { motion } from "motion/react";
+import ProductSkeleton from "./ui/ProductSkeleton";
 
 const ProductCard = observer(({ item }: { item: Product }) => {
   const { product} = useContext(Context) as IStoreContext;
@@ -132,10 +132,15 @@ const ProductList = observer(() => {
     product.goToPage(page);
   };
 
-  if (product.loading && product.products.length === 0) {
+  if (product.loading) {
     return (
-      <div className="flex justify-center items-center min-h-[400px]">
-        <Spinner size="lg" />
+      <div>
+        {/* Сетка скелетонов */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <ProductSkeleton key={index} />
+          ))}
+        </div>
       </div>
     );
   }
@@ -173,12 +178,6 @@ const ProductList = observer(() => {
 
   return (
     <div>
-      {/* Заголовок с количеством товаров */}
-      <div className="flex justify-between items-center">
-        {product.loading && (
-          <Spinner size="sm" />
-        )}
-      </div>
 
       {/* Сетка товаров */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">

@@ -4,6 +4,7 @@ import { Card, CardBody } from "@heroui/react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Context, type IStoreContext } from "@/store/StoreProvider";
+import LoadingIndicator from "./ui/LoadingIndicator";
 
 const BannerCarousel = observer(() => {
   const { product } = useContext(Context) as IStoreContext;
@@ -51,9 +52,21 @@ const BannerCarousel = observer(() => {
     return () => clearInterval(interval);
   }, [currentIndex, totalItems, goToNext]);
 
-  // Если баннер загружается или нет активного баннера, не показываем компонент
+  // Если баннер загружается, показываем блок загрузки
   if (product.loading || !mainBanner) {
-    return null;
+    return (
+      <div className="w-full mb-4">
+        <Card className="w-full bg-transparent border-none shadow-none rounded-none">
+          <CardBody className="p-0">
+            <div className="relative w-full h-[70vh] md:h-80 lg:h-[60vh] overflow-hidden">
+              <div className="w-full h-full bg-transparent flex items-center justify-center">
+                <LoadingIndicator />
+              </div>
+            </div>
+          </CardBody>
+        </Card>
+      </div>
+    );
   }
 
   // Если нет медиафайлов, не показываем баннер

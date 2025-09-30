@@ -1,10 +1,7 @@
-import React, { useState } from 'react';
-import { Card, CardBody, Image } from '@heroui/react';
-import { 
-  Carousel, 
-  CarouselContent, 
-  CarouselItem, 
-} from '@/components/ui/carousel';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Card, CardBody } from '@heroui/react';
+import { motion } from 'framer-motion';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { MediaFile } from '@/types/types';
 
 interface ProductMediaProps {
@@ -16,12 +13,46 @@ const ProductMedia: React.FC<ProductMediaProps> = ({
   mediaFiles, 
   productName 
 }) => {
-  const [index, setIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
   
   // Фильтруем только изображения и видео
   const mediaItems = mediaFiles?.filter(file => 
     file.mimeType.includes('image') || file.mimeType.includes('video')
   ) || [];
+  const totalItems = mediaItems.length;
+
+  // Функции навигации
+  const goToPrevious = useCallback(() => {
+    setCurrentIndex((prevIndex) => 
+      prevIndex === 0 ? totalItems - 1 : prevIndex - 1
+    );
+  }, [totalItems]);
+
+  const goToNext = useCallback(() => {
+    setCurrentIndex((prevIndex) => 
+      prevIndex === totalItems - 1 ? 0 : prevIndex + 1
+    );
+  }, [totalItems]);
+
+  // Обработчики кликов по зонам
+  const handleLeftClick = () => {
+    goToPrevious();
+  };
+
+  const handleRightClick = () => {
+    goToNext();
+  };
+
+  // Автопрокрутка
+  useEffect(() => {
+    if (totalItems <= 1) return;
+    
+    const interval = setInterval(() => {
+      goToNext();
+    }, 5000); // Смена каждые 5 секунд
+
+    return () => clearInterval(interval);
+  }, [currentIndex, totalItems, goToNext]);
 
   if (mediaItems.length === 0) {
     return (
@@ -39,93 +70,129 @@ const ProductMedia: React.FC<ProductMediaProps> = ({
 
   return (
     <div className="order-1 lg:order-1">
-      <div className="relative w-full">
-        <Carousel index={index} onIndexChange={setIndex} className="w-full">
-          <CarouselContent>
-            {mediaItems.map((media, mediaIndex) => (
-              <CarouselItem key={media.id}>
-                <Card className="w-full h-[70vh]">
-                  <CardBody className="p-0 relative overflow-hidden flex items-center justify-center bg-white">
-                    {media.mimeType.includes('video') ? (
-                      <video
-                        src={media.url}
-                        controls
+      <style>{`
+        @keyframes carouselFill {
+          from {
+            width: 0%;
+          }
+          to {
+            width: 100%;
+          }
+        }
+      `}</style>
+      <Card className="w-full bg-transparent border-none shadow-none rounded-lg">
+        <CardBody className="p-0">
+          <div className="relative w-full sm:h-[70vh] md:h-[70vh] lg:h-[70vh] overflow-hidden">
+            {/* Контейнер для медиафайлов */}
+            <div className="relative w-full h-full overflow-hidden">
+              <motion.div
+                className="flex w-full h-full"
+                animate={{ x: `-${currentIndex * 100}%` }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+              >
+                {mediaItems.map((mediaFile) => (
+                  <div
+                    key={mediaFile.id}
+                    className="w-full h-full flex-shrink-0"
+                  >
+                    {mediaFile.mimeType.startsWith('image/') ? (
+                      <img
+                        src={mediaFile.url}
+                        alt={`${productName} - изображение`}
                         className="w-full h-full object-cover"
-                        poster={media.url}
                       />
                     ) : (
-                      <Image
-                        src={media.url}
-                        alt={`${productName} - изображение ${mediaIndex + 1}`}
+                      <video
+                        src={mediaFile.url}
                         className="w-full h-full object-cover"
-                        classNames={{
-                          wrapper: "w-full h-full",
-                        }}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        controls
                       />
                     )}
-                  </CardBody>
-                </Card>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          {/* {mediaItems.length > 1 && (
-            <CarouselNavigation
-            className='absolute -bottom-20 left-auto top-auto w-full justify-end gap-2'
-            classNameButton='bg-zinc-800 *:stroke-zinc-50 dark:bg-zinc-200 dark:*:stroke-zinc-800'
-            alwaysShow
-          />
-          )} */}
-        </Carousel>
-        
-        {/* Кастомные индикаторы в виде мини-фоток */}
-        {mediaItems.length > 1 && (
-          <div className="flex w-full justify-center space-x-3 px-4 mt-4">
-            {mediaItems.map((media, mediaIndex) => (
-              <button
-                key={media.id}
-                type="button"
-                aria-label={`Перейти к слайду ${mediaIndex + 1}`}
-                onClick={() => setIndex(mediaIndex)}
-                className={`h-16 w-fit rounded-large overflow-hidden border-2 transition-all duration-200 justify-center items-center flex ${
-                  index === mediaIndex 
-                    ? 'border-gray-200 hover:border-cyan-200' 
-                    : ' border-default ring-2 ring-default/20'
-                }`}
-              >
-                {media.mimeType.includes('video') ? (
-                  <div className="w-full h-full flex items-center justify-center relative">
-                    <Image
-                      src={media.url}
-                      alt={`${productName} - миниатюра ${mediaIndex + 1}`}
-                      className="w-full h-full"
-                      classNames={{
-                        wrapper: "w-full h-full",
-                      }}
-                      radius='full'
-
-                    />
-                    {/* <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                      <div className="w-6 h-6 bg-white/80 rounded-full flex items-center justify-center">
-                        <div className="w-0 h-0 border-l-[6px] border-l-black border-y-[4px] border-y-transparent ml-1"></div>
-                      </div>
-                    </div> */}
                   </div>
-                ) : (
-                  <Image
-                    src={media.url}
-                    alt={`${productName} - миниатюра ${mediaIndex + 1}`}
-                    className="w-full h-full object-cover"
-                    classNames={{
-                      wrapper: "w-full h-full",
-                    }}
-                    radius='md'
-                  />
-                )}
-              </button>
-            ))}
+                ))}
+              </motion.div>
+            </div>
+
+            {/* Навигационные зоны */}
+            {totalItems > 1 && (
+              <>
+                {/* Левая зона */}
+                <div 
+                  className="absolute left-0 top-0 w-1/2 h-full cursor-pointer z-10"
+                  // style={{background: 'linear-gradient(to bottom, transparent, transparent, black)'}}
+                  onClick={handleLeftClick}
+                >
+                  <div className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 rounded-full p-2 opacity-0 hover:opacity-100 transition-opacity duration-200">
+                    <ChevronLeft className="w-6 h-6 text-white" />
+                  </div>
+                </div>
+
+                {/* Правая зона */}
+                <div 
+                  className="absolute right-0 top-0 w-1/2 h-full cursor-pointer z-10"
+                  // style={{background: 'linear-gradient(to bottom, transparent, transparent, black)'}}
+                  onClick={handleRightClick}
+                >
+                  <div className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 rounded-full p-2 opacity-0 hover:opacity-100 transition-opacity duration-200">
+                    <ChevronRight className="w-6 h-6 text-white" />
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Индикаторы прогресса */}
+            {totalItems > 1 && (
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-1 z-100">
+                {mediaItems.map((_, index) => {
+                  const isPast = index < currentIndex;
+                  const isCurrent = index === currentIndex;
+
+                  let border = '';
+                  let boxShadow: string | undefined;
+                  if (isPast) {
+                    border = '1px solid #FFF';
+                  } else if (isCurrent) {
+                    border = '1px solid #FFF';
+                  } else {
+                    border = '1px solid #878787';
+                  }
+
+                  const fillStyle: React.CSSProperties = isPast
+                    ? { width: '100%' }
+                    : isCurrent
+                    ? {
+                        width: '100%',
+                        animation: `carouselFill 5000ms linear forwards`,
+                      }
+                    : { width: '0%' };
+
+                  return (
+                    <div
+                      key={index}
+                      className="relative flex-1 h-1 rounded overflow-hidden bg-default-100 cursor-pointer"
+                      style={{ border, boxShadow, minWidth: '60px' }}
+                      onClick={() => {
+                        setCurrentIndex(index);
+                      }}
+                    >
+                      <div
+                        className="absolute left-0 top-0 h-full bg-default-500"
+                        style={{
+                          ...fillStyle,
+                        }}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </CardBody>
+      </Card>
     </div>
   );
 };
