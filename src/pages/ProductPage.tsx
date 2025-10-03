@@ -21,8 +21,6 @@ const ProductPage = observer(() => {
   const { product, basket, user } = useContext(Context) as IStoreContext;
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [isInBasket, setIsInBasket] = useState(false);
-  const [checkingBasket, setCheckingBasket] = useState(false);
   const [selectedColorId, setSelectedColorId] = useState<string>("");
   const [selectedSizeId, setSelectedSizeId] = useState<string>("");
   // Состояния для валидации
@@ -36,30 +34,6 @@ const ProductPage = observer(() => {
     }
   }, [id, product]);
 
-  // Проверяем, находится ли товар в корзине
-  useEffect(() => {
-    const checkBasketStatus = async () => {
-      if (id && user.isAuth) {
-        setCheckingBasket(true);
-        try {
-          const inBasket = await basket.checkProductInBasket(
-            Number(id),
-            selectedColorId ? Number(selectedColorId) : undefined,
-            selectedSizeId ? Number(selectedSizeId) : undefined
-          );
-          setIsInBasket(inBasket);
-        } catch (error) {
-          console.error("Error checking basket status:", error);
-        } finally {
-          setCheckingBasket(false);
-        }
-      } else {
-        setIsInBasket(false);
-      }
-    };
-
-    checkBasketStatus();
-  }, [id, user.isAuth, basket, selectedColorId, selectedSizeId]);
 
   const handleBackClick = () => {
     navigate(-1);
@@ -109,7 +83,6 @@ const ProductPage = observer(() => {
     );
     
     if (result.success) {
-      setIsInBasket(true);
       // Обновляем счетчик в навбаре
       basket.loadBasketCount().catch(console.error);
       // Можно добавить уведомление об успешном добавлении
@@ -238,8 +211,7 @@ const ProductPage = observer(() => {
 
                 <ProductActions
                   isProductAvailable={isProductAvailable}
-                  checkingBasket={checkingBasket}
-                  isInBasket={isInBasket}
+                  checkingBasket={false}
                   basketAdding={basket.adding}
                   onBuyNow={handleBuyNow}
                   onAddToBasket={handleAddToBasket}

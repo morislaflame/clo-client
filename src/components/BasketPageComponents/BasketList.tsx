@@ -6,14 +6,22 @@ interface BasketListProps {
   items: BasketItemType[];
   currency: string;
   onRemoveItem: (basketItemId: number) => void;
+  onUpdateQuantity: (basketItemId: number, quantity: number) => void;
+  onAddMore: (productId: number, selectedColorId?: number, selectedSizeId?: number) => void;
   isRemoving: boolean;
+  isUpdating: boolean;
+  isAdding: boolean;
 }
 
 const BasketList: React.FC<BasketListProps> = ({
   items,
   currency,
   onRemoveItem,
-  isRemoving
+  onUpdateQuantity,
+  onAddMore,
+  isRemoving,
+  isUpdating,
+  isAdding
 }) => {
   return (
     <div className="lg:col-span-2 space-y-4">
@@ -23,7 +31,11 @@ const BasketList: React.FC<BasketListProps> = ({
           item={item}
           currency={currency}
           onRemoveItem={onRemoveItem}
+          onUpdateQuantity={onUpdateQuantity}
+          onAddMore={onAddMore}
           isRemoving={isRemoving}
+          isUpdating={isUpdating}
+          isAdding={isAdding}
         />
       ))}
     </div>

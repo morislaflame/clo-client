@@ -37,7 +37,7 @@ const BasketEmpty: React.FC<BasketEmptyProps> = observer(({
                 {t("basket_empty_description")}
               </p>
               <Button
-                color="primary"
+                color="default"
                 onClick={onGoShopping}
                 className="w-full"
               >

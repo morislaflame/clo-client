@@ -298,6 +298,11 @@ type TranslationType = {
       en: 'Size',
       kz: 'Өлшем'
     },
+    add_more: {
+      ru: 'Добавить еще',
+      en: 'Add more',
+      kz: 'Қосып шығу'
+    },
     color_label: {
       ru: 'Цвет',
       en: 'Color',
@@ -636,7 +641,7 @@ type TranslationType = {
       en: 'Start typing address for autocomplete',
       kz: 'Адресті автодополнениеге енгізу'
     },
-    
+
     select_payment_method: {
       ru: 'Выберите способ оплаты',
       en: 'Select payment method',

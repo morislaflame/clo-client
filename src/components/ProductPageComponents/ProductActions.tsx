@@ -6,7 +6,6 @@ import { observer } from 'mobx-react-lite';
 interface ProductActionsProps {
   isProductAvailable: boolean;
   checkingBasket: boolean;
-  isInBasket: boolean;
   basketAdding: boolean;
   onBuyNow: () => void;
   onAddToBasket: () => void;
@@ -15,7 +14,6 @@ interface ProductActionsProps {
 const ProductActions: React.FC<ProductActionsProps> = observer(({
   isProductAvailable,
   checkingBasket,
-  isInBasket,
   basketAdding,
   onBuyNow,
   onAddToBasket,
@@ -44,14 +42,6 @@ const ProductActions: React.FC<ProductActionsProps> = observer(({
             >
               <Spinner size="sm" />
               {t("checking")}
-            </Button>
-          ) : isInBasket ? (
-            <Button
-              size="lg"
-              className="w-full"
-              isDisabled
-            >
-                {t("added_to_basket")}
             </Button>
           ) : (
             <Button

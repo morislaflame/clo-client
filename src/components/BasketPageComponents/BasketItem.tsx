@@ -9,16 +9,42 @@ interface BasketItemProps {
   item: BasketItemType;
   currency: string;
   onRemoveItem: (basketItemId: number) => void;
+  onUpdateQuantity: (basketItemId: number, quantity: number) => void;
+  onAddMore: (productId: number, selectedColorId?: number, selectedSizeId?: number) => void;
   isRemoving: boolean;
+  isUpdating: boolean;
+  isAdding: boolean;
 }
 
 const BasketItem: React.FC<BasketItemProps> = observer(({
   item,
   currency,
   onRemoveItem,
-  isRemoving
+  onUpdateQuantity,
+  onAddMore,
+  isRemoving,
+  isUpdating,
+  isAdding
 }) => {
   const { t } = useTranslate();
+
+  const handleIncreaseQuantity = () => {
+    onUpdateQuantity(item.id, item.quantity + 1);
+  };
+
+  const handleDecreaseQuantity = () => {
+    if (item.quantity > 1) {
+      onUpdateQuantity(item.id, item.quantity - 1);
+    }
+  };
+
+  const handleAddMore = () => {
+    onAddMore(
+      item.productId,
+      item.selectedColorId,
+      item.selectedSizeId
+    );
+  };
 
   return (
     <Card className="w-full bg-transparent border-small border-default-200 shadow-none">
@@ -64,22 +90,82 @@ const BasketItem: React.FC<BasketItemProps> = observer(({
               </div>
               </div>
 
-              {/* Кнопка удаления */}
-              <Button
-                isIconOnly
-                variant="light"
-                color="danger"
-                size="sm"
-                onClick={() => onRemoveItem(item.id)}
-                disabled={isRemoving}
-                aria-label={t("remove_from_basket")}
-              >
-                {isRemoving ? (
-                  <Spinner size="md" />
+              {/* Управление количеством и удаление */}
+              <div className="flex items-center gap-2">
+                {/* Кнопки управления количеством */}
+                {item.quantity > 1 ? (
+                  <div className="flex items-center gap-1">
+                    <Button
+                      isIconOnly
+                      variant="light"
+                      color="default"
+                      size="sm"
+                      onClick={handleDecreaseQuantity}
+                      disabled={isUpdating}
+                      aria-label={t("decrease_quantity")}
+                    >
+                      {isUpdating ? (
+                        <Spinner size="sm" />
+                      ) : (
+                        <span className="text-lg">−</span>
+                      )}
+                    </Button>
+                    <div className="bg-default text-default-foreground text-sm font-medium px-2 py-1 rounded-full min-w-[24px] text-center">
+                      {item.quantity}
+                    </div>
+                    <Button
+                      isIconOnly
+                      variant="light"
+                      color="default"
+                      size="sm"
+                      onClick={handleIncreaseQuantity}
+                      disabled={isUpdating}
+                      aria-label={t("increase_quantity")}
+                    >
+                      {isUpdating ? (
+                        <Spinner size="sm" />
+                      ) : (
+                        <span className="text-lg">+</span>
+                      )}
+                    </Button>
+                  </div>
                 ) : (
-                  <TrashIcon className="w-5 h-5" />
+                  /* Кнопка "Добавить еще" для товаров с количеством 1 */
+                  <Button
+                    size="sm"
+                    color="default"
+                    onClick={handleAddMore}
+                    disabled={isAdding}
+                    className="text-xs"
+                  >
+                    {isAdding ? (
+                      <>
+                        <Spinner size="sm" />
+                        {t("adding")}
+                      </>
+                    ) : (
+                      t("add_more")
+                    )}
+                  </Button>
                 )}
-              </Button>
+                
+                {/* Кнопка удаления */}
+                <Button
+                  isIconOnly
+                  variant="light"
+                  color="danger"
+                  size="sm"
+                  onClick={() => onRemoveItem(item.id)}
+                  disabled={isRemoving}
+                  aria-label={t("remove_from_basket")}
+                >
+                  {isRemoving ? (
+                    <Spinner size="md" />
+                  ) : (
+                    <TrashIcon className="w-5 h-5" />
+                  )}
+                </Button>
+              </div>
             </div>
 
             {/* Характеристики */}

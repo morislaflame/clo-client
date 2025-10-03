@@ -44,6 +44,14 @@ const BasketPage = observer(() => {
     // Счетчик обновится автоматически через MobX реактивность
   };
 
+  const handleUpdateQuantity = async (basketItemId: number, quantity: number) => {
+    await basket.updateItemQuantity(basketItemId, quantity);
+  };
+
+  const handleAddMore = async (productId: number, selectedColorId?: number, selectedSizeId?: number) => {
+    await basket.addProductToBasket(productId, selectedColorId, selectedSizeId);
+  };
+
   const handleClearBasket = async () => {
     const result = await basket.clearBasket();
     if (result.success) {
@@ -86,7 +94,11 @@ const BasketPage = observer(() => {
             items={basket.items}
             currency={product.currency}
             onRemoveItem={handleRemoveItem}
+            onUpdateQuantity={handleUpdateQuantity}
+            onAddMore={handleAddMore}
             isRemoving={basket.removing}
+            isUpdating={basket.updating}
+            isAdding={basket.adding}
           />
 
           <BasketSummary
