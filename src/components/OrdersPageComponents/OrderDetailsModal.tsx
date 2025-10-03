@@ -3,6 +3,8 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Chip,
 // import { X } from 'lucide-react';
 // import { XMarkIcon } from '@heroicons/react/24/outline';
 import type { Order } from '@/http/orderAPI';
+import { useTranslate } from '@/utils/useTranslate';
+import { observer } from 'mobx-react-lite';
 
 interface OrderDetailsModalProps {
   isOpen: boolean;
@@ -11,12 +13,13 @@ interface OrderDetailsModalProps {
   currency: 'KZT' | 'USD';
 }
 
-const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
+const OrderDetailsModal: React.FC<OrderDetailsModalProps> = observer(({
   isOpen,
   onClose,
   order,
   currency
 }) => {
+  const { t } = useTranslate();
   if (!order) return null;
 
   const getStatusColor = (status: string) => {
@@ -32,20 +35,20 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case 'CREATED': return 'Создан';
-      case 'PAID': return 'Оплачен';
-      case 'SHIPPED': return 'В пути';
-      case 'DELIVERED': return 'Доставлен';
-      case 'CANCELLED': return 'Отменен';
+      case 'CREATED': return t("created");
+      case 'PAID': return t("paid");
+      case 'SHIPPED': return t("shipped");
+      case 'DELIVERED': return t("delivered");
+      case 'CANCELLED': return t("cancelled");
       default: return status;
     }
   };
 
   const getPaymentMethodLabel = (method: string) => {
     switch (method) {
-      case 'CASH': return 'Наличные';
-      case 'CARD': return 'Карта';
-      case 'BANK_TRANSFER': return 'Банковский перевод';
+      case 'CASH': return t("cash");
+      case 'CARD': return t("card");
+      case 'BANK_TRANSFER': return t("bank_transfer");
       default: return method;
     }
   };
@@ -73,7 +76,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold">Заказ #{order.id}</h2>
+            <h2 className="text-xl font-semibold">{t("order")} #{order.id}</h2>
             <Chip
               color={getStatusColor(order.status)}
               variant="flat"
@@ -88,26 +91,26 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2">Информация о заказе</h3>
+                <h3 className="font-semibold text-gray-900 mb-2">{t("order_info")}</h3>
                 <div className="space-y-1 text-sm text-gray-600">
-                  <p><span className="font-medium">Дата создания:</span> {formatDate(order.createdAt)}</p>
-                  <p><span className="font-medium">Дата обновления:</span> {formatDate(order.updatedAt)}</p>
-                  <p><span className="font-medium">Способ оплаты:</span> {getPaymentMethodLabel(order.paymentMethod)}</p>
+                  <p><span className="font-medium">{t("date_created")}:</span> {formatDate(order.createdAt)}</p>
+                  <p><span className="font-medium">{t("date_updated")}:</span> {formatDate(order.updatedAt)}</p>
+                  <p><span className="font-medium">{t("payment_method")}:</span> {getPaymentMethodLabel(order.paymentMethod)}</p>
                 </div>
               </div>
               
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2">Информация о доставке</h3>
+                <h3 className="font-semibold text-gray-900 mb-2">{t("delivery_info")}</h3>
                 <div className="space-y-1 text-sm text-gray-600">
-                  <p><span className="font-medium">Получатель:</span> {order.recipientName}</p>
-                  <p><span className="font-medium">Адрес:</span> {order.recipientAddress}</p>
+                  <p><span className="font-medium">{t("recipient")}:</span> {order.recipientName}</p>
+                  <p><span className="font-medium">{t("address")}:</span> {order.recipientAddress}</p>
                 </div>
               </div>
             </div>
 
             {order.notes && (
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2">Заметки к заказу</h3>
+                <h3 className="font-semibold text-gray-900 mb-2">{t("notes")}</h3>
                 <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
                   {order.notes}
                 </p>
@@ -118,7 +121,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
 
             {/* Товары в заказе */}
             <div>
-              <h3 className="font-semibold text-gray-900 mb-3">Товары в заказе</h3>
+              <h3 className="font-semibold text-gray-900 mb-3">{t("items_in_order")}</h3>
               <div className="space-y-3">
                 {order.orderItems.map((item) => (
                   <div key={item.id} className="flex gap-4 p-3 bg-gray-50 rounded-lg">
@@ -131,7 +134,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                           className="w-full h-full object-cover rounded-lg"
                         />
                       ) : (
-                        <span className="text-gray-400 text-xs">Нет фото</span>
+                        <span className="text-gray-400 text-xs">{t("no_photo")}</span>
                       )}
                     </div>
                     
@@ -140,12 +143,12 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                       <h4 className="font-medium text-gray-900">{item.product.name}</h4>
                       <div className="flex flex-wrap gap-2 mt-1 text-sm text-gray-600">
                         {item.selectedColor && (
-                          <span>Цвет: {item.selectedColor.name}</span>
+                          <span>{t("color")}: {item.selectedColor.name}</span>
                         )}
                         {item.selectedSize && (
-                          <span>Размер: {item.selectedSize.name}</span>
+                          <span>{t("size")}: {item.selectedSize.name}</span>
                         )}
-                        <span>Количество: {item.quantity}</span>
+                        <span>{t("quantity")}: {item.quantity}</span>
                       </div>
                       {item.product.clothingType && (
                         <p className="text-xs text-gray-500 mt-1">
@@ -172,7 +175,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
 
             {/* Итого */}
             <div className="flex justify-between items-center text-lg font-semibold">
-              <span>Итого:</span>
+              <span>{t("total")}:</span>
               <span>{totalAmount.toLocaleString()} {currencySymbol}</span>
             </div>
           </div>
@@ -180,12 +183,12 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
         
         <ModalFooter>
           <Button color="primary" variant="light" onPress={onClose}>
-            Закрыть
+            {t("close")}
           </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
   );
-};
+});
 
 export default OrderDetailsModal;

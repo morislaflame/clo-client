@@ -2,13 +2,16 @@ import React from 'react';
 import type { News } from '@/types/types';
 import FeaturedNewsCard from './FeaturedNewsCard';
 import NewsGridCard from './NewsGridCard';
+import { observer } from 'mobx-react-lite';
+import { useTranslate } from '@/utils/useTranslate';
 
 interface NewsListProps {
   news: News[];
   onNewsClick: (newsId: number) => void;
 }
 
-const NewsList: React.FC<NewsListProps> = ({ news, onNewsClick }) => {
+const NewsList: React.FC<NewsListProps> = observer(({ news, onNewsClick }) => {
+  const { t } = useTranslate();
   if (news.length === 0) {
     return null;
   }
@@ -24,7 +27,7 @@ const NewsList: React.FC<NewsListProps> = ({ news, onNewsClick }) => {
       />
 
       <div className="flex flex-col gap-4">
-        <h2 className="text-2xl font-bold text-default-500">Новости</h2>
+        <h2 className="text-2xl font-bold text-default-500">{t("news")}</h2>
       </div>
       
       {/* Остальные новости в виде сетки */}
@@ -41,6 +44,6 @@ const NewsList: React.FC<NewsListProps> = ({ news, onNewsClick }) => {
       )}
     </div>
   );
-};
+});
 
 export default NewsList;

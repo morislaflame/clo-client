@@ -4,10 +4,12 @@ import { observer } from "mobx-react-lite";
 import { Button } from "@heroui/react";
 import { Context, type IStoreContext } from "@/store/StoreProvider";
 import { ArrowLeft } from "lucide-react";
+import { useTranslate } from "@/utils/useTranslate";
 
 const CollectionHeader = observer(() => {
   const { collection } = useContext(Context) as IStoreContext;
   const navigate = useNavigate();
+  const { t } = useTranslate();
 
   const handleBackClick = () => {
     navigate(-1);
@@ -44,7 +46,7 @@ const CollectionHeader = observer(() => {
           />
         ) : (
           <div className="flex items-center justify-center w-full h-full bg-gray-100">
-            <span className="text-gray-400 text-xl">Нет изображения</span>
+            <span className="text-gray-400 text-xl">{t("no_image")}</span>
           </div>
         )}
         

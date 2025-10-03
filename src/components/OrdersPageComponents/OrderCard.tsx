@@ -4,6 +4,8 @@ import { EyeIcon } from 'lucide-react';
 
 // import { EyeIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import type { Order } from '@/http/orderAPI';
+import { useTranslate } from '@/utils/useTranslate';
+import { observer } from 'mobx-react-lite';
 
 interface OrderCardProps {
   order: Order;
@@ -13,13 +15,14 @@ interface OrderCardProps {
   currency: 'KZT' | 'USD';
 }
 
-const OrderCard: React.FC<OrderCardProps> = ({
+const OrderCard: React.FC<OrderCardProps> = observer(({
   order,
   onViewDetails,
   onCancelOrder,
   canCancel,
   currency
 }) => {
+  const { t } = useTranslate();
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'CREATED': return 'default';
@@ -33,11 +36,11 @@ const OrderCard: React.FC<OrderCardProps> = ({
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case 'CREATED': return 'Создан';
-      case 'PAID': return 'Оплачен';
-      case 'SHIPPED': return 'В пути';
-      case 'DELIVERED': return 'Доставлен';
-      case 'CANCELLED': return 'Отменен';
+      case 'CREATED': return t("created");
+      case 'PAID': return t("paid");
+      case 'SHIPPED': return t("shipped");
+      case 'DELIVERED': return t("delivered");
+      case 'CANCELLED': return t("cancelled");
       default: return status;
     }
   };
@@ -72,7 +75,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-3">
               <h3 className="text-lg font-semibold text-gray-900">
-                Заказ #{order.id}
+                {t("order")} #{order.id}
               </h3>
               <Chip
                 color={getStatusColor(order.status)}
@@ -85,26 +88,26 @@ const OrderCard: React.FC<OrderCardProps> = ({
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
               <div>
-                <p><span className="font-medium">Дата:</span> {formatDate(order.createdAt)}</p>
-                <p><span className="font-medium">Получатель:</span> {order.recipientName}</p>
+                <p><span className="font-medium">{t("date")}:</span> {formatDate(order.createdAt)}</p>
+                <p><span className="font-medium">{t("recipient")}:</span> {order.recipientName}</p>
               </div>
               <div>
-                <p><span className="font-medium">Способ оплаты:</span> {getPaymentMethodLabel(order.paymentMethod)}</p>
-                <p><span className="font-medium">Товаров:</span> {order.orderItems.length} шт.</p>
+                <p><span className="font-medium">{t("payment_method")}:</span> {getPaymentMethodLabel(order.paymentMethod)}</p>
+                <p><span className="font-medium">{t("items_count")}:</span> {order.orderItems.length} шт.</p>
               </div>
             </div>
 
             {order.notes && (
               <div className="mt-3">
                 <p className="text-sm text-gray-600">
-                  <span className="font-medium">Заметки:</span> {order.notes}
+                  <span className="font-medium">{t("notes")}:</span> {order.notes}
                 </p>
               </div>
             )}
 
             <div className="mt-4">
               <p className="text-lg font-bold text-gray-900">
-                Итого: {totalAmount.toLocaleString()} {currencySymbol}
+                {t("total")}: {totalAmount.toLocaleString()} {currencySymbol}
               </p>
             </div>
           </div>
@@ -118,7 +121,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
               onPress={() => onViewDetails(order.id)}
               className="w-full"
             >
-              Подробнее
+              {t("view_details")}
             </Button>
             
             {canCancel && order.status === 'CREATED' && (
@@ -128,7 +131,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
                 onPress={() => onCancelOrder(order.id)}
                 className="w-full"
               >
-                Отменить
+                {t("cancel")}
               </Button>
             )}
           </div>
@@ -137,7 +140,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
         {/* Список товаров (краткий) */}
         <Divider className="my-4" />
         <div>
-          <h4 className="font-medium text-gray-900 mb-2">Товары в заказе:</h4>
+          <h4 className="font-medium text-gray-900 mb-2">{t("items_in_order")}:</h4>
           <div className="space-y-2">
             {order.orderItems.slice(0, 3).map((item) => (
               <div key={item.id} className="flex items-center justify-between text-sm">
@@ -145,12 +148,12 @@ const OrderCard: React.FC<OrderCardProps> = ({
                   <p className="font-medium text-gray-900">{item.product.name}</p>
                   <div className="flex gap-2 text-gray-600">
                     {item.selectedColor && (
-                      <span>Цвет: {item.selectedColor.name}</span>
+                      <span>{t("color")}: {item.selectedColor.name}</span>
                     )}
                     {item.selectedSize && (
-                      <span>Размер: {item.selectedSize.name}</span>
+                      <span>{t("size")}: {item.selectedSize.name}</span>
                     )}
-                    <span>Кол-во: {item.quantity}</span>
+                    <span>{t("quantity")}: {item.quantity}</span>
                   </div>
                 </div>
                 <p className="font-medium text-gray-900">
@@ -168,6 +171,6 @@ const OrderCard: React.FC<OrderCardProps> = ({
       </CardBody>
     </Card>
   );
-};
+});
 
 export default OrderCard;

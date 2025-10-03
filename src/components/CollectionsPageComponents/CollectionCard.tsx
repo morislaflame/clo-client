@@ -6,10 +6,11 @@ import {
 } from "@heroui/react";
 import type { Collection, MediaFile } from "@/http/collectionAPI";
 import { motion } from "motion/react";
+import { useTranslate } from "@/utils/useTranslate";
 
 const CollectionCard = observer(({ collection }: { collection: Collection }) => {
   const navigate = useNavigate();
-  
+  const { t } = useTranslate();
   // Получаем первое изображение коллекции
   const mainImage = collection.mediaFiles?.find((file: MediaFile) => file.mimeType.includes('image'));
   
@@ -37,7 +38,7 @@ const CollectionCard = observer(({ collection }: { collection: Collection }) => 
             />
           ) : (
             <div className="flex items-center justify-center w-full h-full bg-gray-100">
-              <span className="text-gray-400">Нет изображения</span>
+              <span className="text-gray-400">{t("no_image")}</span>
             </div>
           )}
         </div>
@@ -52,7 +53,7 @@ const CollectionCard = observer(({ collection }: { collection: Collection }) => 
             </p>
           )}
           <div className="text-sm text-gray-500">
-            {collection.products?.length || 0} товаров
+            {collection.products?.length || 0} {t("products")}
           </div>
         </CardBody>
       </Card>

@@ -15,6 +15,7 @@ import {
   ProductSelectors,
   ProductActions
 } from "@/components/ProductPageComponents";
+import { useTranslate } from "@/utils/useTranslate";
 
 const ProductPage = observer(() => {
   const { product, basket, user } = useContext(Context) as IStoreContext;
@@ -27,6 +28,7 @@ const ProductPage = observer(() => {
   // Состояния для валидации
   const [colorError, setColorError] = useState(false);
   const [sizeError, setSizeError] = useState(false);
+  const { t } = useTranslate();
 
   useEffect(() => {
     if (id) {
@@ -161,7 +163,7 @@ const ProductPage = observer(() => {
         <Card className="p-8 max-w-md">
           <CardBody className="text-center">
             <p className="text-danger mb-4">
-              {product.error || "Товар не найден"}
+              {product.error || t("product_not_found")}
             </p>
             <div className="flex gap-2 justify-center">
               <Button
@@ -169,14 +171,14 @@ const ProductPage = observer(() => {
                 variant="flat"
                 onClick={() => navigate("/")}
               >
-                На главную
+                {t("to_main")}
               </Button>
               <Button
                 color="default"
                 variant="bordered"
                 onClick={handleBackClick}
               >
-                Назад
+                {t("back")}
               </Button>
             </div>
           </CardBody>

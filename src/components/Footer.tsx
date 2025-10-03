@@ -1,8 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Divider } from '@heroui/react';
+import { useTranslate } from '@/utils/useTranslate';
+import { observer } from 'mobx-react-lite';
 
-const Footer: React.FC = () => {
+const Footer: React.FC = observer(() => {
+  const { t } = useTranslate();
   return (
     <footer className="text-white">
         <Divider className='mb-4' />
@@ -37,26 +40,26 @@ const Footer: React.FC = () => {
 
           {/* Быстрые ссылки */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">Быстрые ссылки</h4>
+            <h4 className="text-lg font-semibold mb-4">{t("quick_links")}</h4>
             <ul className="space-y-2">
               <li>
                 <Link to="/" className="text-gray-300 hover:text-white transition-colors">
-                  Главная
+                  {t("main")}
                 </Link>
               </li>
               <li>
                 <Link to="/products" className="text-gray-300 hover:text-white transition-colors">
-                  Товары
+                  {t("products")}
                 </Link>
               </li>
               <li>
                 <Link to="/news" className="text-gray-300 hover:text-white transition-colors">
-                  Новости
+                  {t("news")}
                 </Link>
               </li>
               <li>
                 <Link to="/basket" className="text-gray-300 hover:text-white transition-colors">
-                  Корзина
+                  {t("basket")}
                 </Link>
               </li>
             </ul>
@@ -64,13 +67,13 @@ const Footer: React.FC = () => {
 
           {/* Контакты */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">Контакты</h4>
+            <h4 className="text-lg font-semibold mb-4">{t("contacts")}</h4>
             <ul className="space-y-2 text-gray-300">
               <li className="flex items-center">
                 <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                 </svg>
-                г. Алматы, ул. Абая 150
+                {t("address_of_the_company")}
               </li>
               <li className="flex items-center">
                 <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
@@ -98,13 +101,13 @@ const Footer: React.FC = () => {
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a href="#" className="text-gray-300 hover:text-white text-sm transition-colors">
-                Политика конфиденциальности
+                {t("privacy_policy")}
               </a>
               <a href="#" className="text-gray-300 hover:text-white text-sm transition-colors">
-                Условия использования
+                {t("terms_of_use")}
               </a>
               <a href="#" className="text-gray-300 hover:text-white text-sm transition-colors">
-                Возврат и обмен
+                {t("return_and_exchange")}
               </a>
             </div>
           </div>
@@ -112,6 +115,6 @@ const Footer: React.FC = () => {
       </div>
     </footer>
   );
-};
+});
 
 export default Footer;

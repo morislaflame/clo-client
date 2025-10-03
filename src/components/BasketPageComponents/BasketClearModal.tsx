@@ -8,6 +8,8 @@ import {
   Button,
   Spinner
 } from '@heroui/react';
+import { observer } from 'mobx-react-lite';
+import { useTranslate } from '@/utils/useTranslate';
 
 interface BasketClearModalProps {
   isOpen: boolean;
@@ -16,23 +18,24 @@ interface BasketClearModalProps {
   isLoading: boolean;
 }
 
-const BasketClearModal: React.FC<BasketClearModalProps> = ({
+const BasketClearModal: React.FC<BasketClearModalProps> = observer(({
   isOpen,
   onClose,
   onConfirm,
   isLoading
 }) => {
+  const { t } = useTranslate();
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalContent>
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              Очистить корзину
+              {t("clear_basket")}
             </ModalHeader>
             <ModalBody>
               <p>
-                Вы уверены, что хотите удалить все товары из корзины? 
+                {t("clear_basket_confirmation")}
               </p>
             </ModalBody>
             <ModalFooter>
@@ -42,7 +45,7 @@ const BasketClearModal: React.FC<BasketClearModalProps> = ({
                 onPress={onClose}
                 disabled={isLoading}
               >
-                Отмена
+                {t("cancel")}
               </Button>
               <Button 
                 color="danger" 
@@ -52,10 +55,12 @@ const BasketClearModal: React.FC<BasketClearModalProps> = ({
                 {isLoading ? (
                   <>
                     <Spinner size="sm" />
-                    Удаление...
+                    {t("deleting")}
                   </>
                 ) : (
-                  'Удалить все'
+                  <>
+                  {t("delete_all")}
+                  </>
                 )}
               </Button>
             </ModalFooter>
@@ -64,6 +69,6 @@ const BasketClearModal: React.FC<BasketClearModalProps> = ({
       </ModalContent>
     </Modal>
   );
-};
+});
 
 export default BasketClearModal;

@@ -9,10 +9,12 @@ import {
 import { Context, type IStoreContext } from "@/store/StoreProvider";
 import type { Product } from "@/types/types";
 import { motion } from "motion/react";
+import { useTranslate } from "@/utils/useTranslate";
 
 const ProductCard = observer(({ item }: { item: Product }) => {
   const { product } = useContext(Context) as IStoreContext;
   const navigate = useNavigate();
+  const { t } = useTranslate();
   
   // Получаем первое изображение
   const mainImage = item.mediaFiles?.find(file => file.mimeType.includes('image'));
@@ -42,7 +44,7 @@ const ProductCard = observer(({ item }: { item: Product }) => {
             />
           ) : (
             <div className="flex items-center justify-center w-full h-full bg-gray-100">
-              <span className="text-gray-400">Нет изображения</span>
+              <span className="text-gray-400">{t("no_image")}</span>
             </div>
           )}
         </div>
@@ -76,6 +78,7 @@ const ProductCard = observer(({ item }: { item: Product }) => {
 
 const CollectionProductsList = observer(({ products }: { products: Product[] }) => {
   const { product } = useContext(Context) as IStoreContext;
+  const { t } = useTranslate();
 
   if (product.loading) {
     return (
@@ -89,9 +92,9 @@ const CollectionProductsList = observer(({ products }: { products: Product[] }) 
     return (
       <Card className="p-8">
         <CardBody className="text-center">
-          <p className="text-default-500">Товары в коллекции не найдены</p>
+          <p className="text-default-500">{t("products_in_collection_not_found")}</p>
           <p className="text-small text-default-400 mt-2">
-            В этой коллекции пока нет товаров
+            {t("no_products_in_collection")}
           </p>
         </CardBody>
       </Card>

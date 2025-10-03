@@ -1,5 +1,7 @@
 import React from 'react';
 import { Button, Spinner } from '@heroui/react';
+import { useTranslate } from '@/utils/useTranslate';
+import { observer } from 'mobx-react-lite';
 
 interface ProductActionsProps {
   isProductAvailable: boolean;
@@ -10,7 +12,7 @@ interface ProductActionsProps {
   onAddToBasket: () => void;
 }
 
-const ProductActions: React.FC<ProductActionsProps> = ({
+const ProductActions: React.FC<ProductActionsProps> = observer(({
   isProductAvailable,
   checkingBasket,
   isInBasket,
@@ -18,6 +20,7 @@ const ProductActions: React.FC<ProductActionsProps> = ({
   onBuyNow,
   onAddToBasket,
 }) => {
+  const { t } = useTranslate();
   return (
     <div className="space-y-3">
       <Button
@@ -26,7 +29,7 @@ const ProductActions: React.FC<ProductActionsProps> = ({
         disabled={!isProductAvailable}
         onClick={onBuyNow}
       >
-        Заказать
+        {t("order")}
       </Button>
       
       {isProductAvailable && (
@@ -40,7 +43,7 @@ const ProductActions: React.FC<ProductActionsProps> = ({
               isDisabled
             >
               <Spinner size="sm" />
-              Проверка...
+              {t("checking")}
             </Button>
           ) : isInBasket ? (
             <Button
@@ -48,7 +51,7 @@ const ProductActions: React.FC<ProductActionsProps> = ({
               className="w-full"
               isDisabled
             >
-                Добавлено в корзину
+                {t("added_to_basket")}
             </Button>
           ) : (
             <Button
@@ -62,10 +65,12 @@ const ProductActions: React.FC<ProductActionsProps> = ({
               {basketAdding ? (
                 <>
                   <Spinner size="sm" />
-                  Добавление...
+                  {t("adding")}
                 </>
               ) : (
-                'Добавить в корзину'
+                <>
+                  {t("add_to_basket")}
+                </>
               )}
             </Button>
           )}
@@ -73,6 +78,6 @@ const ProductActions: React.FC<ProductActionsProps> = ({
       )}
     </div>
   );
-};
+});
 
 export default ProductActions;

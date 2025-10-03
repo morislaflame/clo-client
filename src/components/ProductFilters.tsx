@@ -14,9 +14,11 @@ import {
 import { Context, type IStoreContext } from "@/store/StoreProvider";
 import type { ProductFilters } from "@/http/productAPI";
 import { ChevronDownIcon } from "@/components/ui/Icons";
+import { useTranslate } from "@/utils/useTranslate";
 
 function ProductFilters() {
   const { product } = useContext(Context) as IStoreContext;
+  const { t } = useTranslate();
   
   // Состояние для сворачивания фильтров на мобильных
   const [isExpanded, setIsExpanded] = useState(false);
@@ -95,13 +97,13 @@ function ProductFilters() {
   };
 
   const currencyOptions = [
-    { value: 'KZT', label: 'Тенге (₸)' },
-    { value: 'USD', label: 'Доллар ($)' },
+    { value: 'KZT', label: t("tenge") },
+    { value: 'USD', label: t("dollar") },
   ];
 
   const genderOptions = [
-    { value: 'MAN', label: 'Мужское' },
-    { value: 'WOMAN', label: 'Женское' },
+    { value: 'MAN', label: t("male") },
+    { value: 'WOMAN', label: t("female") },
   ];
 
   return (
@@ -109,7 +111,7 @@ function ProductFilters() {
       <CardHeader className="">
         <div className="flex justify-between items-center w-full">
           <div className="flex items-center gap-3">
-            <h3 className="text-lg font-semibold">Фильтры</h3>
+            <h3 className="text-lg font-semibold">{t("filters")}</h3>
           </div>
           
           {/* Валюта и кнопка разворачивания на мобильных */}
@@ -144,7 +146,7 @@ function ProductFilters() {
       <CardBody className={`space-y-4 ${isExpanded ? 'block' : 'hidden'} lg:block`}>
         {/* Валюта на широких экранах */}
         <div className="hidden lg:block">
-          <label className="text-sm font-medium mb-2 block">Валюта</label>
+          <label className="text-sm font-medium mb-2 block">{t("currency")}</label>
           <ButtonGroup className="w-full">
             {currencyOptions.map((option) => (
               <Button
@@ -164,8 +166,8 @@ function ProductFilters() {
 
         {/* Пол */}
         <Select
-          label="Пол"
-          placeholder="Выберите пол"
+          label={t("gender")}
+          placeholder={t("select_gender")}
           selectedKeys={localFilters.gender ? [localFilters.gender] : []}
           onSelectionChange={(keys) => {
             const value = Array.from(keys)[0] as string;
@@ -181,8 +183,8 @@ function ProductFilters() {
 
         {/* Размер */}
         <Select
-          label="Размер"
-          placeholder="Выберите размер"
+          label={t("size")}
+          placeholder={t("select_size")}
           selectedKeys={localFilters.size ? [localFilters.size] : []}
           onSelectionChange={(keys) => {
             const value = Array.from(keys)[0] as string;
@@ -199,8 +201,8 @@ function ProductFilters() {
 
         {/* Цвет */}
         <Select
-          label="Цвет"
-          placeholder="Выберите цвет"
+          label={t("color")}
+          placeholder={t("select_color")}
           selectedKeys={localFilters.color ? [localFilters.color] : []}
           onSelectionChange={(keys) => {
             const value = Array.from(keys)[0] as string;
@@ -225,8 +227,8 @@ function ProductFilters() {
 
         {/* Тип одежды */}
         <Select
-          label="Тип одежды"
-          placeholder="Выберите тип"
+          label={t("clothing_type")}
+          placeholder={t("select_type")}
           selectedKeys={localFilters.clothingTypeId ? [localFilters.clothingTypeId] : []}
           onSelectionChange={(keys) => {
             const value = Array.from(keys)[0] as string;
@@ -246,18 +248,18 @@ function ProductFilters() {
         {/* Цена */}
         <div className="space-y-2">
           <label className="text-sm font-medium mb-2 block">
-            Цена ({selectedCurrency === 'KZT' ? '₸' : '$'})
+            {t("price")} ({selectedCurrency === 'KZT' ? '₸' : '$'})
           </label>
           <div className="flex gap-2">
             <Input
-              placeholder="От"
+              placeholder={t("from")}
               type="number"
               value={localFilters.minPrice ? localFilters.minPrice.toString() : ''}
               onChange={(e) => handleFilterChange('minPrice', e.target.value)}
               min="0"
             />
             <Input
-              placeholder="До"
+              placeholder={t("to")}
               type="number"
               value={localFilters.maxPrice ? localFilters.maxPrice.toString() : ''}
               onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
@@ -276,7 +278,7 @@ function ProductFilters() {
             disabled={product.loading || !product.isFilterApplied}
             style={{ backgroundColor: 'white', color: 'black', width: '100%' }}
           >
-            Сбросить фильтры
+            {t("reset_filters")}
           </Button>
         </div>
       </CardBody>

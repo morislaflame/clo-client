@@ -19,10 +19,15 @@ export default class UserStore {
     isTooManyRequests = false;
     isServerError = false;
     serverErrorMessage = '';
-    _language = 'ru';
+    _language: 'ru' | 'en' | 'kz' = 'ru';
 
     constructor() {
         makeAutoObservable(this);
+        // Инициализируем язык из localStorage
+        const savedLanguage = localStorage.getItem('language') as 'ru' | 'en' | 'kz';
+        if (savedLanguage && ['ru', 'en', 'kz'].includes(savedLanguage)) {
+            this._language = savedLanguage;
+        }
     }
 
     setIsAuth(bool: boolean) {
@@ -46,7 +51,7 @@ export default class UserStore {
         this.serverErrorMessage = message;
     }
 
-    setLanguage(lang: 'ru' | 'en') {
+    setLanguage(lang: 'ru' | 'en' | 'kz') {
         this._language = lang;
         localStorage.setItem('language', lang);
     }

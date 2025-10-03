@@ -1,13 +1,16 @@
 import React from 'react';
 import { Chip, Divider } from '@heroui/react';
 import type { Product } from '@/types/types';
+import { useTranslate } from '@/utils/useTranslate';
+import { observer } from 'mobx-react-lite';
 
 interface ProductInfoProps {
   product: Product;
   currency: string;
 }
 
-const ProductInfo: React.FC<ProductInfoProps> = ({ product, currency }) => {
+const ProductInfo: React.FC<ProductInfoProps> = observer(({ product, currency }) => {
+  const { t } = useTranslate();
   // Получаем доступные размеры и цвета
   const availableSizes = product.sizes?.map(size => size.name).join(', ') || '';
   const availableColors = product.colors?.map(color => color.name).join(', ') || '';
@@ -61,21 +64,21 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, currency }) => {
       <Divider />
         {product.collection && (
           <div className="flex justify-between">
-            <span className="text-default-500 text-sm">Коллекция:</span>
+            <span className="text-default-500 text-sm">{t("collection")}:</span>
             <span className="font-medium text-sm">{product.collection.name}</span>
           </div>
         )}
         
         {availableSizes && (
           <div className="flex justify-between">
-            <span className="text-default-500 text-sm">Размеры:</span>
+            <span className="text-default-500 text-sm">{t("sizes")}:</span>
             <span className="font-medium text-sm">{availableSizes}</span>
           </div>
         )}
         
         {availableColors && (
           <div className="flex justify-between">
-            <span className="text-default-500 text-sm">Цвета:</span>
+            <span className="text-default-500 text-sm">{t("colors")}:</span>
             <span className="font-medium text-sm">{availableColors}</span>
           </div>
         )}
@@ -86,7 +89,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, currency }) => {
         <>
           
           <div className="space-y-2">
-            <h3 className="text-md font-medium">Состав</h3>
+            <h3 className="text-md font-medium">{t("ingredients")}:</h3>
             <p className="text-default-600 leading-relaxed text-sm">
               {product.ingredients}
             </p>
@@ -96,6 +99,6 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, currency }) => {
       )}
     </div>
   );
-};
+});
 
 export default ProductInfo;

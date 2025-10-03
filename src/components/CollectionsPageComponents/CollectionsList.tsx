@@ -9,9 +9,11 @@ import {
 } from "@heroui/react";
 import { Context, type IStoreContext } from "@/store/StoreProvider";
 import CollectionCard from "./CollectionCard";
+import { useTranslate } from "@/utils/useTranslate";
 
 const CollectionsList = observer(() => {
   const { collection } = useContext(Context) as IStoreContext;
+  const { t } = useTranslate();
 
   // Загружаем коллекции при монтировании
   useEffect(() => {
@@ -41,7 +43,7 @@ const CollectionsList = observer(() => {
             onClick={() => collection.loadCollections()}
             className="mt-4"
           >
-            Попробовать снова
+            {t("try_again")}
           </Button>
         </CardBody>
       </Card>
@@ -52,9 +54,9 @@ const CollectionsList = observer(() => {
     return (
       <Card className="p-8">
         <CardBody className="text-center">
-          <p className="text-default-500">Коллекции не найдены</p>
+          <p className="text-default-500">{t("collections_not_found")}</p>
           <p className="text-small text-default-400 mt-2">
-            Попробуйте обновить страницу
+            {t("try_again")}
           </p>
         </CardBody>
       </Card>

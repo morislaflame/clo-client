@@ -12,12 +12,13 @@ import type { Product } from "@/types/types";
 import { ProgressiveBlur } from "./ui/progressive-blur";
 import { motion } from "motion/react";
 import ProductSkeleton from "./ui/ProductSkeleton";
+import { useTranslate } from "@/utils/useTranslate";
 
 const ProductCard = observer(({ item }: { item: Product }) => {
   const { product} = useContext(Context) as IStoreContext;
   const navigate = useNavigate();
   const [isHover, setIsHover] = useState(false);
-  
+  const { t } = useTranslate();
   // Получаем первое изображение
   const mainImage = item.mediaFiles?.find(file => file.mimeType.includes('image'));
   
@@ -88,7 +89,7 @@ const ProductCard = observer(({ item }: { item: Product }) => {
       </>
         ) : (
           <div className="flex items-center justify-center w-full h-full bg-gray-100">
-            <span className="text-gray-400">Нет изображения</span>
+            <span className="text-gray-400">{t("no_image")}</span>
           </div>
         )}
       </div>
@@ -122,7 +123,7 @@ const ProductCard = observer(({ item }: { item: Product }) => {
 
 const ProductList = observer(() => {
   const { product } = useContext(Context) as IStoreContext;
-
+  const { t } = useTranslate();
   // Загружаем товары при монтировании
   useEffect(() => {
     product.loadProducts();
@@ -156,7 +157,7 @@ const ProductList = observer(() => {
             onClick={() => product.loadProducts()}
             className="mt-4"
           >
-            Попробовать снова
+            {t("try_again")}
           </Button>
         </CardBody>
       </Card>
@@ -167,9 +168,9 @@ const ProductList = observer(() => {
     return (
       <Card className="p-8">
         <CardBody className="text-center">
-          <p className="text-default-500">Товары не найдены</p>
+          <p className="text-default-500">{t("products_not_found")}</p>
           <p className="text-small text-default-400 mt-2">
-            Попробуйте изменить фильтры поиска
+            {t("try_to_change_filters")}
           </p>
         </CardBody>
       </Card>

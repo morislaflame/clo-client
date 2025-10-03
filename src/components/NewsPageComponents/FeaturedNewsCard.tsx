@@ -1,13 +1,16 @@
 import React from 'react';
 import { Card, CardHeader } from '@heroui/react';
 import type { MediaFile, News } from '@/types/types';
+import { observer } from 'mobx-react-lite';
+import { useTranslate } from '@/utils/useTranslate';
 
 interface FeaturedNewsCardProps {
   news: News;
   onNewsClick: (newsId: number) => void;
 }
 
-const FeaturedNewsCard: React.FC<FeaturedNewsCardProps> = ({ news, onNewsClick }) => {
+const FeaturedNewsCard: React.FC<FeaturedNewsCardProps> = observer(({ news, onNewsClick }) => {
+  const { t } = useTranslate();
   // Функция для получения первого видео из медиафайлов
   const getFirstVideo = (mediaFiles: MediaFile[]) => {
     return mediaFiles.find(file => file.mimeType.includes('video'));
@@ -58,7 +61,7 @@ const FeaturedNewsCard: React.FC<FeaturedNewsCardProps> = ({ news, onNewsClick }
         </div>
       ) : (
         <div className="w-full h-48 bg-gray-100 flex items-center justify-center">
-          <span className="text-gray-400">Нет медиафайлов</span>
+          <span className="text-gray-400">{t("no_media_files")}</span>
         </div>
       )}
 
@@ -74,6 +77,6 @@ const FeaturedNewsCard: React.FC<FeaturedNewsCardProps> = ({ news, onNewsClick }
 
     </Card>
   );
-};
+});
 
 export default FeaturedNewsCard;

@@ -1,11 +1,15 @@
 import React from 'react';
 import { Button } from '@heroui/react';
+import { useTranslate } from '@/utils/useTranslate';
+import { observer } from 'mobx-react-lite';
 
 interface BasketHeaderProps {
   onBackClick: () => void;
 }
 
-const BasketHeader: React.FC<BasketHeaderProps> = ({ onBackClick }) => {
+const BasketHeader: React.FC<BasketHeaderProps> = observer(({ onBackClick }) => {
+  const { t } = useTranslate();
+  
   return (
     <div className="mb-6 flex items-center justify-between">
       <Button
@@ -13,12 +17,12 @@ const BasketHeader: React.FC<BasketHeaderProps> = ({ onBackClick }) => {
         onClick={onBackClick}
         className="text-default-500"
       >
-        ← Назад
+        ← {t("back")}
       </Button>
-      <h1 className="text-2xl font-bold">Корзина</h1>
+      <h1 className="text-2xl font-bold">{t("basket")}</h1>
       <div className="w-20" /> {/* Для выравнивания */}
     </div>
   );
-};
+});
 
 export default BasketHeader;

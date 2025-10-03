@@ -2,6 +2,8 @@ import React from 'react';
 import { Card, CardBody, Button, Spinner, Image } from '@heroui/react';
 import { TrashIcon } from '@/components/ui/Icons';
 import type { BasketItem as BasketItemType } from '@/http/basketAPI';
+import { useTranslate } from '@/utils/useTranslate';
+import { observer } from 'mobx-react-lite';
 
 interface BasketItemProps {
   item: BasketItemType;
@@ -10,13 +12,13 @@ interface BasketItemProps {
   isRemoving: boolean;
 }
 
-const BasketItem: React.FC<BasketItemProps> = ({
+const BasketItem: React.FC<BasketItemProps> = observer(({
   item,
   currency,
   onRemoveItem,
   isRemoving
 }) => {
-  
+  const { t } = useTranslate();
 
   return (
     <Card className="w-full bg-transparent border-small border-default-200 shadow-none">
@@ -32,7 +34,7 @@ const BasketItem: React.FC<BasketItemProps> = ({
               />
             ) : (
               <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center">
-                <span className="text-gray-400 text-xs">Нет фото</span>
+                <span className="text-gray-400 text-xs">{t("no_photo")}</span>
               </div>
             )}
           </div>
@@ -70,7 +72,7 @@ const BasketItem: React.FC<BasketItemProps> = ({
                 size="sm"
                 onClick={() => onRemoveItem(item.id)}
                 disabled={isRemoving}
-                aria-label="Удалить из корзины"
+                aria-label={t("remove_from_basket")}
               >
                 {isRemoving ? (
                   <Spinner size="md" />
@@ -85,12 +87,12 @@ const BasketItem: React.FC<BasketItemProps> = ({
               {/* Выбранные характеристики */}
               {item.selectedSize && (
                 <span className="font-medium">
-                  Размер: {item.selectedSize.name}
+                  {t("size_label")}: {item.selectedSize.name}
                 </span>
               )}
               {item.selectedColor && (
                 <span className="font-medium flex items-center gap-1">
-                  Цвет: 
+                  {t("color_label")}: 
                   {item.selectedColor.hexCode && (
                     <div 
                       className="w-3 h-3 rounded-full border border-gray-300"
@@ -104,12 +106,12 @@ const BasketItem: React.FC<BasketItemProps> = ({
               {/* Доступные характеристики (если не выбраны) */}
               {!item.selectedSize && item.product.sizes && item.product.sizes.length > 0 && (
                 <span>
-                  Размеры: {item.product.sizes.map(s => s.name).join(', ')}
+                  {t("sizes")}: {item.product.sizes.map(s => s.name).join(', ')}
                 </span>
               )}
               {!item.selectedColor && item.product.colors && item.product.colors.length > 0 && (
                 <span>
-                  Цвета: {item.product.colors.map(c => c.name).join(', ')}
+                  {t("colors")}: {item.product.colors.map(c => c.name).join(', ')}
                 </span>
               )}
             </div>
@@ -118,6 +120,6 @@ const BasketItem: React.FC<BasketItemProps> = ({
       </CardBody>
     </Card>
   );
-};
+});
 
 export default BasketItem;

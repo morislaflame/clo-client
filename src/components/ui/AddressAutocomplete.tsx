@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { initializePlaceAutocompleteElement, validateAddressForCISElement, formatAddressElement } from '@/utils/googleMaps';
+import { useTranslate } from '@/utils/useTranslate';
+import { observer } from 'mobx-react-lite';
 
 interface AddressAutocompleteProps {
   value: string;
@@ -14,7 +16,7 @@ interface AddressAutocompleteProps {
   className?: string;
 }
 
-const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
+const AddressAutocomplete: React.FC<AddressAutocompleteProps> = observer(({
   value,
   onChange,
   onPlaceSelect,
@@ -26,6 +28,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   isRequired = false,
   className = ""
 }) => {
+  const { t } = useTranslate();
   const inputRef = useRef<HTMLInputElement>(null);
   const autocompleteElementRef = useRef<google.maps.places.PlaceAutocompleteElement | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -120,7 +123,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
           />
 
           <span className="text-sm text-default-500">
-            Доставка по СНГ
+            {t("delivery_by_cng")}
           </span>
           </div>
           
@@ -147,6 +150,6 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
       )}
     </div>
   );
-};
+});
 
 export default AddressAutocomplete;

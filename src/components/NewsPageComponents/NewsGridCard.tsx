@@ -1,13 +1,16 @@
 import React from 'react';
 import { Card, Chip } from '@heroui/react';
 import type { MediaFile, News, Tag } from '@/types/types';
+import { observer } from 'mobx-react-lite';
+import { useTranslate } from '@/utils/useTranslate';
 
 interface NewsGridCardProps {
   news: News;
   onNewsClick: (newsId: number) => void;
 }
 
-const NewsGridCard: React.FC<NewsGridCardProps> = ({ news, onNewsClick }) => {
+const NewsGridCard: React.FC<NewsGridCardProps> = observer(({ news, onNewsClick }) => {
+  const { t } = useTranslate();
   // Функция для получения первого изображения из медиафайлов
   const getFirstImage = (mediaFiles: MediaFile[]) => {
     return mediaFiles.find(file => file.mimeType.includes('image'));
@@ -31,7 +34,7 @@ const NewsGridCard: React.FC<NewsGridCardProps> = ({ news, onNewsClick }) => {
             />
           ) : (
             <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-              <span className="text-gray-400 text-xs">Нет изображения</span>
+              <span className="text-gray-400 text-xs">{t("no_image")}</span>
             </div>
           )}
 
@@ -68,6 +71,6 @@ const NewsGridCard: React.FC<NewsGridCardProps> = ({ news, onNewsClick }) => {
         </div>
     </Card>
   );
-};
+});
 
 export default NewsGridCard;

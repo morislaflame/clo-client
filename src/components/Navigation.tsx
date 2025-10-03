@@ -21,11 +21,13 @@ import {
 import { Context, type IStoreContext } from "@/store/StoreProvider";
 import { LOGIN_ROUTE, REGISTRATION_ROUTE, MAIN_ROUTE, BASKET_ROUTE, NEWS_ROUTE, ORDERS_ROUTE, COLLECTIONS_ROUTE } from "@/utils/consts";
 import { ShoppingCartIcon } from "@/components/ui/Icons";
+import { useTranslate } from "@/utils/useTranslate";
 
 const Navigation = observer(() => {
   const { user, basket } = useContext(Context) as IStoreContext;
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const { t } = useTranslate();
 
   // Загружаем количество товаров в корзине при авторизации
   useEffect(() => {
@@ -66,22 +68,26 @@ const Navigation = observer(() => {
     }
   };
 
+  const handleLanguageChange = (language: 'ru' | 'en' | 'kz') => {
+    user.setLanguage(language);
+  };
+
   const publicMenuItems = [
-    { name: "Новости", href: NEWS_ROUTE },
-    { name: "Магазин", href: MAIN_ROUTE },
-    { name: "Дропы", href: COLLECTIONS_ROUTE },
-    { name: "О нас", href: "#" },
+    { name: t("news"), href: NEWS_ROUTE },
+    { name: t("shop"), href: MAIN_ROUTE },
+    { name: t("drops"), href: COLLECTIONS_ROUTE },
+    { name: t("about"), href: "#" },
   ];
 
   const authMenuItems = user.isAuth 
     ? [
-        { name: "Профиль", href: "#", action: () => {} },
-        { name: "Мои заказы", href: ORDERS_ROUTE, action: () => navigate(ORDERS_ROUTE) },
-        { name: "Выйти", href: "#", action: handleLogout, color: "danger" },
+        { name: t("profile"), href: "#", action: () => {} },
+        { name: t("my_orders"), href: ORDERS_ROUTE, action: () => navigate(ORDERS_ROUTE) },
+        { name: t("logout"), href: "#", action: handleLogout, color: "danger" },
       ]
     : [
-        { name: "Войти", href: LOGIN_ROUTE, action: () => navigate(LOGIN_ROUTE) },
-        { name: "Регистрация", href: REGISTRATION_ROUTE, action: () => navigate(REGISTRATION_ROUTE) },
+        { name: t("enter"), href: LOGIN_ROUTE, action: () => navigate(LOGIN_ROUTE) },
+        { name: t("registration"), href: REGISTRATION_ROUTE, action: () => navigate(REGISTRATION_ROUTE) },
       ];
 
   return (
@@ -132,6 +138,44 @@ const Navigation = observer(() => {
       </NavbarContent>
 
       <NavbarContent justify="end" className="gap-2">
+        {/* Переключатель языка */}
+        <NavbarItem>
+          <Dropdown placement="bottom-end">
+            <DropdownTrigger>
+              <Button
+                variant="light"
+                size="sm"
+                className="text-default-600"
+              >
+                {user.language.toUpperCase()}
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Language selection">
+              <DropdownItem 
+                key="ru" 
+                onClick={() => handleLanguageChange('ru')}
+                className={user.language === 'ru' ? 'bg-default-100' : ''}
+              >
+                {t("russian")}
+              </DropdownItem>
+              <DropdownItem 
+                key="en" 
+                onClick={() => handleLanguageChange('en')}
+                className={user.language === 'en' ? 'bg-default-100' : ''}
+              >
+                {t("english")}
+              </DropdownItem>
+              <DropdownItem 
+                key="kz" 
+                onClick={() => handleLanguageChange('kz')}
+                className={user.language === 'kz' ? 'bg-default-100' : ''}
+              >
+                {t("kazakh")}
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        </NavbarItem>
+
         {/* Кнопка корзины */}
         <NavbarItem>
           <Button
@@ -139,7 +183,7 @@ const Navigation = observer(() => {
             variant="light"
             className="relative"
             onClick={handleBasketClick}
-            aria-label="Корзина"
+            aria-label={t("basket")}
           >
             <Badge 
               content={basket.totalCount} 
@@ -168,10 +212,10 @@ const Navigation = observer(() => {
             </DropdownTrigger>
             <DropdownMenu aria-label="User menu">
               <DropdownItem key="profile" onClick={() => {}}>
-                Профиль
+                {t("profile")}
               </DropdownItem>
               <DropdownItem key="orders" onClick={() => navigate(ORDERS_ROUTE)}>
-                Мои заказы
+                {t("my_orders")}
               </DropdownItem>
               <DropdownItem 
                 key="logout" 
@@ -179,7 +223,7 @@ const Navigation = observer(() => {
                 color="danger"
                 onClick={handleLogout}
               >
-                Выйти
+                {t("logout")}
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
@@ -191,7 +235,7 @@ const Navigation = observer(() => {
                 className="text-default-600 hover:text-default-500 transition-colors cursor-pointer" 
                 to={LOGIN_ROUTE}
               >
-                Вход
+                {t("enter")}
               </Link>
             </NavbarItem>
             <NavbarItem>
@@ -200,7 +244,7 @@ const Navigation = observer(() => {
                 variant="flat"
                 onClick={() => navigate(REGISTRATION_ROUTE)}
               >
-                Регистрация
+                {t("registration")}
               </Button>
             </NavbarItem>
           </>

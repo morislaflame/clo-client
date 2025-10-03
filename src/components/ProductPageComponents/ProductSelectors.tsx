@@ -1,6 +1,8 @@
 import React from 'react';
 import { Select, SelectItem, Divider } from '@heroui/react';
 import type { Product } from '@/types/types';
+import { useTranslate } from '@/utils/useTranslate';
+import { observer } from 'mobx-react-lite';
 
 interface ProductSelectorsProps {
   product: Product;
@@ -14,7 +16,7 @@ interface ProductSelectorsProps {
   setSizeError: (error: boolean) => void;
 }
 
-const ProductSelectors: React.FC<ProductSelectorsProps> = ({
+const ProductSelectors: React.FC<ProductSelectorsProps> = observer(({
   product,
   selectedColorId,
   setSelectedColorId,
@@ -25,6 +27,7 @@ const ProductSelectors: React.FC<ProductSelectorsProps> = ({
   sizeError,
   setSizeError
 }) => {
+  const { t } = useTranslate();
   const hasColors = product.colors && product.colors.length > 0;
   const hasSizes = product.sizes && product.sizes.length > 0;
 
@@ -34,13 +37,13 @@ const ProductSelectors: React.FC<ProductSelectorsProps> = ({
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold">Выберите характеристики</h3>
+      <h3 className="text-lg font-semibold">{t("select_characteristics")}:</h3>
       
       {/* Выбор цвета */}
       {hasColors && (
         <div className="space-y-2">
           <Select
-            placeholder="Выберите цвет"
+            placeholder={t("select_color")}
             selectedKeys={selectedColorId ? [selectedColorId] : []}
             onSelectionChange={(keys) => {
               const selected = Array.from(keys)[0] as string;
@@ -52,7 +55,7 @@ const ProductSelectors: React.FC<ProductSelectorsProps> = ({
             }}
             className="max-w-xs"
             color={colorError ? "warning" : "default"}
-            errorMessage={colorError ? "Пожалуйста, выберите цвет" : ""}
+            errorMessage={colorError ? t("please_select_color") : ""}
             renderValue={(items) => {
               return items.map((item) => {
                 const color = product.colors?.find(c => c.id.toString() === item.key);
@@ -91,7 +94,7 @@ const ProductSelectors: React.FC<ProductSelectorsProps> = ({
       {hasSizes && (
         <div className="space-y-2">
           <Select
-            placeholder="Выберите размер"
+            placeholder={t("select_size")}
             selectedKeys={selectedSizeId ? [selectedSizeId] : []}
             onSelectionChange={(keys) => {
               const selected = Array.from(keys)[0] as string;
@@ -103,7 +106,7 @@ const ProductSelectors: React.FC<ProductSelectorsProps> = ({
             }}
             className="max-w-xs"
             color={sizeError ? "warning" : "default"}
-            errorMessage={sizeError ? "Пожалуйста, выберите размер" : ""}
+            errorMessage={sizeError ? t("please_select_size") : ""}
           >
             {product.sizes?.map((size) => (
               <SelectItem key={size.id.toString()}>
@@ -117,6 +120,6 @@ const ProductSelectors: React.FC<ProductSelectorsProps> = ({
       <Divider />
     </div>
   );
-};
+});
 
 export default ProductSelectors;

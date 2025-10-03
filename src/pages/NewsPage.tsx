@@ -5,7 +5,6 @@ import { Spinner } from "@heroui/react";
 import { Context } from "@/store/StoreProvider";
 import type { IStoreContext } from "@/store/StoreProvider";
 import {
-  NewsHeader,
   NewsList,
   NewsPagination,
   NewsEmpty
@@ -15,7 +14,6 @@ const NewsPage = observer(() => {
   const { news, newsType } = useContext(Context) as IStoreContext;
   const navigate = useNavigate();
   
-
   useEffect(() => {
     // Загружаем новости и типы новостей при открытии страницы
     news.fetchNews({ status: 'PUBLISHED', newsTypeId: undefined });
@@ -26,9 +24,6 @@ const NewsPage = observer(() => {
     navigate(`/news/${newsId}`);
   };
 
-  const handleBackClick = () => {
-    navigate(-1);
-  };
 
 
   if (news.loading) {
@@ -44,7 +39,7 @@ const NewsPage = observer(() => {
   return (
     <div className="min-h-screen">
       <div className="w-full p-4 relative">
-        <NewsHeader onBackClick={handleBackClick} />
+        {/* <NewsHeader onBackClick={handleBackClick} /> */}
 {/* 
         <NewsFilters
           selectedNewsType={selectedNewsType}

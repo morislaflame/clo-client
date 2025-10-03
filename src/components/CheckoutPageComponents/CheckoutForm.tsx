@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Card, CardBody, Input, Textarea, Select, SelectItem, Divider } from '@heroui/react';
 import AddressAutocomplete from '@/components/ui/AddressAutocomplete';
+import { useTranslate } from '@/utils/useTranslate';
+import { observer } from 'mobx-react-lite';
 
 interface CheckoutFormProps {
   formData: {
@@ -14,12 +16,13 @@ interface CheckoutFormProps {
   onAddressValidationChange?: (isValid: boolean, errorMessage?: string) => void;
 }
 
-const CheckoutForm: React.FC<CheckoutFormProps> = ({
+const CheckoutForm: React.FC<CheckoutFormProps> = observer(({
   formData,
   errors,
   onInputChange,
   onAddressValidationChange
 }) => {
+  const { t } = useTranslate();
   const [addressValidation, setAddressValidation] = useState<{
     isValid: boolean;
     errorMessage?: string;
@@ -39,13 +42,13 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
       {/* Информация о получателе */}
       <Card className="h-auto shadow-none border-none bg-transparent">
         <CardBody>
-          <h2 className="text-xl font-semibold mb-4">Информация о получателе</h2>
+          <h2 className="text-xl font-semibold mb-4">{t("recipient_info")}</h2>
           
           <div className="space-y-4">
             <Input
-              label="ФИО получателя"
+              label={t("recipient_name")}
               labelPlacement="outside"
-              placeholder="Введите ФИО получателя"
+              placeholder={t("enter_recipient_name")}
               value={formData.recipientName}
               onValueChange={(value) => onInputChange('recipientName', value)}
               isInvalid={!!errors.recipientName}
@@ -54,8 +57,8 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
             />
             
             <AddressAutocomplete
-              label="Адрес доставки"
-              placeholder="Начните вводить адрес для автодополнения"
+              label={t("delivery_address")}
+              placeholder={t("start_typing_address")}
               value={formData.recipientAddress}
               onChange={(value) => onInputChange('recipientAddress', value)}
               onPlaceSelect={handlePlaceSelect}
@@ -70,12 +73,12 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
           <Divider className="my-4" />
 
           <div className="flex flex-col">
-            <h2 className="text-xl font-semibold mb-4">Способ оплаты</h2>
+            <h2 className="text-xl font-semibold mb-4">{t("payment_method")}</h2>
           
           <Select
-            label="Выберите способ оплаты"
+            label={t("select_payment_method")}
             labelPlacement="outside"
-            placeholder="Выберите способ оплаты"
+            placeholder={t("select_payment_method")}
             selectedKeys={[formData.paymentMethod]}
             onSelectionChange={(keys) => {
               const selected = Array.from(keys)[0] as string;
@@ -85,19 +88,19 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
             errorMessage={errors.paymentMethod}
             isRequired
           >
-            <SelectItem key="CASH">Наличные</SelectItem>
-            <SelectItem key="CARD">Карта</SelectItem>
-            <SelectItem key="BANK_TRANSFER">Банковский перевод</SelectItem>
+            <SelectItem key="CASH">{t("cash")}</SelectItem>
+            <SelectItem key="CARD">{t("card")}</SelectItem>
+            <SelectItem key="BANK_TRANSFER">{t("bank_transfer")}</SelectItem>
           </Select>
           </div>
 
           <Divider className="my-4" />
 
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold mb-4">Дополнительные заметки</h2>
+            <h2 className="text-xl font-semibold mb-4">{t("additional_notes")}</h2>
           
           <Textarea
-            placeholder="Любые дополнительные пожелания или комментарии"
+            placeholder={t("additional_notes_placeholder")}
             value={formData.notes}
             onValueChange={(value) => onInputChange('notes', value)}
             minRows={3}
@@ -108,6 +111,6 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
 
     </div>
   );
-};
+});
 
 export default CheckoutForm;

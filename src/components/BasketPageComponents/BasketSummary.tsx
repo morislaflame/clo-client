@@ -1,5 +1,7 @@
 import React from 'react';
 import { Card, CardBody, Button, Divider } from '@heroui/react';
+import { useTranslate } from '@/utils/useTranslate';
+import { observer } from 'mobx-react-lite';
 
 interface BasketSummaryProps {
   totalCount: number;
@@ -10,7 +12,7 @@ interface BasketSummaryProps {
   onClearBasket: () => void;
 }
 
-const BasketSummary: React.FC<BasketSummaryProps> = ({
+const BasketSummary: React.FC<BasketSummaryProps> = observer(({
   totalCount,
   totalKZT,
   totalUSD,
@@ -18,21 +20,23 @@ const BasketSummary: React.FC<BasketSummaryProps> = ({
   onCheckout,
   onClearBasket
 }) => {
+  const { t } = useTranslate();
+  
   return (
     <div className="lg:col-span-1">
       <Card className="sticky top-4 bg-transparent border-none shadow-none ">
         <CardBody className="p-4 space-y-4">
-          <h3 className="text-lg font-semibold">Итого</h3>
+          <h3 className="text-lg font-semibold">{t("total")}</h3>
           
           <Divider />
           
           <div className="space-y-2">
             <div className="flex justify-between">
-              <span>Товаров:</span>
+              <span>{t("items_count")}</span>
               <span className="font-medium">{totalCount}</span>
             </div>
             <div className="flex justify-between">
-              <span>Сумма:</span>
+              <span>{t("sum")}</span>
               <span className="font-bold text-lg">
                 {currency === 'KZT' 
                   ? `${totalKZT.toLocaleString()} ₸` 
@@ -56,7 +60,7 @@ const BasketSummary: React.FC<BasketSummaryProps> = ({
               className="w-full bg-white text-black"
               onClick={onCheckout}
             >
-              Оформить заказ
+              {t("checkout")}
             </Button>
             
             <Button
@@ -66,13 +70,13 @@ const BasketSummary: React.FC<BasketSummaryProps> = ({
               className="w-full"
               onClick={onClearBasket}
             >
-              Очистить корзину
+              {t("clear_basket")}
             </Button>
           </div>
         </CardBody>
       </Card>
     </div>
   );
-};
+});
 
 export default BasketSummary;

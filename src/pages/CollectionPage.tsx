@@ -4,11 +4,13 @@ import { observer } from "mobx-react-lite";
 import { Spinner, Card, CardBody, Button } from "@heroui/react";
 import { Context, type IStoreContext } from "@/store/StoreProvider";
 import { CollectionHeader, CollectionProductsList } from "@/components/CollectionsPageComponents";
+import { useTranslate } from "@/utils/useTranslate";
 
 const CollectionPage = observer(() => {
   const { collection } = useContext(Context) as IStoreContext;
   const { id } = useParams<{ id: string }>();
   const [isLoading, setIsLoading] = useState(true);
+  const { t } = useTranslate();
 
   useEffect(() => {
     const loadCollection = async () => {
@@ -41,14 +43,14 @@ const CollectionPage = observer(() => {
         <Card className="p-8 max-w-md">
           <CardBody className="text-center">
             <p className="text-danger mb-4">
-              {collection.error || "Коллекция не найдена"}
+              {collection.error || t("collection_not_found")}
             </p>
             <Button
               color="default"
               variant="flat"
               onClick={() => window.history.back()}
             >
-              Назад
+              {t("back")}
             </Button>
           </CardBody>
         </Card>
@@ -65,7 +67,7 @@ const CollectionPage = observer(() => {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <h2 className="text-2xl font-bold mb-2">
-            Дроп
+            {t("drop")}
           </h2>
           <p className="text-default-600">
             "{collection.currentCollection.name}"

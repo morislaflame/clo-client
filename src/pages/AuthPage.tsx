@@ -14,12 +14,14 @@ import {
 import { EyeFilledIcon, EyeSlashFilledIcon } from "@/components/ui/Icons";
 import { Context, type IStoreContext } from "@/store/StoreProvider";
 import { MAIN_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE } from "@/utils/consts";
+import { useTranslate } from "@/utils/useTranslate";
 
 const AuthPage = observer(() => {
   const { user } = useContext(Context) as IStoreContext;
   const location = useLocation();
   const navigate = useNavigate();
   const isLogin = location.pathname === LOGIN_ROUTE;
+  const { t } = useTranslate();
   
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -97,12 +99,12 @@ const AuthPage = observer(() => {
           </div>
           <div className="text-center">
             <h1 className="text-2xl font-bold">
-              {isLogin ? "Вход в аккаунт" : "Создание аккаунта"}
+              {isLogin ? t("login") : t("register")}
             </h1>
             <p className="text-default-500 text-sm mt-1">
               {isLogin 
-                ? "Введите свои данные" 
-                : "Создайте новый аккаунт для продолжения"
+                ? t("enter_data") 
+                : t("create_account")
               }
             </p>
           </div>
@@ -112,7 +114,7 @@ const AuthPage = observer(() => {
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <Input
               label="Email"
-              placeholder="Введите ваш email"
+              placeholder={t("enter_email")}
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -125,8 +127,8 @@ const AuthPage = observer(() => {
             />
 
             <Input
-              label="Пароль"
-              placeholder="Введите пароль"
+              label={t("password")}
+              placeholder={t("enter_password")}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               isRequired
@@ -153,8 +155,8 @@ const AuthPage = observer(() => {
 
             {!isLogin && (
               <Input
-                label="Подтвердите пароль"
-                placeholder="Повторите пароль"
+                label={t("confirm_password")}
+                placeholder={t("confirm_password")}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 isRequired
@@ -192,7 +194,7 @@ const AuthPage = observer(() => {
               isLoading={isLoading}
               className="w-full mt-2 bg-white text-black"
             >
-              {isLogin ? "Войти" : "Создать аккаунт"}
+              {isLogin ? t("login") : t("register")}
             </Button>
           </form>
 
@@ -200,14 +202,14 @@ const AuthPage = observer(() => {
 
           <div className="text-center">
             <p className="text-sm text-default-500">
-              {isLogin ? "Нет аккаунта?" : "Уже есть аккаунт?"}
+              {isLogin ? t("no_account") : t("already_have_account")}
               <Link
                 as="button"
                 className="ml-1 text-sm font-medium rounded-lg p-1 active:border-none"
                 onClick={switchAuthMode}
                 color="foreground"
               >
-                {isLogin ? "Зарегистрироваться" : "Войти"}
+                {isLogin ? t("register") : t("login")}
               </Link>
             </p>
           </div>
