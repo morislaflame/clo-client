@@ -33,10 +33,8 @@ const Navigation = observer(() => {
   useEffect(() => {
     if (user.isAuth) {
       basket.loadBasketCount().catch(console.error);
-    } else {
-      // Сбрасываем счетчик при выходе
-      basket.setSummary(0, 0, 0);
     }
+    // При выходе корзина автоматически переключается на локальную
   }, [user.isAuth, basket]);
 
   // Закрытие меню при нажатии Escape
@@ -61,11 +59,8 @@ const Navigation = observer(() => {
   };
 
   const handleBasketClick = () => {
-    if (user.isAuth) {
-      navigate(BASKET_ROUTE);
-    } else {
-      navigate(LOGIN_ROUTE);
-    }
+    // Теперь корзина доступна и гостям
+    navigate(BASKET_ROUTE);
   };
 
   const handleLanguageChange = (language: 'ru' | 'en' | 'kz') => {

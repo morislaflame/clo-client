@@ -2,14 +2,15 @@ import React from 'react';
 import { Card, CardBody, Button, Spinner, Image } from '@heroui/react';
 import { TrashIcon } from '@/components/ui/Icons';
 import type { BasketItem as BasketItemType } from '@/http/basketAPI';
+import type { LocalBasketItem } from '@/types/basket';
 import { useTranslate } from '@/utils/useTranslate';
 import { observer } from 'mobx-react-lite';
 
 interface BasketItemProps {
-  item: BasketItemType;
+  item: BasketItemType | LocalBasketItem;
   currency: string;
-  onRemoveItem: (basketItemId: number) => void;
-  onUpdateQuantity: (basketItemId: number, quantity: number) => void;
+  onRemoveItem: (productId: number, selectedColorId?: number, selectedSizeId?: number) => void;
+  onUpdateQuantity: (productId: number, quantity: number, selectedColorId?: number, selectedSizeId?: number) => void;
   onAddMore: (productId: number, selectedColorId?: number, selectedSizeId?: number) => void;
   isRemoving: boolean;
   isUpdating: boolean;
@@ -29,17 +30,25 @@ const BasketItem: React.FC<BasketItemProps> = observer(({
   const { t } = useTranslate();
 
   const handleIncreaseQuantity = () => {
-    onUpdateQuantity(item.id, item.quantity + 1);
+    onUpdateQuantity(item.productId, item.quantity + 1, item.selectedColorId, item.selectedSizeId);
   };
 
   const handleDecreaseQuantity = () => {
     if (item.quantity > 1) {
-      onUpdateQuantity(item.id, item.quantity - 1);
+      onUpdateQuantity(item.productId, item.quantity - 1, item.selectedColorId, item.selectedSizeId);
     }
   };
 
   const handleAddMore = () => {
     onAddMore(
+      item.productId,
+      item.selectedColorId,
+      item.selectedSizeId
+    );
+  };
+  
+  const handleRemove = () => {
+    onRemoveItem(
       item.productId,
       item.selectedColorId,
       item.selectedSizeId
@@ -155,7 +164,7 @@ const BasketItem: React.FC<BasketItemProps> = observer(({
                   variant="light"
                   color="danger"
                   size="sm"
-                  onClick={() => onRemoveItem(item.id)}
+                  onClick={handleRemove}
                   disabled={isRemoving}
                   aria-label={t("remove_from_basket")}
                 >

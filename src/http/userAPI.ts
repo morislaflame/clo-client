@@ -29,3 +29,14 @@ export const fetchMyInfo = async () => {
     const { data } = await $authHost.get('api/user/me');
     return data;
 };
+
+// Создание гостевого пользователя
+export const createGuestUser = async () => {
+    const { data } = await $host.post('api/user/guest');
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('isGuest', 'true');
+    return {
+        ...jwtDecode(data.token),
+        isGuest: true
+    };
+};

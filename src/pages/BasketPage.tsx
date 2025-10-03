@@ -13,43 +13,39 @@ import {
 import { MAIN_ROUTE, CHECKOUT_ROUTE } from "@/utils/consts";
 
 const BasketPage = observer(() => {
-  const { basket, user, product } = useContext(Context) as IStoreContext;
+  const { basket, product } = useContext(Context) as IStoreContext;
   const navigate = useNavigate();
   const { isOpen: isClearModalOpen, onOpen: onClearModalOpen, onClose: onClearModalClose } = useDisclosure();
 
   useEffect(() => {
-    if (!user.isAuth) {
-      navigate(MAIN_ROUTE);
-      return;
-    }
-
-    // Загружаем корзину при открытии страницы
+    // Загружаем корзину при открытии страницы (для авторизованных с сервера, для гостей из localStorage)
     basket.loadBasket().catch(console.error);
-  }, [user.isAuth, navigate, basket]);
+  }, [basket]);
 
   const handleBackClick = () => {
     navigate(-1);
   };
 
-  const handleRemoveItem = async (basketItemId: number) => {
-    // Находим элемент корзины по ID
-    const item = basket.items.find(item => item.id === basketItemId);
-    if (item) {
-      await basket.removeProductFromBasket(
-        item.productId,
-        item.selectedColorId,
-        item.selectedSizeId
-      );
-    }
+  const handleRemoveItem = async (productId: number, selectedColorId?: number, selectedSizeId?: number) => {
+    await basket.removeProductFromBasket(productId, selectedColorId, selectedSizeId);
     // Счетчик обновится автоматически через MobX реактивность
   };
 
-  const handleUpdateQuantity = async (basketItemId: number, quantity: number) => {
-    await basket.updateItemQuantity(basketItemId, quantity);
+  const handleUpdateQuantity = async (productId: number, quantity: number, selectedColorId?: number, selectedSizeId?: number) => {
+    await basket.updateItemQuantity(productId, quantity, selectedColorId, selectedSizeId);
   };
 
   const handleAddMore = async (productId: number, selectedColorId?: number, selectedSizeId?: number) => {
-    await basket.addProductToBasket(productId, selectedColorId, selectedSizeId);
+    // Находим товар в корзине, чтобы получить полную информацию о product
+    const item = basket.items.find(
+      item => item.productId === productId && 
+      item.selectedColorId === selectedColorId && 
+      item.selectedSizeId === selectedSizeId
+    );
+    
+    if (item) {
+      await basket.addProductToBasket(item.product, selectedColorId, selectedSizeId);
+    }
   };
 
   const handleClearBasket = async () => {
@@ -62,10 +58,6 @@ const BasketPage = observer(() => {
   const handleCheckout = () => {
     navigate(CHECKOUT_ROUTE);
   };
-
-  if (!user.isAuth) {
-    return null; // Редирект уже произошел в useEffect
-  }
 
   if (basket.loading) {
     return (

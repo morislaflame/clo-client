@@ -72,11 +72,12 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = observer(({
       onClose={onClose}
       size="2xl"
       scrollBehavior="inside"
+      className="dark"
     >
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold">{t("order")} #{order.id}</h2>
+            <h2 className="text-xl font-semibold text-default-900">{t("order")} #{order.id}</h2>
             <Chip
               color={getStatusColor(order.status)}
               variant="flat"
@@ -91,8 +92,8 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = observer(({
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2">{t("order_info")}</h3>
-                <div className="space-y-1 text-sm text-gray-600">
+                <h3 className="font-semibold mb-2 text-default-900">{t("order_info")}</h3>
+                <div className="space-y-1 text-sm text-default-500">
                   <p><span className="font-medium">{t("date_created")}:</span> {formatDate(order.createdAt)}</p>
                   <p><span className="font-medium">{t("date_updated")}:</span> {formatDate(order.updatedAt)}</p>
                   <p><span className="font-medium">{t("payment_method")}:</span> {getPaymentMethodLabel(order.paymentMethod)}</p>
@@ -100,8 +101,8 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = observer(({
               </div>
               
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2">{t("delivery_info")}</h3>
-                <div className="space-y-1 text-sm text-gray-600">
+                <h3 className="font-semibold mb-2 text-default-900">{t("delivery_info")}</h3>
+                <div className="space-y-1 text-sm text-default-500">
                   <p><span className="font-medium">{t("recipient")}:</span> {order.recipientName}</p>
                   <p><span className="font-medium">{t("address")}:</span> {order.recipientAddress}</p>
                 </div>
@@ -110,8 +111,8 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = observer(({
 
             {order.notes && (
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2">{t("notes")}</h3>
-                <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
+                <h3 className="font-semibold mb-2 text-default-900">{t("notes")}</h3>
+                <p className="text-sm text-default-700 bg-default-100 p-3 rounded-lg">
                   {order.notes}
                 </p>
               </div>
@@ -121,12 +122,12 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = observer(({
 
             {/* Товары в заказе */}
             <div>
-              <h3 className="font-semibold text-gray-900 mb-3">{t("items_in_order")}</h3>
+              <h3 className="font-semibold mb-3 text-default-900">{t("items_in_order")}</h3>
               <div className="space-y-3">
                 {order.orderItems.map((item) => (
-                  <div key={item.id} className="flex gap-4 p-3 bg-gray-50 rounded-lg">
+                  <div key={item.id} className="flex gap-4 p-3 bg-default-100 rounded-lg">
                     {/* Изображение товара */}
-                    <div className="w-16 h-16 bg-gray-200 rounded-lg flex-shrink-0 flex items-center justify-center">
+                    <div className="w-16 h-16 bg-default-200 rounded-lg flex-shrink-0 flex items-center justify-center">
                       {item.product.mediaFiles && item.product.mediaFiles.length > 0 ? (
                         <img
                           src={item.product.mediaFiles[0].url}
@@ -134,14 +135,14 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = observer(({
                           className="w-full h-full object-cover rounded-lg"
                         />
                       ) : (
-                        <span className="text-gray-400 text-xs">{t("no_photo")}</span>
+                        <span className="text-default-500 text-xs">{t("no_photo")}</span>
                       )}
                     </div>
                     
                     {/* Информация о товаре */}
-                    <div className="flex-1">
-                      <h4 className="font-medium text-gray-900">{item.product.name}</h4>
-                      <div className="flex flex-wrap gap-2 mt-1 text-sm text-gray-600">
+                    <div className="flex-1 flex flex-col gap-1 justify-center">
+                      <h4 className="font-medium text-default-900">{item.product.name}</h4>
+                      <div className="flex flex-wrap gap-2 mt-1 text-sm text-default-700">
                         {item.selectedColor && (
                           <span>{t("color")}: {item.selectedColor.name}</span>
                         )}
@@ -150,19 +151,14 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = observer(({
                         )}
                         <span>{t("quantity")}: {item.quantity}</span>
                       </div>
-                      {item.product.clothingType && (
-                        <p className="text-xs text-gray-500 mt-1">
-                          {item.product.clothingType.name}
-                        </p>
-                      )}
                     </div>
                     
                     {/* Цена */}
-                    <div className="text-right">
-                      <p className="font-semibold text-gray-900">
+                    <div className="text-right flex flex-col gap-1 justify-center">
+                      <p className="font-semibold text-default-900">
                         {(currency === 'KZT' ? item.priceKZT : item.priceUSD) * item.quantity} {currencySymbol}
                       </p>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-default-700">
                         {(currency === 'KZT' ? item.priceKZT : item.priceUSD)} {currencySymbol} × {item.quantity}
                       </p>
                     </div>
@@ -174,7 +170,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = observer(({
             <Divider />
 
             {/* Итого */}
-            <div className="flex justify-between items-center text-lg font-semibold">
+            <div className="flex justify-between items-center text-lg font-semibold text-default-900">
               <span>{t("total")}:</span>
               <span>{totalAmount.toLocaleString()} {currencySymbol}</span>
             </div>
@@ -182,7 +178,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = observer(({
         </ModalBody>
         
         <ModalFooter>
-          <Button color="primary" variant="light" onPress={onClose}>
+          <Button color="default" variant="light" onPress={onClose}>
             {t("close")}
           </Button>
         </ModalFooter>

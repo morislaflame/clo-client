@@ -1,12 +1,13 @@
 import React from 'react';
 import BasketItem from './BasketItem';
 import type { BasketItem as BasketItemType } from '@/http/basketAPI';
+import type { LocalBasketItem } from '@/types/basket';
 
 interface BasketListProps {
-  items: BasketItemType[];
+  items: (BasketItemType | LocalBasketItem)[];
   currency: string;
-  onRemoveItem: (basketItemId: number) => void;
-  onUpdateQuantity: (basketItemId: number, quantity: number) => void;
+  onRemoveItem: (productId: number, selectedColorId?: number, selectedSizeId?: number) => void;
+  onUpdateQuantity: (productId: number, quantity: number, selectedColorId?: number, selectedSizeId?: number) => void;
   onAddMore: (productId: number, selectedColorId?: number, selectedSizeId?: number) => void;
   isRemoving: boolean;
   isUpdating: boolean;
@@ -27,7 +28,7 @@ const BasketList: React.FC<BasketListProps> = ({
     <div className="lg:col-span-2 space-y-4">
       {items.map((item) => (
         <BasketItem
-          key={item.id}
+          key={`${item.productId}-${item.selectedColorId || 'no-color'}-${item.selectedSizeId || 'no-size'}`}
           item={item}
           currency={currency}
           onRemoveItem={onRemoveItem}

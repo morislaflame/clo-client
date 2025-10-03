@@ -1,6 +1,7 @@
 import {makeAutoObservable, runInAction } from "mobx";
 import type { UserInfo } from "../types/types";
 import { check, fetchMyInfo, login, registration } from "../http/userAPI";
+import type BasketStore from "./BasketStore";
 
 interface ApiError {
     response?: {
@@ -66,7 +67,7 @@ export default class UserStore {
         }
     }
 
-    async login(email: string, password: string) {
+    async login(email: string, password: string, basketStore?: BasketStore) {
         try {
             this.setLoading(true);
             this.setServerError(false);
@@ -76,8 +77,18 @@ export default class UserStore {
             runInAction(() => {
                 this.setUser(userData as UserInfo);
                 this.setIsAuth(true);
+                localStorage.removeItem('isGuest'); // Убираем флаг гостя
                 this.setLoading(false);
             });
+            
+            // Мигрируем локальную корзину на сервер
+            if (basketStore) {
+                try {
+                    await basketStore.migrateLocalToServer();
+                } catch (error) {
+                    console.error('Error migrating basket:', error);
+                }
+            }
             
             return { success: true };
         } catch (error: unknown) {
@@ -103,7 +114,7 @@ export default class UserStore {
         }
     }
 
-    async register(email: string, password: string) {
+    async register(email: string, password: string, basketStore?: BasketStore) {
         try {
             this.setLoading(true);
             this.setServerError(false);
@@ -113,8 +124,18 @@ export default class UserStore {
             runInAction(() => {
                 this.setUser(userData as UserInfo);
                 this.setIsAuth(true);
+                localStorage.removeItem('isGuest'); // Убираем флаг гостя
                 this.setLoading(false);
             });
+            
+            // Мигрируем локальную корзину на сервер
+            if (basketStore) {
+                try {
+                    await basketStore.migrateLocalToServer();
+                } catch (error) {
+                    console.error('Error migrating basket:', error);
+                }
+            }
             
             return { success: true };
         } catch (error: unknown) {

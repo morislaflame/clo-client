@@ -630,7 +630,21 @@ type TranslationType = {
       en: 'Enter recipient name',
       kz: 'Алушының аты-жөнін енгізіңіз'
     },
-    
+    phone: {
+      ru: 'Телефон',
+      en: 'Phone',
+      kz: 'Телефон'
+    },
+    email: {
+      ru: 'Email',
+      en: 'Email',
+      kz: 'Email'
+    },
+    enter_phone: {
+      ru: 'Введите телефон',
+      en: 'Enter phone',
+      kz: 'Телефонды енгізіңіз'
+    },
     delivery_address: {
       ru: 'Адрес доставки',
       en: 'Delivery address',

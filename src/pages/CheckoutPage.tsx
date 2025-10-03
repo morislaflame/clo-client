@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { Spinner, useDisclosure } from "@heroui/react";
@@ -12,14 +12,19 @@ import {
 import { MAIN_ROUTE } from "@/utils/consts";
 
 const CheckoutPage = observer(() => {
-  const { basket, user, product, order } = useContext(Context) as IStoreContext;
+  const { basket, product, order } = useContext(Context) as IStoreContext;
   const navigate = useNavigate();
   const { isOpen: isSuccessModalOpen, onOpen: onSuccessModalOpen, onClose: onSuccessModalClose } = useDisclosure();
+
+  // Определяем, гость ли пользователь (используем геттер из basket)
+  const isGuest = basket.isGuest;
 
   // Форма заказа
   const [formData, setFormData] = useState({
     recipientName: '',
     recipientAddress: '',
+    recipientPhone: '', // Для гостей
+    recipientEmail: '', // Для гостей
     paymentMethod: 'CASH' as 'CASH' | 'CARD' | 'BANK_TRANSFER',
     notes: '',
   });
@@ -32,11 +37,6 @@ const CheckoutPage = observer(() => {
   }>({ isValid: false });
 
   useEffect(() => {
-    if (!user.isAuth) {
-      navigate(MAIN_ROUTE);
-      return;
-    }
-
     if (basket.isEmpty) {
       navigate('/basket');
       return;
@@ -44,25 +44,37 @@ const CheckoutPage = observer(() => {
 
     // Загружаем корзину при открытии страницы
     basket.loadBasket().catch(console.error);
-  }, [user.isAuth, navigate, basket]);
+  }, [navigate, basket]);
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = useCallback((field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
     // Очищаем ошибку при изменении поля
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
-  };
+    setErrors(prev => {
+      if (prev[field]) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [field]: _, ...rest } = prev;
+        return rest;
+      }
+      return prev;
+    });
+  }, []);
 
-  const handleAddressValidationChange = (isValid: boolean, errorMessage?: string) => {
+  const handleAddressValidationChange = useCallback((isValid: boolean, errorMessage?: string) => {
     setAddressValidation({ isValid, errorMessage });
     
     // Очищаем ошибку адреса при успешной валидации
-    if (isValid && errors.recipientAddress) {
-      setErrors(prev => ({ ...prev, recipientAddress: '' }));
+    if (isValid) {
+      setErrors(prev => {
+        if (prev.recipientAddress) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { recipientAddress: _, ...rest } = prev;
+          return rest;
+        }
+        return prev;
+      });
     }
-  };
+  }, []);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -75,6 +87,18 @@ const CheckoutPage = observer(() => {
       newErrors.recipientAddress = 'Адрес доставки обязателен';
     } else if (!addressValidation.isValid) {
       newErrors.recipientAddress = addressValidation.errorMessage || 'Пожалуйста, выберите адрес из предложенных вариантов';
+    }
+
+    // Для гостей обязательны телефон и email
+    if (isGuest) {
+      if (!formData.recipientPhone.trim()) {
+        newErrors.recipientPhone = 'Телефон обязателен';
+      }
+      if (!formData.recipientEmail.trim()) {
+        newErrors.recipientEmail = 'Email обязателен';
+      } else if (!/\S+@\S+\.\S+/.test(formData.recipientEmail)) {
+        newErrors.recipientEmail = 'Некорректный email';
+      }
     }
 
     if (!formData.paymentMethod) {
@@ -90,11 +114,10 @@ const CheckoutPage = observer(() => {
       return;
     }
 
-    const result = await order.createOrder(formData);
+    // Передаем basketStore для гостевых заказов
+    const result = await order.createOrder(formData, basket);
     
     if (result.success) {
-      // Очищаем корзину после успешного создания заказа
-      await basket.clearBasket();
       onSuccessModalOpen();
     } else {
       console.error('Ошибка создания заказа:', result.error);
@@ -110,10 +133,6 @@ const CheckoutPage = observer(() => {
     navigate(MAIN_ROUTE);
   };
 
-
-  if (!user.isAuth || basket.isEmpty) {
-    return null; // Редирект уже произошел в useEffect
-  }
 
   if (basket.loading) {
     return (
@@ -132,6 +151,7 @@ const CheckoutPage = observer(() => {
           <CheckoutForm
             formData={formData}
             errors={errors}
+            isGuest={isGuest}
             onInputChange={handleInputChange}
             onAddressValidationChange={handleAddressValidationChange}
           />

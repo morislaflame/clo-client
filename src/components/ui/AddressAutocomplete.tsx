@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { initializePlaceAutocompleteElement, validateAddressForCISElement, formatAddressElement } from '@/utils/googleMaps';
 import { useTranslate } from '@/utils/useTranslate';
 import { observer } from 'mobx-react-lite';
@@ -33,15 +33,54 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = observer(({
   const autocompleteElementRef = useRef<google.maps.places.PlaceAutocompleteElement | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
+  const initializingRef = useRef(false);
+
+  // Обработчик выбора места
+  const handlePlaceSelect = useCallback(async (event: Event) => {
+    const customEvent = event as CustomEvent;
+    const place = customEvent.detail.place;
+    
+    if (!place) return;
+
+    try {
+      // Запрашиваем необходимые поля
+      await place.fetchFields({
+        fields: ['formattedAddress', 'addressComponents']
+      });
+      
+      // Проверяем, что данные получены
+      if (place.formattedAddress) {
+        // Валидируем адрес для стран СНГ
+        const validation = validateAddressForCISElement(place);
+        
+        if (validation.isValid) {
+          const formattedAddress = formatAddressElement(place);
+          onChange(formattedAddress);
+          onPlaceSelect(place);
+          onValidationChange(true);
+        } else {
+          onValidationChange(false, validation.errorMessage);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching place details:', error);
+      onValidationChange(false, 'Ошибка получения данных адреса');
+    }
+  }, [onChange, onPlaceSelect, onValidationChange]);
 
   // Инициализация Google Maps API
   useEffect(() => {
+    // Предотвращаем повторную инициализацию
+    if (initializingRef.current || autocompleteElementRef.current) return;
+
     const initializeAutocomplete = async () => {
+      initializingRef.current = true;
+      
       try {
         setIsLoading(true);
         const PlaceAutocompleteElement = await initializePlaceAutocompleteElement();
         
-        if (inputRef.current) {
+        if (inputRef.current && !autocompleteElementRef.current) {
           // Создаем новый элемент автодополнения
           autocompleteElementRef.current = new PlaceAutocompleteElement({});
           
@@ -57,26 +96,8 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = observer(({
               parentElement.replaceChild(autocompleteElementRef.current, inputRef.current);
             }
 
-            // Обработчик выбора места
-            autocompleteElementRef.current.addEventListener('gmp-placeselect', (event: Event) => {
-              const customEvent = event as CustomEvent;
-              const place = customEvent.detail.place;
-              
-              if (place && place.formattedAddress) {
-                // Валидируем адрес для стран СНГ
-                const validation = validateAddressForCISElement(place);
-                
-                if (validation.isValid) {
-                  const formattedAddress = formatAddressElement(place);
-                  onChange(formattedAddress);
-                  onPlaceSelect(place);
-                  onValidationChange(true);
-                } else {
-                  onValidationChange(false, validation.errorMessage);
-                  // Не меняем значение поля, если адрес невалиден
-                }
-              }
-            });
+            // Добавляем обработчик выбора места
+            autocompleteElementRef.current.addEventListener('gmp-placeselect', handlePlaceSelect);
           }
 
           setIsInitialized(true);
@@ -86,6 +107,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = observer(({
         onValidationChange(false, 'Ошибка инициализации карт');
       } finally {
         setIsLoading(false);
+        initializingRef.current = false;
       }
     };
 
@@ -94,19 +116,26 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = observer(({
     // Очистка при размонтировании
     return () => {
       if (autocompleteElementRef.current) {
+        autocompleteElementRef.current.removeEventListener('gmp-placeselect', handlePlaceSelect);
         autocompleteElementRef.current.remove();
+        autocompleteElementRef.current = null;
       }
+      initializingRef.current = false;
+      setIsInitialized(false);
     };
-  }, [onChange, onPlaceSelect, onValidationChange, placeholder]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className={`relative ${className} `}>
       <div className="flex flex-col gap-2">
         <div className="flex gap-2 flex-col flex-1">
-        <label className="text-sm font-medium mb-2">
+        <label className="text-sm font-medium flex gap-2">
           {label}
-          {isRequired && <span className="text-red-500 ml-1">*</span>}
-          
+          {isRequired && <span className="text-red-500">*</span>}
+          <span className="text-sm text-default-500">
+            ({t("delivery_by_cng")})
+          </span>
         </label>
         
         <div className="relative">
@@ -122,9 +151,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = observer(({
             disabled={!isInitialized}
           />
 
-          <span className="text-sm text-default-500">
-            {t("delivery_by_cng")}
-          </span>
+          
           </div>
           
           {/* <div className="absolute left-3 top-1/2 transform -translate-y-1/2">

@@ -1,13 +1,15 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import type { 
   Order, 
-  CreateOrderRequest, 
+  CreateOrderRequest,
+  CreateGuestOrderRequest,
   CreateOrderResponse,
   GetOrdersResponse,
   UpdateOrderStatusRequest 
 } from "../http/orderAPI";
 import { 
-  createOrder, 
+  createOrder,
+  createGuestOrder,
   getUserOrders, 
   getUserOrder, 
   cancelOrder,
@@ -16,6 +18,7 @@ import {
   updateOrderStatus,
   getOrderStats
 } from "../http/orderAPI";
+import type BasketStore from "./BasketStore";
 
 interface ApiError {
   response?: {
@@ -77,16 +80,35 @@ export default class OrderStore {
   }
 
   // Actions
-  async createOrder(orderData: CreateOrderRequest) {
+  async createOrder(orderData: CreateOrderRequest | CreateGuestOrderRequest, basketStore?: BasketStore) {
     try {
       this.setCreating(true);
       this.setError(null);
       
-      const response: CreateOrderResponse = await createOrder(orderData);
+      // Определяем, гость ли пользователь
+      const isGuest = basketStore ? basketStore.isGuest : false;
+      let response: CreateOrderResponse;
+      
+      if (isGuest && basketStore) {
+        // Для гостей создаем заказ с товарами из корзины
+        const basketData = basketStore.getCheckoutData();
+        const guestOrderData: CreateGuestOrderRequest = {
+          ...(orderData as CreateGuestOrderRequest),
+          items: basketData.items
+        };
+        response = await createGuestOrder(guestOrderData);
+        
+        // Очищаем локальную корзину после создания заказа
+        basketStore.clearBasket();
+      } else {
+        // Для авторизованных используем обычный метод
+        response = await createOrder(orderData as CreateOrderRequest);
+      }
       
       runInAction(() => {
         // Добавляем новый заказ в начало списка
         this.orders.unshift(response.order);
+        this.currentOrder = response.order;
         this.setCreating(false);
       });
 

@@ -26,10 +26,11 @@ export const publicRoutes: Route[] = [
   { path: NEWS_DETAIL_ROUTE, Component: NewsDetailPage },
   { path: COLLECTIONS_ROUTE, Component: CollectionsPage },
   { path: '/collection/:id', Component: CollectionPage },
+  { path: BASKET_ROUTE, Component: BasketPage },
+  { path: CHECKOUT_ROUTE, Component: CheckoutPage },
 ];
 
 export const privateRoutes: Route[] = [
-  { path: BASKET_ROUTE, Component: BasketPage },
-  { path: CHECKOUT_ROUTE, Component: CheckoutPage },
+  
   { path: ORDERS_ROUTE, Component: OrdersPage },
 ];

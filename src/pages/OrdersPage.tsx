@@ -1,13 +1,12 @@
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
-import { Spinner, useDisclosure, Pagination } from '@heroui/react';
+import { Spinner, useDisclosure} from '@heroui/react';
 import { Context, type IStoreContext } from '@/store/StoreProvider';
 import {
   OrdersHeader,
   OrderCard,
   OrderDetailsModal,
-  OrdersFilter,
   EmptyOrdersState
 } from '@/components/OrdersPageComponents';
 import { MAIN_ROUTE } from '@/utils/consts';
@@ -22,8 +21,6 @@ const OrdersPage = observer(() => {
   
   // Состояние
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const [statusFilter, setStatusFilter] = useState<string>('');
-  const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
   useEffect(() => {
@@ -35,14 +32,14 @@ const OrdersPage = observer(() => {
     // Загружаем заказы при открытии страницы
     loadOrders();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user.isAuth, navigate, currentPage, statusFilter]);
+  }, [user.isAuth, navigate]);
 
   const loadOrders = async () => {
     try {
       await order.loadUserOrders({
-        page: currentPage,
+        page: 1,
         limit: itemsPerPage,
-        status: statusFilter || undefined
+        status: ''
       });
     } catch (error) {
       console.error('Ошибка загрузки заказов:', error);
@@ -69,19 +66,6 @@ const OrdersPage = observer(() => {
     }
   };
 
-  const handleStatusFilterChange = (status: string) => {
-    setStatusFilter(status);
-    setCurrentPage(1); // Сбрасываем на первую страницу при изменении фильтра
-  };
-
-  const handleClearFilters = () => {
-    setStatusFilter('');
-    setCurrentPage(1);
-  };
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
 
   const handleGoShopping = () => {
     navigate(MAIN_ROUTE);
@@ -110,11 +94,6 @@ const OrdersPage = observer(() => {
 
         {order.hasOrders ? (
           <>
-            <OrdersFilter
-              statusFilter={statusFilter}
-              onStatusFilterChange={handleStatusFilterChange}
-              onClearFilters={handleClearFilters}
-            />
 
             <div className="space-y-4">
               {order.orders.map((orderItem) => (
@@ -130,7 +109,7 @@ const OrdersPage = observer(() => {
             </div>
 
             {/* Пагинация */}
-            {order.totalPages > 1 && (
+            {/* {order.totalPages > 1 && (
               <div className="flex justify-center mt-8">
                 <Pagination
                   total={order.totalPages}
@@ -138,10 +117,10 @@ const OrdersPage = observer(() => {
                   onChange={handlePageChange}
                   showControls
                   showShadow
-                  color="primary"
+                  color="default"
                 />
               </div>
-            )}
+            )} */}
           </>
         ) : (
           <EmptyOrdersState onGoShopping={handleGoShopping} />

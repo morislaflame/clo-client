@@ -71,6 +71,21 @@ export interface CreateOrderRequest {
   notes?: string;
 }
 
+export interface CreateGuestOrderRequest {
+  recipientName: string;
+  recipientAddress: string;
+  recipientPhone?: string;
+  recipientEmail?: string;
+  paymentMethod: 'CASH' | 'CARD' | 'BANK_TRANSFER';
+  notes?: string;
+  items: Array<{
+    productId: number;
+    selectedColorId?: number;
+    selectedSizeId?: number;
+    quantity: number;
+  }>;
+}
+
 export interface CreateOrderResponse {
   message: string;
   order: Order;
@@ -106,7 +121,13 @@ export interface OrderStatsResponse {
 
 // API методы для заказов
 export const createOrder = async (orderData: CreateOrderRequest): Promise<CreateOrderResponse> => {
-  const response = await $authHost.post('/order/create', orderData);
+  const response = await $authHost.post('/api/order/create', orderData);
+  return response.data;
+};
+
+// Создание гостевого заказа (товары передаются в запросе)
+export const createGuestOrder = async (orderData: CreateGuestOrderRequest): Promise<CreateOrderResponse> => {
+  const response = await $authHost.post('/api/order/guest', orderData);
   return response.data;
 };
 
@@ -115,17 +136,17 @@ export const getUserOrders = async (params?: {
   limit?: number;
   status?: string;
 }): Promise<GetOrdersResponse> => {
-  const response = await $authHost.get('/order/my-orders', { params });
+  const response = await $authHost.get('/api/order/my-orders', { params });
   return response.data;
 };
 
 export const getUserOrder = async (orderId: number): Promise<Order> => {
-  const response = await $authHost.get(`/order/my-orders/${orderId}`);
+  const response = await $authHost.get(`/api/order/my-orders/${orderId}`);
   return response.data;
 };
 
 export const cancelOrder = async (orderId: number): Promise<{ message: string; order: Order }> => {
-  const response = await $authHost.patch(`/order/my-orders/${orderId}/cancel`);
+  const response = await $authHost.patch(`/api/order/my-orders/${orderId}/cancel`);
   return response.data;
 };
 
@@ -139,12 +160,12 @@ export const getAllOrders = async (params?: {
   startDate?: string;
   endDate?: string;
 }): Promise<GetOrdersResponse> => {
-  const response = await $authHost.get('/order', { params });
+  const response = await $authHost.get('/api/order', { params });
   return response.data;
 };
 
 export const getOrder = async (orderId: number): Promise<Order> => {
-  const response = await $authHost.get(`/order/${orderId}`);
+  const response = await $authHost.get(`/api/order/${orderId}`);
   return response.data;
 };
 
@@ -152,7 +173,7 @@ export const updateOrderStatus = async (
   orderId: number, 
   statusData: UpdateOrderStatusRequest
 ): Promise<{ message: string; order: Order }> => {
-  const response = await $authHost.patch(`/order/${orderId}/status`, statusData);
+  const response = await $authHost.patch(`/api/order/${orderId}/status`, statusData);
   return response.data;
 };
 
@@ -160,6 +181,6 @@ export const getOrderStats = async (params?: {
   startDate?: string;
   endDate?: string;
 }): Promise<OrderStatsResponse> => {
-  const response = await $authHost.get('/order/stats/overview', { params });
+  const response = await $authHost.get('/api/order/stats/overview', { params });
   return response.data;
 };

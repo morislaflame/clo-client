@@ -1,11 +1,12 @@
 import React from 'react';
 import { Card, CardBody, Button, Divider, Image, Spinner } from '@heroui/react';
 import type { BasketItem as BasketItemType } from '@/http/basketAPI';
+import type { LocalBasketItem } from '@/types/basket';
 import { useTranslate } from '@/utils/useTranslate';
 import { observer } from 'mobx-react-lite';
 
 interface CheckoutOrderSummaryProps {
-  items: BasketItemType[];
+  items: (BasketItemType | LocalBasketItem)[];
   totalCount: number;
   totalKZT: number;
   totalUSD: number;
@@ -34,7 +35,7 @@ const CheckoutOrderSummary: React.FC<CheckoutOrderSummaryProps> = observer(({
           {/* Список товаров */}
           <div className="space-y-3">
             {items.map((item) => (
-              <div key={item.id} className="flex gap-3">
+              <div key={`${item.productId}-${item.selectedColorId || 'no-color'}-${item.selectedSizeId || 'no-size'}`} className="flex gap-3">
                 {/* Изображение товара */}
                 <div className="flex-shrink-0">
                   {item.product.mediaFiles && item.product.mediaFiles.length > 0 ? (

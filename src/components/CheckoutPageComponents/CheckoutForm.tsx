@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Card, CardBody, Input, Textarea, Select, SelectItem, Divider } from '@heroui/react';
 import AddressAutocomplete from '@/components/ui/AddressAutocomplete';
 import { useTranslate } from '@/utils/useTranslate';
@@ -8,10 +8,13 @@ interface CheckoutFormProps {
   formData: {
     recipientName: string;
     recipientAddress: string;
+    recipientPhone?: string;
+    recipientEmail?: string;
     paymentMethod: 'CASH' | 'CARD' | 'BANK_TRANSFER';
     notes: string;
   };
   errors: Record<string, string>;
+  isGuest?: boolean;
   onInputChange: (field: string, value: string) => void;
   onAddressValidationChange?: (isValid: boolean, errorMessage?: string) => void;
 }
@@ -19,6 +22,7 @@ interface CheckoutFormProps {
 const CheckoutForm: React.FC<CheckoutFormProps> = observer(({
   formData,
   errors,
+  isGuest = false,
   onInputChange,
   onAddressValidationChange
 }) => {
@@ -28,15 +32,15 @@ const CheckoutForm: React.FC<CheckoutFormProps> = observer(({
     errorMessage?: string;
   }>({ isValid: false });
 
-  const handleAddressValidationChange = (isValid: boolean, errorMessage?: string) => {
+  const handleAddressValidationChange = useCallback((isValid: boolean, errorMessage?: string) => {
     setAddressValidation({ isValid, errorMessage });
     onAddressValidationChange?.(isValid, errorMessage);
-  };
+  }, [onAddressValidationChange]);
 
-  const handlePlaceSelect = (place: google.maps.places.PlaceResult) => {
+  const handlePlaceSelect = useCallback((place: google.maps.places.PlaceResult) => {
     // Дополнительная обработка выбранного места при необходимости
     console.log('Selected place:', place);
-  };
+  }, []);
   return (
     <div className="lg:col-span-2 space-y-6">
       {/* Информация о получателе */}
@@ -67,6 +71,35 @@ const CheckoutForm: React.FC<CheckoutFormProps> = observer(({
               errorMessage={errors.recipientAddress || addressValidation.errorMessage}
               isRequired
             />
+
+            {/* Поля для гостей */}
+            {isGuest && (
+              <div className="flex flex-col gap-4">
+                <Input
+                  type="tel"
+                  label={t("phone")}
+                  labelPlacement="outside"
+                  placeholder={t("enter_phone")}
+                  value={formData.recipientPhone || ''}
+                  onValueChange={(value) => onInputChange('recipientPhone', value)}
+                  isInvalid={!!errors.recipientPhone}
+                  errorMessage={errors.recipientPhone}
+                  isRequired
+                />
+                
+                <Input
+                  type="email"
+                  label={t("email")}
+                  labelPlacement="outside"
+                  placeholder={t("enter_email")}
+                  value={formData.recipientEmail || ''}
+                  onValueChange={(value) => onInputChange('recipientEmail', value)}
+                  isInvalid={!!errors.recipientEmail}
+                  errorMessage={errors.recipientEmail}
+                  isRequired
+                />
+              </ div>
+            )}
             
           </div>
 

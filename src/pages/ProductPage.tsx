@@ -18,7 +18,7 @@ import {
 import { useTranslate } from "@/utils/useTranslate";
 
 const ProductPage = observer(() => {
-  const { product, basket, user } = useContext(Context) as IStoreContext;
+  const { product, basket } = useContext(Context) as IStoreContext;
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [selectedColorId, setSelectedColorId] = useState<string>("");
@@ -64,12 +64,7 @@ const ProductPage = observer(() => {
   };
 
   const handleAddToBasket = async () => {
-    if (!user.isAuth) {
-      navigate('/login');
-      return;
-    }
-
-    if (!id) return;
+    if (!id || !currentProduct) return;
 
     // Валидация выбора цвета и размера
     if (!validateSelection()) {
@@ -77,7 +72,7 @@ const ProductPage = observer(() => {
     }
 
     const result = await basket.addProductToBasket(
-      Number(id),
+      currentProduct,
       selectedColorId ? Number(selectedColorId) : undefined,
       selectedSizeId ? Number(selectedSizeId) : undefined
     );
@@ -88,19 +83,14 @@ const ProductPage = observer(() => {
       // Можно добавить уведомление об успешном добавлении
     } else {
       // Можно добавить уведомление об ошибке
-      console.error("Failed to add to basket:", result.error);
+      console.error("Failed to add to basket:", 'error' in result ? result.error : 'Unknown error');
     }
   };
 
   
 
   const handleBuyNow = async () => {
-    if (!user.isAuth) {
-      navigate('/login');
-      return;
-    }
-
-    if (!id) return;
+    if (!id || !currentProduct) return;
 
     // Валидация выбора цвета и размера
     if (!validateSelection()) {
@@ -109,7 +99,7 @@ const ProductPage = observer(() => {
 
     // Сначала добавляем в корзину
     const result = await basket.addProductToBasket(
-      Number(id),
+      currentProduct,
       selectedColorId ? Number(selectedColorId) : undefined,
       selectedSizeId ? Number(selectedSizeId) : undefined
     );
@@ -118,7 +108,7 @@ const ProductPage = observer(() => {
       // Перенаправляем на страницу корзины
       navigate('/basket');
     } else {
-      console.error("Failed to add to basket:", result.error);
+      console.error("Failed to add to basket:", 'error' in result ? result.error : 'Unknown error');
     }
   };
 
