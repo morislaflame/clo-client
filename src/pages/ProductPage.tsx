@@ -5,7 +5,6 @@ import {
   Card,
   CardBody,
   Button,
-  Spinner,
 } from "@heroui/react";
 import { Context, type IStoreContext } from "@/store/StoreProvider";
 import {
@@ -17,6 +16,7 @@ import {
 } from "@/components/ProductPageComponents";
 import { useTranslate } from "@/utils/useTranslate";
 import PageWrapper from "@/components/PageWrapper";
+import LoadingPage from "@/components/LoadingPage";
 
 const ProductPage = observer(() => {
   const { product, basket } = useContext(Context) as IStoreContext;
@@ -114,11 +114,7 @@ const ProductPage = observer(() => {
   };
 
   if (product.loading) {
-    return (
-      <PageWrapper className="min-h-screen flex items-center justify-center">
-        <Spinner size="lg" />
-      </PageWrapper>
-    );
+    return <LoadingPage message={t("loading_product")} />;
   }
 
   if (product.error || !product.currentProduct) {

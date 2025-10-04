@@ -1,7 +1,6 @@
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
-import { Spinner } from "@heroui/react";
 import { Context } from "@/store/StoreProvider";
 import type { IStoreContext } from "@/store/StoreProvider";
 import {
@@ -10,10 +9,13 @@ import {
   NewsEmpty
 } from "@/components/NewsPageComponents";
 import PageWrapper from "@/components/PageWrapper";
+import LoadingPage from "@/components/LoadingPage";
+import { useTranslate } from "@/utils/useTranslate";
 
 const NewsPage = observer(() => {
   const { news, newsType } = useContext(Context) as IStoreContext;
   const navigate = useNavigate();
+  const { t } = useTranslate();
   
   useEffect(() => {
     // Загружаем новости и типы новостей при открытии страницы
@@ -28,11 +30,7 @@ const NewsPage = observer(() => {
 
 
   if (news.loading) {
-    return (
-      <PageWrapper className="min-h-screen flex items-center justify-center">
-        <Spinner size="lg" />
-      </PageWrapper>
-    );
+    return <LoadingPage message={t("loading_news")} />;
   }
 
 

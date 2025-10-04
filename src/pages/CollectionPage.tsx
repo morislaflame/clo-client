@@ -1,11 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { observer } from "mobx-react-lite";
-import { Spinner, Card, CardBody, Button } from "@heroui/react";
+import { Card, CardBody, Button } from "@heroui/react";
 import { Context, type IStoreContext } from "@/store/StoreProvider";
 import { CollectionHeader, CollectionProductsList } from "@/components/CollectionsPageComponents";
 import { useTranslate } from "@/utils/useTranslate";
 import PageWrapper from "@/components/PageWrapper";
+import LoadingPage from "@/components/LoadingPage";
 
 const CollectionPage = observer(() => {
   const { collection } = useContext(Context) as IStoreContext;
@@ -31,11 +32,7 @@ const CollectionPage = observer(() => {
   }, [id, collection]);
 
   if (isLoading) {
-    return (
-      <PageWrapper className="min-h-screen flex items-center justify-center">
-        <Spinner size="lg" />
-      </PageWrapper>
-    );
+    return <LoadingPage message={t("loading_collection")} />;
   }
 
   if (collection.error || !collection.currentCollection) {

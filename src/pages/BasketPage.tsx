@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
-import { Spinner, useDisclosure } from "@heroui/react";
+import { useDisclosure } from "@heroui/react";
 import { Context, type IStoreContext } from "@/store/StoreProvider";
 import {
   BasketHeader,
@@ -12,12 +12,14 @@ import {
 } from "@/components/BasketPageComponents";
 import { MAIN_ROUTE, CHECKOUT_ROUTE } from "@/utils/consts";
 import PageWrapper from "@/components/PageWrapper";
+import LoadingPage from "@/components/LoadingPage";
+import { useTranslate } from "@/utils/useTranslate";
 
 const BasketPage = observer(() => {
   const { basket, product } = useContext(Context) as IStoreContext;
   const navigate = useNavigate();
   const { isOpen: isClearModalOpen, onOpen: onClearModalOpen, onClose: onClearModalClose } = useDisclosure();
-
+  const { t } = useTranslate();
   useEffect(() => {
     // Загружаем корзину при открытии страницы (для авторизованных с сервера, для гостей из localStorage)
     basket.loadBasket().catch(console.error);
@@ -61,11 +63,7 @@ const BasketPage = observer(() => {
   };
 
   if (basket.loading) {
-    return (
-      <PageWrapper className="min-h-screen flex items-center justify-center">
-        <Spinner size="lg" />
-      </PageWrapper>
-    );
+    return <LoadingPage message={t("loading_basket")} />;
   }
 
   if (basket.isEmpty) {

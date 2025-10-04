@@ -732,6 +732,43 @@ type TranslationType = {
       en: 'Enter address',
       kz: 'Адресті енгізіңіз'
     },
+
+    // Загрузки
+    loading_product: {
+      ru: 'Загрузка товара...',
+      en: 'Loading product...',
+      kz: 'Тауарды жүктелуде...'
+    },
+    loading_basket: {
+      ru: 'Загрузка корзины...',
+      en: 'Loading basket...',
+      kz: 'Себетті жүктелуде...'
+    },
+    loading_orders: {
+      ru: 'Загрузка заказов...',
+      en: 'Loading orders...',
+      kz: 'Тапсырыстарын жүктелуде...'
+    },
+    loading_collections: {
+      ru: 'Загрузка коллекций...',
+      en: 'Loading collections...',
+      kz: 'Жинақтарды жүктелуде...'
+    },
+    loading_collection: {
+      ru: 'Загрузка коллекции...',
+      en: 'Loading collection...',
+      kz: 'Жинақты жүктелуде...'
+    },
+    loading_news: {
+      ru: 'Загрузка новостей...',
+      en: 'Loading news...',
+      kz: 'Жаңалықтарды жүктелуде...'
+    },
+    loading_news_detail: {
+      ru: 'Загрузка новости...',
+      en: 'Loading news...',
+      kz: 'Жаңалықты жүктелуде...'
+    },
   };
   
   export const translate = (key: string, language: 'ru' | 'en' | 'kz'): string => {

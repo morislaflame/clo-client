@@ -1,7 +1,6 @@
 import { useContext, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
-import { Spinner } from "@heroui/react";
 import { Context } from "@/store/StoreProvider";
 import type { IStoreContext } from "@/store/StoreProvider";
 import {
@@ -12,12 +11,15 @@ import {
   NewsDetailError
 } from "@/components/NewsDetailPageComponents";
 import PageWrapper from "@/components/PageWrapper";
+import LoadingPage from "@/components/LoadingPage";
+import { useTranslate } from "@/utils/useTranslate";
 
 const NewsDetailPage = observer(() => {
   const { news } = useContext(Context) as IStoreContext;
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-
+  const { t } = useTranslate();
+  
   useEffect(() => {
     if (id) {
       news.fetchNewsById(Number(id));
@@ -30,11 +32,7 @@ const NewsDetailPage = observer(() => {
 
 
   if (news.loading) {
-    return (
-      <PageWrapper className="min-h-screen flex items-center justify-center">
-        <Spinner size="lg" />
-      </PageWrapper>
-    );
+    return <LoadingPage message={t("loading_news_detail")} />;
   }
 
   if (news.error || !news.currentNews) {

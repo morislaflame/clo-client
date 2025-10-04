@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
-import { Spinner, useDisclosure} from '@heroui/react';
+import { useDisclosure} from '@heroui/react';
 import { Context, type IStoreContext } from '@/store/StoreProvider';
 import {
   OrdersHeader,
@@ -12,10 +12,13 @@ import {
 import { MAIN_ROUTE } from '@/utils/consts';
 import type { Order } from '@/http/orderAPI';
 import PageWrapper from '@/components/PageWrapper';
+import LoadingPage from '@/components/LoadingPage';
+import { useTranslate } from '@/utils/useTranslate';
 
 const OrdersPage = observer(() => {
   const { user, product, order } = useContext(Context) as IStoreContext;
   const navigate = useNavigate();
+  const { t } = useTranslate();
   
   // Модальные окна
   const { isOpen: isDetailsModalOpen, onOpen: onDetailsModalOpen, onClose: onDetailsModalClose } = useDisclosure();
@@ -81,11 +84,7 @@ const OrdersPage = observer(() => {
   }
 
   if (order.loading && order.orders.length === 0) {
-    return (
-      <PageWrapper className="min-h-screen flex items-center justify-center">
-        <Spinner size="lg" />
-      </PageWrapper>
-    );
+    return <LoadingPage message={t("loading_orders")} />;
   }
 
   return (
