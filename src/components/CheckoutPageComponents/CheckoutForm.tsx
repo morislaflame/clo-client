@@ -1,8 +1,8 @@
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import { Card, CardBody, Input, Textarea, Select, SelectItem, Divider } from '@heroui/react';
-import AddressAutocomplete from '@/components/ui/AddressAutocomplete';
 import { useTranslate } from '@/utils/useTranslate';
 import { observer } from 'mobx-react-lite';
+import GooglePlacesAutocomplete from '../GooglePlacesAutocomplete';
 
 interface CheckoutFormProps {
   formData: {
@@ -16,7 +16,6 @@ interface CheckoutFormProps {
   errors: Record<string, string>;
   isGuest?: boolean;
   onInputChange: (field: string, value: string) => void;
-  onAddressValidationChange?: (isValid: boolean, errorMessage?: string) => void;
 }
 
 const CheckoutForm: React.FC<CheckoutFormProps> = observer(({
@@ -24,23 +23,9 @@ const CheckoutForm: React.FC<CheckoutFormProps> = observer(({
   errors,
   isGuest = false,
   onInputChange,
-  onAddressValidationChange
 }) => {
   const { t } = useTranslate();
-  const [addressValidation, setAddressValidation] = useState<{
-    isValid: boolean;
-    errorMessage?: string;
-  }>({ isValid: false });
-
-  const handleAddressValidationChange = useCallback((isValid: boolean, errorMessage?: string) => {
-    setAddressValidation({ isValid, errorMessage });
-    onAddressValidationChange?.(isValid, errorMessage);
-  }, [onAddressValidationChange]);
-
-  const handlePlaceSelect = useCallback((place: google.maps.places.PlaceResult) => {
-    // Дополнительная обработка выбранного места при необходимости
-    console.log('Selected place:', place);
-  }, []);
+  
   return (
     <div className="lg:col-span-2 space-y-6">
       {/* Информация о получателе */}
@@ -48,7 +33,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = observer(({
         <CardBody>
           <h2 className="text-xl font-semibold mb-4">{t("recipient_info")}</h2>
           
-          <div className="space-y-4">
+          <div className="flex flex-col gap-4">
             <Input
               label={t("recipient_name")}
               labelPlacement="outside"
@@ -59,16 +44,13 @@ const CheckoutForm: React.FC<CheckoutFormProps> = observer(({
               errorMessage={errors.recipientName}
               isRequired
             />
-            
-            <AddressAutocomplete
+
+            <GooglePlacesAutocomplete
               label={t("delivery_address")}
-              placeholder={t("start_typing_address")}
               value={formData.recipientAddress}
               onChange={(value) => onInputChange('recipientAddress', value)}
-              onPlaceSelect={handlePlaceSelect}
-              onValidationChange={handleAddressValidationChange}
-              isInvalid={!!errors.recipientAddress || (!addressValidation.isValid && formData.recipientAddress.length > 0)}
-              errorMessage={errors.recipientAddress || addressValidation.errorMessage}
+              isInvalid={!!errors.recipientAddress}
+              errorMessage={errors.recipientAddress}
               isRequired
             />
 

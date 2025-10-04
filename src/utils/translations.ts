@@ -769,6 +769,38 @@ type TranslationType = {
       en: 'Loading news...',
       kz: 'Жаңалықты жүктелуде...'
     },
+
+    // CheckoutPage
+    recipient_name_required: {
+      ru: 'ФИО получателя обязательно',
+      en: 'Recipient name is required',
+      kz: 'Алушының аты-жөні қажет'
+    },
+    phone_required: {
+      ru: 'Телефон обязателен',
+      en: 'Phone is required',
+      kz: 'Телефон қажет',
+    },
+    email_required: {
+      ru: 'Email обязателен',
+      en: 'Email is required',
+      kz: 'Email қажет',
+    },
+    email_invalid: {
+      ru: 'Некорректный email',
+      en: 'Invalid email',
+      kz: 'Email жоқ',
+    },
+    payment_method_required: {
+      ru: 'Способ оплаты обязателен',
+      en: 'Payment method is required',
+      kz: 'Төлем әдісі қажет',
+    },
+    loading_google_maps: {
+      ru: 'Загрузка Google Maps...',
+      en: 'Loading Google Maps...',
+      kz: 'Google Maps жүктелуде...'
+    },
   };
   
   export const translate = (key: string, language: 'ru' | 'en' | 'kz'): string => {

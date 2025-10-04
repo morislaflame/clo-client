@@ -20,26 +20,26 @@ const CheckoutSuccessModal: React.FC<CheckoutSuccessModalProps> = ({
   orderId
 }) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} className="dark">
       <ModalContent>
         {() => (
           <>
-            <ModalHeader className="flex flex-col gap-1">
+            <ModalHeader className="flex flex-col gap-1 text-default-900">
               Заказ успешно оформлен!
             </ModalHeader>
             <ModalBody>
-              <p>
+              <p className="text-default-700">
                 Ваш заказ был успешно создан. Мы свяжемся с вами в ближайшее время для подтверждения деталей доставки.
               </p>
               {orderId && (
-                <p className="text-sm text-default-500 mt-2">
+                <p className="text-lg font-medium text-default-900 mt-2">
                   Номер заказа: #{orderId}
                 </p>
               )}
             </ModalBody>
             <ModalFooter>
               <Button 
-                color="primary" 
+                color="default" 
                 onPress={onClose}
               >
                 Понятно

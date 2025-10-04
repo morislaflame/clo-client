@@ -15,7 +15,7 @@ import LoadingPage from "@/components/LoadingPage";
 import { useTranslate } from "@/utils/useTranslate";
 
 const CheckoutPage = observer(() => {
-  const { basket, product, order } = useContext(Context) as IStoreContext;
+  const { user, basket, product, order } = useContext(Context) as IStoreContext;
   const navigate = useNavigate();
   const { isOpen: isSuccessModalOpen, onOpen: onSuccessModalOpen, onClose: onSuccessModalClose } = useDisclosure();
   const { t } = useTranslate();
@@ -34,10 +34,7 @@ const CheckoutPage = observer(() => {
 
   // Валидация
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [addressValidation, setAddressValidation] = useState<{
-    isValid: boolean;
-    errorMessage?: string;
-  }>({ isValid: false });
+ 
 
   useEffect(() => {
     if (basket.isEmpty) {
@@ -48,6 +45,16 @@ const CheckoutPage = observer(() => {
     // Загружаем корзину при открытии страницы
     basket.loadBasket().catch(console.error);
   }, [navigate, basket]);
+
+  // Автоматически заполняем email для авторизованных пользователей
+  useEffect(() => {
+    if (!isGuest && user.isAuth && user.user?.email) {
+      setFormData(prev => ({
+        ...prev,
+        recipientEmail: user.user?.email || ''
+      }));
+    }
+  }, [isGuest, user.isAuth, user.user?.email]);
 
   const handleInputChange = useCallback((field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -63,49 +70,28 @@ const CheckoutPage = observer(() => {
     });
   }, []);
 
-  const handleAddressValidationChange = useCallback((isValid: boolean, errorMessage?: string) => {
-    setAddressValidation({ isValid, errorMessage });
-    
-    // Очищаем ошибку адреса при успешной валидации
-    if (isValid) {
-      setErrors(prev => {
-        if (prev.recipientAddress) {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { recipientAddress: _, ...rest } = prev;
-          return rest;
-        }
-        return prev;
-      });
-    }
-  }, []);
-
+  
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
     if (!formData.recipientName.trim()) {
-      newErrors.recipientName = 'ФИО получателя обязательно';
-    }
-
-    if (!formData.recipientAddress.trim()) {
-      newErrors.recipientAddress = 'Адрес доставки обязателен';
-    } else if (!addressValidation.isValid) {
-      newErrors.recipientAddress = addressValidation.errorMessage || 'Пожалуйста, выберите адрес из предложенных вариантов';
+      newErrors.recipientName = t("recipient_name_required");
     }
 
     // Для гостей обязательны телефон и email
     if (isGuest) {
       if (!formData.recipientPhone.trim()) {
-        newErrors.recipientPhone = 'Телефон обязателен';
+        newErrors.recipientPhone = t("phone_required");
       }
       if (!formData.recipientEmail.trim()) {
-        newErrors.recipientEmail = 'Email обязателен';
+        newErrors.recipientEmail = t("email_required");
       } else if (!/\S+@\S+\.\S+/.test(formData.recipientEmail)) {
-        newErrors.recipientEmail = 'Некорректный email';
+        newErrors.recipientEmail = t("email_invalid");
       }
     }
 
     if (!formData.paymentMethod) {
-      newErrors.paymentMethod = 'Способ оплаты обязателен';
+      newErrors.paymentMethod = t("payment_method_required");
     }
 
     setErrors(newErrors);
@@ -152,7 +138,6 @@ const CheckoutPage = observer(() => {
             errors={errors}
             isGuest={isGuest}
             onInputChange={handleInputChange}
-            onAddressValidationChange={handleAddressValidationChange}
           />
 
           <CheckoutOrderSummary
