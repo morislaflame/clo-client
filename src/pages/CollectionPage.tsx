@@ -5,6 +5,7 @@ import { Spinner, Card, CardBody, Button } from "@heroui/react";
 import { Context, type IStoreContext } from "@/store/StoreProvider";
 import { CollectionHeader, CollectionProductsList } from "@/components/CollectionsPageComponents";
 import { useTranslate } from "@/utils/useTranslate";
+import PageWrapper from "@/components/PageWrapper";
 
 const CollectionPage = observer(() => {
   const { collection } = useContext(Context) as IStoreContext;
@@ -31,15 +32,15 @@ const CollectionPage = observer(() => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <PageWrapper className="min-h-screen flex items-center justify-center">
         <Spinner size="lg" />
-      </div>
+      </PageWrapper>
     );
   }
 
   if (collection.error || !collection.currentCollection) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <PageWrapper className="min-h-screen flex items-center justify-center">
         <Card className="p-8 max-w-md">
           <CardBody className="text-center">
             <p className="text-danger mb-4">
@@ -54,12 +55,12 @@ const CollectionPage = observer(() => {
             </Button>
           </CardBody>
         </Card>
-      </div>
+      </PageWrapper>
     );
   }
 
   return (
-    <div className="min-h-screen">
+    <PageWrapper className="min-h-screen">
       {/* Заголовок коллекции с изображением */}
       <CollectionHeader />
 
@@ -76,7 +77,7 @@ const CollectionPage = observer(() => {
 
         <CollectionProductsList products={collection.currentCollection?.products || []} />
       </div>
-    </div>
+    </PageWrapper>
   );
 });
 

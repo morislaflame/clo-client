@@ -53,9 +53,7 @@ const App = observer(() => {
 
   return (
       <BrowserRouter>
-      <div className="min-h-screen flex flex-col">
         <Navigation />
-        <main className="flex-grow">
           <Suspense
             fallback={
               <LoadingIndicator />
@@ -63,9 +61,7 @@ const App = observer(() => {
           >
             <AppRouter />
           </Suspense>
-        </main>
         <Footer />
-      </div>
     </BrowserRouter>
   );
 });

@@ -9,6 +9,7 @@ import {
   NewsPagination,
   NewsEmpty
 } from "@/components/NewsPageComponents";
+import PageWrapper from "@/components/PageWrapper";
 
 const NewsPage = observer(() => {
   const { news, newsType } = useContext(Context) as IStoreContext;
@@ -28,16 +29,16 @@ const NewsPage = observer(() => {
 
   if (news.loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <PageWrapper className="min-h-screen flex items-center justify-center">
         <Spinner size="lg" />
-      </div>
+      </PageWrapper>
     );
   }
 
 
 
   return (
-    <div className="min-h-screen">
+    <PageWrapper className="min-h-screen">
       <div className="w-full p-4 relative">
         {/* <NewsHeader onBackClick={handleBackClick} /> */}
 {/* 
@@ -69,7 +70,7 @@ const NewsPage = observer(() => {
           }}
         />
       </div>
-    </div>
+    </PageWrapper>
   );
 });
 

@@ -11,6 +11,7 @@ import {
   BasketClearModal
 } from "@/components/BasketPageComponents";
 import { MAIN_ROUTE, CHECKOUT_ROUTE } from "@/utils/consts";
+import PageWrapper from "@/components/PageWrapper";
 
 const BasketPage = observer(() => {
   const { basket, product } = useContext(Context) as IStoreContext;
@@ -61,9 +62,9 @@ const BasketPage = observer(() => {
 
   if (basket.loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <PageWrapper className="min-h-screen flex items-center justify-center">
         <Spinner size="lg" />
-      </div>
+      </PageWrapper>
     );
   }
 
@@ -77,7 +78,7 @@ const BasketPage = observer(() => {
   }
 
   return (
-    <div className="min-h-screen">
+    <PageWrapper className="min-h-screen">
       <div className="container mx-auto p-4">
         <BasketHeader onBackClick={handleBackClick} />
 
@@ -110,7 +111,7 @@ const BasketPage = observer(() => {
         onConfirm={handleClearBasket}
         isLoading={basket.loading}
       />
-    </div>
+    </PageWrapper>
   );
 });
 

@@ -15,6 +15,7 @@ import { EyeFilledIcon, EyeSlashFilledIcon } from "@/components/ui/Icons";
 import { Context, type IStoreContext } from "@/store/StoreProvider";
 import { MAIN_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE } from "@/utils/consts";
 import { useTranslate } from "@/utils/useTranslate";
+import PageWrapper from "@/components/PageWrapper";
 
 const AuthPage = observer(() => {
   const { user } = useContext(Context) as IStoreContext;
@@ -91,7 +92,7 @@ const AuthPage = observer(() => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <PageWrapper className="min-h-screen flex items-center justify-center p-4">
       <Card className="w-full max-w-md p-4">
         <CardHeader className="flex flex-col gap-3 pb-4">
           <div className="flex justify-center">
@@ -215,7 +216,7 @@ const AuthPage = observer(() => {
           </div>
         </CardBody>
       </Card>
-    </div>
+    </PageWrapper>
   );
 });
 

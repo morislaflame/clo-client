@@ -76,7 +76,6 @@ const Navigation = observer(() => {
 
   const authMenuItems = user.isAuth 
     ? [
-        { name: t("profile"), href: "#", action: () => {} },
         { name: t("my_orders"), href: ORDERS_ROUTE, action: () => navigate(ORDERS_ROUTE) },
         { name: t("logout"), href: "#", action: handleLogout, color: "danger" },
       ]
@@ -206,9 +205,6 @@ const Navigation = observer(() => {
               </div>
             </DropdownTrigger>
             <DropdownMenu aria-label="User menu">
-              <DropdownItem key="profile" onClick={() => {}}>
-                {t("profile")}
-              </DropdownItem>
               <DropdownItem key="orders" onClick={() => navigate(ORDERS_ROUTE)}>
                 {t("my_orders")}
               </DropdownItem>

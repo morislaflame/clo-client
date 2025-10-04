@@ -45,7 +45,7 @@ const OrdersFilter: React.FC<OrdersFilterProps> = ({
           size="sm"
         >
           {statusOptions.map((option) => (
-            <SelectItem key={option.key} >
+            <SelectItem key={option.key} textValue={option.label}>
               {option.label}
             </SelectItem>
           ))}

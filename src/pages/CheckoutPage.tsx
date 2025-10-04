@@ -10,6 +10,7 @@ import {
   CheckoutSuccessModal
 } from "@/components/CheckoutPageComponents";
 import { MAIN_ROUTE } from "@/utils/consts";
+import PageWrapper from "@/components/PageWrapper";
 
 const CheckoutPage = observer(() => {
   const { basket, product, order } = useContext(Context) as IStoreContext;
@@ -136,14 +137,14 @@ const CheckoutPage = observer(() => {
 
   if (basket.loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <PageWrapper className="min-h-screen flex items-center justify-center">
         <Spinner size="lg" />
-      </div>
+      </PageWrapper>
     );
   }
 
   return (
-    <div className="min-h-screen">
+    <PageWrapper className="min-h-screen">
       <div className="container mx-auto p-4">
         <CheckoutHeader onBackClick={handleBackClick} />
 
@@ -173,7 +174,7 @@ const CheckoutPage = observer(() => {
         onClose={handleSuccessModalClose}
         orderId={order.currentOrder?.id}
       />
-    </div>
+    </PageWrapper>
   );
 });
 

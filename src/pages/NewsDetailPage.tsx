@@ -11,6 +11,7 @@ import {
   NewsDetailLinks,
   NewsDetailError
 } from "@/components/NewsDetailPageComponents";
+import PageWrapper from "@/components/PageWrapper";
 
 const NewsDetailPage = observer(() => {
   const { news } = useContext(Context) as IStoreContext;
@@ -30,9 +31,9 @@ const NewsDetailPage = observer(() => {
 
   if (news.loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <PageWrapper className="min-h-screen flex items-center justify-center">
         <Spinner size="lg" />
-      </div>
+      </PageWrapper>
     );
   }
 
@@ -49,7 +50,7 @@ const NewsDetailPage = observer(() => {
   const currentNews = news.currentNews;
 
   return (
-    <div className="min-h-screen">
+    <PageWrapper className="min-h-screen">
       <div className="w-full p-4">
         <NewsDetailHeader onBackClick={handleBackClick} />
 
@@ -67,7 +68,7 @@ const NewsDetailPage = observer(() => {
 
         </div>
       </div>
-    </div>
+    </PageWrapper>
   );
 });
 

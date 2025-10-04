@@ -1,10 +1,11 @@
 import ProductFilters from "@/components/ProductFilters";
 import ProductList from "@/components/ProductList";
 import BannerCarousel from "@/components/BannerCarousel";
+import PageWrapper from "@/components/PageWrapper";
 
 const MainPage = () => {
     return (
-        <div className="min-h-screen">
+        <PageWrapper>
             <BannerCarousel />
             <div className="w-full px-4 pb-4">
                 {/* Баннер */}
@@ -24,7 +25,7 @@ const MainPage = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </PageWrapper>
     );
 };
 

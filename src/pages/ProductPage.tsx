@@ -16,6 +16,7 @@ import {
   ProductActions
 } from "@/components/ProductPageComponents";
 import { useTranslate } from "@/utils/useTranslate";
+import PageWrapper from "@/components/PageWrapper";
 
 const ProductPage = observer(() => {
   const { product, basket } = useContext(Context) as IStoreContext;
@@ -114,15 +115,15 @@ const ProductPage = observer(() => {
 
   if (product.loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <PageWrapper className="min-h-screen flex items-center justify-center">
         <Spinner size="lg" />
-      </div>
+      </PageWrapper>
     );
   }
 
   if (product.error || !product.currentProduct) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <PageWrapper className="min-h-screen flex items-center justify-center">
         <Card className="p-8 max-w-md">
           <CardBody className="text-center">
             <p className="text-danger mb-4">
@@ -146,7 +147,7 @@ const ProductPage = observer(() => {
             </div>
           </CardBody>
         </Card>
-      </div>
+      </PageWrapper>
     );
   }
 
@@ -154,7 +155,7 @@ const ProductPage = observer(() => {
   const isProductAvailable = currentProduct.status === 'AVAILABLE';
 
   return (
-    <div className="min-h-screen">
+    <PageWrapper className="min-h-screen">
       <div className="container mx-auto p-4">
       {/* <div className="w-full h-full absolute top-0 left-0">
   <DotGrid
@@ -211,7 +212,7 @@ const ProductPage = observer(() => {
           </div>
         </div>
       </div>
-    </div>
+    </PageWrapper>
   );
 });
 

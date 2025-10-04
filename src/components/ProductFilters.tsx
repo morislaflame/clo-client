@@ -175,7 +175,7 @@ function ProductFilters() {
           }}
         >
           {genderOptions.map((option) => (
-            <SelectItem key={option.value}>
+            <SelectItem key={option.value} textValue={option.label}>
               {option.label}
             </SelectItem>
           ))}
@@ -193,7 +193,7 @@ function ProductFilters() {
           isLoading={product.filtersLoading}
         >
           {product.sizes.map((size) => (
-            <SelectItem key={size.name}>
+            <SelectItem key={size.name} textValue={size.name}>
               {size.name}
             </SelectItem>
           ))}
@@ -211,7 +211,7 @@ function ProductFilters() {
           isLoading={product.filtersLoading}
         >
           {product.colors.map((color) => (
-            <SelectItem key={color.name}>
+            <SelectItem key={color.name} textValue={color.name}>
               <div className="flex items-center gap-2">
                 {color.hexCode && (
                   <div 
@@ -237,7 +237,7 @@ function ProductFilters() {
           isLoading={product.filtersLoading}
         >
           {product.clothingTypes.map((type) => (
-            <SelectItem key={type.id.toString()}>
+            <SelectItem key={type.id.toString()} textValue={type.name}>
               {type.name}
             </SelectItem>
           ))}

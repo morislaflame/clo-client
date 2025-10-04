@@ -74,7 +74,7 @@ const ProductSelectors: React.FC<ProductSelectorsProps> = observer(({
             }}
           >
             {product.colors?.map((color) => (
-              <SelectItem key={color.id.toString()}>
+              <SelectItem key={color.id.toString()} textValue={color.name}>
                 <div className="flex items-center gap-2">
                   {color.hexCode && (
                     <div 
@@ -109,7 +109,7 @@ const ProductSelectors: React.FC<ProductSelectorsProps> = observer(({
             errorMessage={sizeError ? t("please_select_size") : ""}
           >
             {product.sizes?.map((size) => (
-              <SelectItem key={size.id.toString()}>
+              <SelectItem key={size.id.toString()} textValue={size.name} >
                 {size.name}
               </SelectItem>
             ))}

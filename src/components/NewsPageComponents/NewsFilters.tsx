@@ -26,7 +26,7 @@ const NewsFilters: React.FC<NewsFiltersProps> = ({
         }}
         className="max-w-xs"
       >
-        <SelectItem key="">Все типы</SelectItem>
+        <SelectItem key="" textValue="Все типы">Все типы</SelectItem>
       </Select>
 
       <Select
@@ -39,9 +39,9 @@ const NewsFilters: React.FC<NewsFiltersProps> = ({
         }}
         className="max-w-xs"
       >
-        <SelectItem key="PUBLISHED">Опубликованные</SelectItem>
-        <SelectItem key="DRAFT">Черновики</SelectItem>
-        <SelectItem key="ARCHIVED">Архив</SelectItem>
+        <SelectItem key="PUBLISHED" textValue="Опубликованные">Опубликованные</SelectItem>
+        <SelectItem key="DRAFT" textValue="Черновики">Черновики</SelectItem>
+        <SelectItem key="ARCHIVED" textValue="Архив">Архив</SelectItem>
       </Select>
     </div>
   );

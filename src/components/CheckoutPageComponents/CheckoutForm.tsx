@@ -121,9 +121,9 @@ const CheckoutForm: React.FC<CheckoutFormProps> = observer(({
             errorMessage={errors.paymentMethod}
             isRequired
           >
-            <SelectItem key="CASH">{t("cash")}</SelectItem>
-            <SelectItem key="CARD">{t("card")}</SelectItem>
-            <SelectItem key="BANK_TRANSFER">{t("bank_transfer")}</SelectItem>
+            <SelectItem key="CASH" textValue={t("cash")}>{t("cash")}</SelectItem>
+            <SelectItem key="CARD" textValue={t("card")}>{t("card")}</SelectItem>
+            <SelectItem key="BANK_TRANSFER" textValue={t("bank_transfer")}>{t("bank_transfer")}</SelectItem>
           </Select>
           </div>
 

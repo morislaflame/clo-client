@@ -24,7 +24,7 @@ if (!window.__REACT_ROOT__) {
 window.__REACT_ROOT__.render(
   <HeroUIProvider>
     <StoreProvider>
-      <main className="h-screen overflow-y-auto w-screen dark text-foreground bg-background">
+      <main className="min-h-screen overflow-y-auto w-screen dark text-foreground bg-background">
         <App />
       </main>
     </StoreProvider>

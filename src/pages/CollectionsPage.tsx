@@ -3,6 +3,7 @@ import { observer } from "mobx-react-lite";
 import { Context, type IStoreContext } from "@/store/StoreProvider";
 import { CollectionsList } from "@/components/CollectionsPageComponents";
 import { useTranslate } from "@/utils/useTranslate";
+import PageWrapper from "@/components/PageWrapper";
 
 const CollectionsPage = observer(() => {
   const { collection } = useContext(Context) as IStoreContext;
@@ -12,7 +13,7 @@ const CollectionsPage = observer(() => {
   }, [collection]);
 
   return (
-    <div className="min-h-screen">
+    <PageWrapper className="min-h-screen">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">
@@ -25,7 +26,7 @@ const CollectionsPage = observer(() => {
 
         <CollectionsList />
       </div>
-    </div>
+    </PageWrapper>
   );
 });
 

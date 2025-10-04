@@ -11,6 +11,7 @@ import {
 } from '@/components/OrdersPageComponents';
 import { MAIN_ROUTE } from '@/utils/consts';
 import type { Order } from '@/http/orderAPI';
+import PageWrapper from '@/components/PageWrapper';
 
 const OrdersPage = observer(() => {
   const { user, product, order } = useContext(Context) as IStoreContext;
@@ -81,14 +82,14 @@ const OrdersPage = observer(() => {
 
   if (order.loading && order.orders.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <PageWrapper className="min-h-screen flex items-center justify-center">
         <Spinner size="lg" />
-      </div>
+      </PageWrapper>
     );
   }
 
   return (
-    <div className="min-h-screen">
+    <PageWrapper className="min-h-screen">
       <div className="container mx-auto p-4">
         <OrdersHeader onBackClick={handleBackClick} />
 
@@ -134,7 +135,7 @@ const OrdersPage = observer(() => {
           currency={product.currency}
         />
       </div>
-    </div>
+    </PageWrapper>
   );
 });
 
