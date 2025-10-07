@@ -801,6 +801,103 @@ type TranslationType = {
       en: 'Loading Google Maps...',
       kz: 'Google Maps жүктелуде...'
     },
+
+    // Email Authentication
+    enter_verification_code: {
+      ru: 'Введите код подтверждения',
+      en: 'Enter verification code',
+      kz: 'Растау кодын енгізіңіз'
+    },
+    verification_code_sent: {
+      ru: 'Код подтверждения отправлен на вашу почту',
+      en: 'Verification code sent to your email',
+      kz: 'Растау коды электрондық поштаңызға жіберілді'
+    },
+    code_expires_in: {
+      ru: 'Код действителен в течение',
+      en: 'Code expires in',
+      kz: 'Код жарамды'
+    },
+    resend_code: {
+      ru: 'Отправить код повторно',
+      en: 'Resend code',
+      kz: 'Кодты қайта жіберу'
+    },
+    verify_code: {
+      ru: 'Подтвердить код',
+      en: 'Verify code',
+      kz: 'Кодты растау'
+    },
+    forgot_password: {
+      ru: 'Забыли пароль?',
+      en: 'Forgot password?',
+      kz: 'Парольді ұмыттыңыз ба?'
+    },
+    reset_password: {
+      ru: 'Сброс пароля',
+      en: 'Reset password',
+      kz: 'Парольді қалпына келтіру'
+    },
+    reset_password_description: {
+      ru: 'Введите email для получения кода сброса пароля',
+      en: 'Enter email to receive password reset code',
+      kz: 'Парольді қалпына келтіру кодын алу үшін email енгізіңіз'
+    },
+    send_reset_code: {
+      ru: 'Отправить код сброса',
+      en: 'Send reset code',
+      kz: 'Қалпына келтіру кодын жіберу'
+    },
+    enter_new_password: {
+      ru: 'Введите новый пароль',
+      en: 'Enter new password',
+      kz: 'Жаңа парольді енгізіңіз'
+    },
+    new_password: {
+      ru: 'Новый пароль',
+      en: 'New password',
+      kz: 'Жаңа пароль'
+    },
+    confirm_new_password: {
+      ru: 'Подтвердите новый пароль',
+      en: 'Confirm new password',
+      kz: 'Жаңа парольді растаңыз'
+    },
+    cancel: {
+      ru: 'Отмена',
+      en: 'Cancel',
+      kz: 'Болдырмау'
+    },
+    fill_all_fields: {
+      ru: 'Заполните все поля',
+      en: 'Fill all fields',
+      kz: 'Барлық өрістерді толтырыңыз'
+    },
+    passwords_dont_match: {
+      ru: 'Пароли не совпадают',
+      en: 'Passwords don\'t match',
+      kz: 'Парольдер сәйкес келмейді'
+    },
+    password_min_length: {
+      ru: 'Пароль должен содержать минимум 6 символов',
+      en: 'Password must be at least 6 characters',
+      kz: 'Пароль кемінде 6 таңбадан тұруы керек'
+    },
+    error_sending_code: {
+      ru: 'Ошибка отправки кода',
+      en: 'Error sending code',
+      kz: 'Код жіберу қатесі'
+    },
+    connection_error: {
+      ru: 'Ошибка соединения',
+      en: 'Connection error',
+      kz: 'Байланыс қатесі'
+    },
+    password_reset_failed: {
+      ru: 'Сброс пароля не удался',
+      en: 'Password reset failed',
+      kz: 'Парольді қалпына келтіру сәтсіз'
+    },
   };
   
   export const translate = (key: string, language: 'ru' | 'en' | 'kz'): string => {

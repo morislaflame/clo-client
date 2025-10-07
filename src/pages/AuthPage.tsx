@@ -24,6 +24,7 @@ const AuthPage = observer(() => {
   const isLogin = location.pathname === LOGIN_ROUTE;
   const { t } = useTranslate();
   
+  // Основные состояния
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -31,6 +32,11 @@ const AuthPage = observer(() => {
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Состояния для верификации email
+  const [verificationStep, setVerificationStep] = useState<'credentials' | 'verification'>('credentials');
+  const [verificationCode, setVerificationCode] = useState("");
+  const [expiresAt, setExpiresAt] = useState<string | null>(null);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
   const toggleConfirmVisibility = () => setIsConfirmVisible(!isConfirmVisible);
@@ -40,6 +46,14 @@ const AuthPage = observer(() => {
       navigate(MAIN_ROUTE, { replace: true });
     }
   }, [user.isAuth, navigate]);
+
+  // Сброс состояний при переключении между логином и регистрацией
+  useEffect(() => {
+    setVerificationStep('credentials');
+    setVerificationCode("");
+    setExpiresAt(null);
+    setError("");
+  }, [isLogin]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,15 +83,55 @@ const AuthPage = observer(() => {
       let result;
       if (isLogin) {
         result = await user.login(email, password);
+        if (result.success) {
+          // Успешный логин - перенаправляем на главную
+          return;
+        }
       } else {
-        result = await user.register(email, password);
+        // Для регистрации сначала отправляем код верификации
+        if (verificationStep === 'credentials') {
+          result = await user.sendRegistrationCode(email);
+          if (result.success) {
+            setExpiresAt(result.data?.expiresAt || null);
+            setVerificationStep('verification');
+            setError("");
+            setIsLoading(false);
+            return;
+          }
+        } else {
+          // Второй шаг - подтверждение кода
+          result = await user.registerWithVerification(email, password, verificationCode);
+          if (result.success) {
+            // Успешная регистрация - перенаправляем на главную
+            return;
+          }
+        }
       }
 
       if (!result.success) {
         setError(result.error || "Произошла ошибка");
       }
-          } catch {
-        setError("Произошла ошибка соединения");
+    } catch {
+      setError("Произошла ошибка соединения");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResendCode = async () => {
+    setError("");
+    setIsLoading(true);
+    
+    try {
+      const result = await user.sendRegistrationCode(email);
+      if (result.success) {
+        setExpiresAt(result.data?.expiresAt || null);
+        setError("");
+      } else {
+        setError(result.error || "Не удалось отправить код повторно");
+      }
+    } catch {
+      setError("Произошла ошибка соединения");
     } finally {
       setIsLoading(false);
     }
@@ -88,7 +142,27 @@ const AuthPage = observer(() => {
     setEmail("");
     setPassword("");
     setConfirmPassword("");
+    setVerificationCode("");
+    setVerificationStep('credentials');
+    setExpiresAt(null);
     navigate(isLogin ? REGISTRATION_ROUTE : LOGIN_ROUTE);
+  };
+
+  const goBackToCredentials = () => {
+    setVerificationStep('credentials');
+    setVerificationCode("");
+    setExpiresAt(null);
+    setError("");
+  };
+
+  const formatExpirationTime = (expiresAt: string) => {
+    const date = new Date(expiresAt);
+    const now = new Date();
+    const diffMs = date.getTime() - now.getTime();
+    const diffMins = Math.ceil(diffMs / (1000 * 60));
+    
+    if (diffMins <= 0) return "Истек";
+    return `${diffMins} мин`;
   };
 
   return (
@@ -100,86 +174,109 @@ const AuthPage = observer(() => {
           </div>
           <div className="text-center">
             <h1 className="text-2xl font-bold">
-              {isLogin ? t("login") : t("register")}
+              {isLogin 
+                ? t("login") 
+                : verificationStep === 'verification' 
+                  ? "Подтверждение email" 
+                  : t("register")
+              }
             </h1>
             <p className="text-default-500 text-sm mt-1">
               {isLogin 
                 ? t("enter_data") 
-                : t("create_account")
+                : verificationStep === 'verification'
+                  ? `Код отправлен на ${email}`
+                  : t("create_account")
               }
             </p>
+            {verificationStep === 'verification' && expiresAt && (
+              <p className="text-xs text-default-400 mt-1">
+                Код действителен: {formatExpirationTime(expiresAt)}
+              </p>
+            )}
           </div>
         </CardHeader>
 
         <CardBody className="gap-3">
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <Input
-              label="Email"
-              placeholder={t("enter_email")}
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              isRequired
-              variant="bordered"
-              classNames={{
-                input: "text-sm",
-                inputWrapper: "h-12",
-              }}
-            />
+          <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+            {/* Поля для ввода данных (показываются всегда для логина или на первом шаге регистрации) */}
+            {(isLogin || verificationStep === 'credentials') && (
+              <>
+                <Input
+                  label="Email"
+                  placeholder={t("enter_email")}
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  isRequired
+                  variant="bordered"
+                  classNames={{
+                    input: "text-sm",
+                    inputWrapper: "h-12",
+                  }}
+                />
 
-            <Input
-              label={t("password")}
-              placeholder={t("enter_password")}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              isRequired
-              variant="bordered"
-              endContent={
-                <button
-                  className="focus:outline-none"
-                  type="button"
-                  onClick={toggleVisibility}
-                >
-                  {isVisible ? (
-                    <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                  ) : (
-                    <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                  )}
-                </button>
-              }
-              type={isVisible ? "text" : "password"}
-              classNames={{
-                input: "text-sm",
-                inputWrapper: "h-12",
-              }}
-            />
+                <Input
+                  label={t("password")}
+                  placeholder={t("enter_password")}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  isRequired
+                  variant="bordered"
+                  endContent={
+                    <button
+                      className="focus:outline-none"
+                      type="button"
+                      onClick={toggleVisibility}
+                    >
+                      {isVisible ? (
+                        <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                      ) : (
+                        <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                      )}
+                    </button>
+                  }
+                  type={isVisible ? "text" : "password"}
+                />
 
-            {!isLogin && (
+                {!isLogin && (
+                  <Input
+                    label={t("confirm_password")}
+                    placeholder={t("confirm_password")}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    isRequired
+                    variant="bordered"
+                    endContent={
+                      <button
+                        className="focus:outline-none"
+                        type="button"
+                        onClick={toggleConfirmVisibility}
+                      >
+                        {isConfirmVisible ? (
+                          <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                        ) : (
+                          <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                        )}
+                      </button>
+                    }
+                    type={isConfirmVisible ? "text" : "password"}
+                  />
+                )}
+              </>
+            )}
+
+            {/* Поле для ввода кода верификации (показывается только на втором шаге регистрации) */}
+            {!isLogin && verificationStep === 'verification' && (
               <Input
-                label={t("confirm_password")}
-                placeholder={t("confirm_password")}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                label="Код подтверждения"
+                labelPlacement="outside"
+                placeholder="Введите код из email"
+                value={verificationCode}
+                onChange={(e) => setVerificationCode(e.target.value)}
                 isRequired
                 variant="bordered"
-                endContent={
-                  <button
-                    className="focus:outline-none"
-                    type="button"
-                    onClick={toggleConfirmVisibility}
-                  >
-                    {isConfirmVisible ? (
-                      <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                    ) : (
-                      <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                    )}
-                  </button>
-                }
-                type={isConfirmVisible ? "text" : "password"}
-                classNames={{
-                  input: "text-sm",
-                  inputWrapper: "h-12",
-                }}
+                maxLength={6}
               />
             )}
 
@@ -195,8 +292,40 @@ const AuthPage = observer(() => {
               isLoading={isLoading}
               className="w-full mt-2 bg-white text-black"
             >
-              {isLogin ? t("login") : t("register")}
+              {isLogin 
+                ? t("login") 
+                : verificationStep === 'verification' 
+                  ? "Подтвердить регистрацию" 
+                  : "Отправить код"
+              }
             </Button>
+
+            {/* Кнопка повторной отправки кода */}
+            {!isLogin && verificationStep === 'verification' && (
+              <Button
+                type="button"
+                variant="light"
+                size="sm"
+                onClick={handleResendCode}
+                isLoading={isLoading}
+                className="w-full"
+              >
+                Отправить код повторно
+              </Button>
+            )}
+
+            {/* Кнопка возврата к вводу данных */}
+            {!isLogin && verificationStep === 'verification' && (
+              <Button
+                type="button"
+                variant="light"
+                size="sm"
+                onClick={goBackToCredentials}
+                className="w-full"
+              >
+                Изменить email
+              </Button>
+            )}
           </form>
 
           <Divider className="my-2" />

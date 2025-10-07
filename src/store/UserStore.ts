@@ -1,6 +1,15 @@
 import {makeAutoObservable, runInAction } from "mobx";
 import type { UserInfo } from "../types/types";
-import { check, fetchMyInfo, login, registration } from "../http/userAPI";
+import { 
+    check, 
+    fetchMyInfo, 
+    login, 
+    registration,
+    sendRegistrationCode,
+    registerWithVerification,
+    sendPasswordResetCode,
+    resetPasswordWithVerification
+} from "../http/userAPI";
 import type BasketStore from "./BasketStore";
 
 interface ApiError {
@@ -213,6 +222,113 @@ export default class UserStore {
             
         } catch (error) {
             console.error("Error during fetching my info:", error);
+        }
+    }
+
+    // Отправка кода подтверждения для регистрации
+    async sendRegistrationCode(email: string) {
+        try {
+            const result = await sendRegistrationCode(email);
+            
+            return { success: true, data: result };
+        } catch (error: unknown) {
+            console.error("Error sending registration code:", error);
+            
+            // Не устанавливаем глобальные ошибки для методов верификации
+            // Обрабатываем только rate limiting
+            const err = error as ApiError;
+            if (err.response?.status === 429) {
+                this.setTooManyRequests(true);
+            }
+            
+            return { 
+                success: false, 
+                error: (error as ApiError).response?.data?.message || 'Failed to send verification code' 
+            };
+        }
+    }
+
+    // Регистрация с подтверждением кода
+    async registerWithVerification(email: string, password: string, code: string, basketStore?: BasketStore) {
+        try {
+            const userData = await registerWithVerification(email, password, code);
+            
+            runInAction(() => {
+                this.setUser(userData as UserInfo);
+                this.setIsAuth(true);
+                localStorage.removeItem('isGuest'); // Убираем флаг гостя
+            });
+            
+            // Мигрируем локальную корзину на сервер
+            if (basketStore) {
+                try {
+                    await basketStore.migrateLocalToServer();
+                } catch (error) {
+                    console.error('Error migrating basket:', error);
+                }
+            }
+            
+            return { success: true };
+        } catch (error: unknown) {
+            console.error("Error during registration with verification:", error);
+            
+            // Не устанавливаем глобальные ошибки для методов верификации
+            // Обрабатываем только rate limiting
+            const err = error as ApiError;
+            if (err.response?.status === 429) {
+                this.setTooManyRequests(true);
+            }
+            
+            return { 
+                success: false, 
+                error: (error as ApiError).response?.data?.message || 'Registration failed' 
+            };
+        }
+    }
+
+    // Отправка кода для сброса пароля
+    async sendPasswordResetCode(email: string) {
+        try {
+            const result = await sendPasswordResetCode(email);
+            
+            return { success: true, data: result };
+        } catch (error: unknown) {
+            console.error("Error sending password reset code:", error);
+            
+            // Не устанавливаем глобальные ошибки для методов верификации
+            // Обрабатываем только rate limiting
+            const err = error as ApiError;
+            if (err.response?.status === 429) {
+                this.setTooManyRequests(true);
+            }
+            
+            return { 
+                success: false, 
+                error: (error as ApiError).response?.data?.message || 'Failed to send password reset code' 
+            };
+        }
+    }
+
+    // Сброс пароля с подтверждением кода
+    async resetPasswordWithVerification(email: string, newPassword: string, code: string) {
+        try {
+            await resetPasswordWithVerification(email, newPassword, code);
+            
+            return { success: true };
+        } catch (error: unknown) {
+            console.error("Error during password reset:", error);
+            
+            // Не устанавливаем глобальные ошибки для методов верификации
+            // Обрабатываем только rate limiting
+            const err = error as ApiError;
+            if (err.response?.status === 429) {
+                this.setTooManyRequests(true);
+            }
+            
+            return { 
+                success: false, 
+                error: (error as ApiError).response?.data?.message || 'Password reset failed' 
+            };
         }
     }
 

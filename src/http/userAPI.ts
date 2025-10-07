@@ -40,3 +40,35 @@ export const createGuestUser = async () => {
         isGuest: true
     };
 };
+
+// Email аутентификация
+export const sendRegistrationCode = async (email: string) => {
+    const { data } = await $host.post('api/user/send-registration-code', { email });
+    return data;
+};
+
+export const registerWithVerification = async (email: string, password: string, code: string) => {
+    const { data } = await $host.post('api/user/register-with-verification', { 
+        email, 
+        password, 
+        code 
+    });
+    localStorage.setItem('token', data.token);
+    return {
+        ...jwtDecode(data.token),
+    };
+};
+
+export const sendPasswordResetCode = async (email: string) => {
+    const { data } = await $host.post('api/user/send-password-reset-code', { email });
+    return data;
+};
+
+export const resetPasswordWithVerification = async (email: string, newPassword: string, code: string) => {
+    const { data } = await $host.post('api/user/reset-password-with-verification', { 
+        email, 
+        newPassword, 
+        code 
+    });
+    return data;
+};
